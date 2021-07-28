@@ -32,8 +32,3 @@ def insert_act(file):
     file_name = os.path.basename(file)
     c.execute("insert into main values(?,?)",(now_time,file_name))
     conn.commit()
-
-for i in select_act():
-    print(i)
-
-print(colum_name())
