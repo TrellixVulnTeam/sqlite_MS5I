@@ -32,3 +32,10 @@ def insert_act(file):
     file_name = os.path.basename(file)
     c.execute("insert into main values(?,?)",(now_time,file_name))
     conn.commit()
+
+#値を削除する
+def del_act(file_1,file_2):
+    c.execute("delete from main where 更新時間 ファイル名 = (?,?)",(file_1,file_2))
+
+
+del_act("2021-07-28 14:06:33.155142","887-666-87147-559255-1(修理)高橋")
