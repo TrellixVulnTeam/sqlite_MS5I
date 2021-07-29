@@ -34,8 +34,15 @@ while True:
         window["file_out"].update(file_name)
 
     if event  == "del":
-        x = window["table"].get()
-        file_name = x[values["table"][0]]
-        f_1 = file_name[0]
-        f_2 = file_name[1]
-        test_sginsert.del_act(f_1)
+        if values["table"] == []:
+            continue
+        else:
+
+            x = window["table"].get()
+            file_name = x[values["table"][0]]
+            f_1 = file_name[0]
+            f_2 = file_name[1]
+            test_sginsert.del_act(f_1)
+            window["table"].update(values=test_sginsert.select_act())
+
+   
