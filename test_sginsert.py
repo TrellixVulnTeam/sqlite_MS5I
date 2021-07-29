@@ -28,10 +28,14 @@ def select_act():
 
 #値をインサートする
 def insert_act(file):
-    now_time = str(datetime.datetime.now())
-    file_name = os.path.basename(file)
-    c.execute("insert into main values(?,?)",(now_time,file_name))
-    conn.commit()
+    try:
+
+        now_time = str(datetime.datetime.now())
+        file_name = os.path.basename(file)
+        c.execute("insert into main values(?,?)",(now_time,file_name))
+        conn.commit()
+    except:
+        sg.popup_error("同名のファイルが存在します")
 
 #値を削除する
 def del_act(file_1):
