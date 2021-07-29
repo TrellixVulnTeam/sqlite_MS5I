@@ -9,9 +9,9 @@ import test_sginsert
 conn = sqlite3.connect("main_data.db")
 c = conn.cursor()
 #テーブルを作成
-#c.execute("create table main(更新時間,ファイル名)")
+#c.execute("create table main_2(ID integer primary key,更新時間 text,ファイル名 unique)")
 
 #ユニークインデックスを作成(データの重複防止)
-#c.execute("create unique index che on main(ファイル名)")
+#c.execute("create unique index mai on main_(ファイル名)")
 
-print(test_sginsert.colum_name())
+#print(test_sginsert.colum_name())
