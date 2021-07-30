@@ -3,10 +3,10 @@ import sqlite3
 import datetime
 import os
 
-conn = sqlite3.connect("main_data.db")
+conn = sqlite3.connect("path.db")
 c = conn.cursor()
 #テーブル名
-table_name = "main_2"
+table_name = "path"
 
 #column名を取得する関数
 def colum_name():
