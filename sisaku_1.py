@@ -33,7 +33,7 @@ while True:
 
     if event == "table":
         x = window["table"].get()
-        file_name = x[values["table"][0]][2]
+        file_name = x[values["table"][0]][1]
         window["file_out"].update(file_name)
 
     if event  == "del":
