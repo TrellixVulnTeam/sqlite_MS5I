@@ -172,7 +172,7 @@ def main_1_window():
 
     lay_6 = sg.Frame(title="その他",layout=[[sg.Text("更新日時"), sg.InputText(size=(28,1), key="out_time")],
         [sg.Text("ファイル名",pad=((0,0),(15,0))),sg.InputText(size=(35,10), key="list_out",right_click_menu=["",["コピー"]],pad=((10,0),(15,0)))],
-        [sg.Button("指示書送付フォルダ", key="open_souhu",pad=((5,0),(10,0))),sg.Button("path", key="path")],
+        [sg.Button("指示書送付フォルダ", key="open_souhu",pad=((5,0),(10,0)))],
         [sg.Button("不具合指示書送付",button_color="green",key="ex_souhu",pad=((5,0),(10,0)))],
         [sg.Button("金型修理履歴",button_color="green",key="ex_lireki",pad=((5,0),(10,0)))],
         [sg.Button("手配No.管理表",button_color="green",key="ex_kanri",pad=((5,0),(10,0)))],
