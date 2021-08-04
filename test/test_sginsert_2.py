@@ -1,12 +1,10 @@
 import PySimpleGUI as sg
 import sqlite3
-import os
-import sys
 
 conn = sqlite3.connect("path.db")
 c = conn.cursor()
 #テーブル名
-table_name = "cp_path"
+table_name = "path"
 
 #column名を取得する関数
 def colum_name():
@@ -18,6 +16,13 @@ def colum_name():
         
     return out
 
+#path設定用
+def path(name):
+
+    c.execute("select path from path where 名称 = '{}'".format(name))
+    return c.fetchone()[0]
+
+#テーブルの値を全て抽出する
 def select_act():
     
     c.execute("select * from {}".format(table_name))
@@ -30,7 +35,7 @@ def insert_act(file_name, path_name):
 
 
     try:
-        c.execute("insert into cp_path(名称,path) values('{0}','{1}')".format(file_name,path_name))
+        c.execute("insert into {2}(名称,path) values('{0}','{1}')".format(file_name,path_name,table_name))
         conn.commit()
     except:
         sg.popup_error("同名のファイルが存在します")
@@ -43,9 +48,11 @@ def del_act(file_1):
 #値を更新する
 def updete_act(cg_path,dir_name):
     
-    c.execute("update cp_path set path = '{0}' where 名称 = '{1}'".format(cg_path, dir_name))
+    c.execute("update {2} set path = '{0}' where 名称 = '{1}'".format(cg_path, dir_name,table_name))
     
     conn.commit()
+
+
 
 
 
