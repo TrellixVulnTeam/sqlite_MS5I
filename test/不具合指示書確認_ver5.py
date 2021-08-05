@@ -6,9 +6,9 @@ import re
 import datetime
 import shutil
 import pyperclip
-import saisyuu
 import test_sginsert_2 as ts
 import sisaku_2
+
 
 # coding: utf-8
 #GUIテーマを設定
@@ -37,7 +37,7 @@ def main(name):
     
     uu_no = []
     uuu_yes = []
-    x = glob.glob("{}/*-*[(（ )）]*[.xlsx|.xls|.pdf]".format(file_list[name]))
+    x = glob.glob("{}/*-*[(（)）]*[.xlsx.xls.pdf]?".format(file_list[name]))
     for ii in x:
         if re.search("[~$]", ii): #re.search("[~$]")で~$を含むファイルを抽出している
             uu_no.append(ii)
@@ -509,7 +509,7 @@ while True:
     elif event == "ex_kanri":
         subprocess.Popen([excel_path,ex_kanri_path],shell=True)
     elif event == "ex_pdf":
-        saisyuu.pdf()
+        subprocess.Popen(["start","{0}".format(ts.path("ツチヒラ専用PDF変換"))],shell=True)
 
     #タイムアウトが発生したタイミングでループ処理を開始する（この処理をしないとリストボックスの要素が選択認識されなかったりする）
     if event == "__TIMEOUT__":

@@ -1,7 +1,7 @@
 import PySimpleGUI as sg
 import sqlite3
 
-conn = sqlite3.connect("path.db")
+conn = sqlite3.connect(r"L:\部門_部署\生産準備課\金型・設備改良係共通〔管理者：荻野〕\不具合指示書回覧\path.db")
 c = conn.cursor()
 #テーブル名
 table_name = "path"
@@ -19,8 +19,9 @@ def colum_name():
 #path設定用
 def path(name):
 
-    c.execute("select path from path where 名称 = '{}'".format(name))
+    c.execute("select path from {0} where 名称 = '{1}'".format(table_name,name))
     return c.fetchone()[0]
+
 
 #テーブルの値を全て抽出する
 def select_act():
