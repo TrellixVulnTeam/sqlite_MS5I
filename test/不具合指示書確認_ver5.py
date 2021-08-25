@@ -8,7 +8,7 @@ import shutil
 import pyperclip
 import test_sginsert_2 as ts
 import sisaku_2
-
+import huguai_excel
 
 # coding: utf-8
 #GUIテーマを設定
@@ -179,9 +179,10 @@ def main_1_window():
         [sg.Button("ツチヒラ専用PDF変換",button_color="green",key="ex_pdf", pad=((5,0),(10,0)))]
             ],title_color="blue",)
 
-    #GUIレイアウト
+    #GUIレイアウト　　[["設定",["PATHの設定"]],
     layout = [
-    [sg.MenuBar([["設定",["PATHの設定"]]])],
+    [sg.MenuBar([["メニュー",["指示書送付フォルダ","不具合指示書送付","金型修理履歴","手配No.管理表","ツチヒラ専用PDF変換"]],
+                  ["設定",["PATHの設定"]]])],
     [[lay_1,lay_2,lay_5]],[[lay_3,lay_4,lay_6]
     ]]
 
@@ -276,7 +277,7 @@ while True:
         subprocess.Popen(["explorer", file_list["tantou"]], shell=True)
         continue
     #指示書送付フォルダを開く
-    elif event == "open_souhu":
+    elif event == "指示書送付フォルダ":
         subprocess.Popen(["explorer", file_list["souhu"]], shell=True)
         continue
     
@@ -502,13 +503,13 @@ while True:
         pyperclip.copy("{}".format(values["list_out"]))
     
     #不具合指示書送付、金型修理履歴、手配No.管理表を起動する(ボタン入力があった場合)
-    if event == "ex_souhu":
+    if event == "不具合指示書送付":
         subprocess.Popen([excel_path,ex_souhu_path],shell=True)
-    elif event == "ex_lireki":
+    elif event == "金型修理履歴":
         subprocess.Popen([excel_path,ex_lireki_path],shell=True)
-    elif event == "ex_kanri":
+    elif event == "手配No.管理表":
         subprocess.Popen([excel_path,ex_kanri_path],shell=True)
-    elif event == "ex_pdf":
+    elif event == "ツチヒラ専用PDF変換":
         subprocess.Popen(["start","{0}".format(ts.path("ツチヒラ専用PDF変換"))],shell=True)
 
     #タイムアウトが発生したタイミングでループ処理を開始する（この処理をしないとリストボックスの要素が選択認識されなかったりする）
