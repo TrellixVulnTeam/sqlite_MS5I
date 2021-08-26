@@ -8,7 +8,7 @@ def coll():
         title = "通知",
         message = "保存完了です",
         app_name = "アプリネーム",
-        app_icon = None,
+        app_icon = "不具合.ico",
         timeout = None)
 
 settings = sg.UserSettings()
@@ -20,7 +20,7 @@ lay = [
 
 ]
 
-window = sg.Window("test",lay,enable_close_attempted_event=True)
+window = sg.Window("test",lay,enable_close_attempted_event=True,icon="不具合.ico")
 
 while True :
     event, values = window.read()
