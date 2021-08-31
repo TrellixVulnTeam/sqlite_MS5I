@@ -52,26 +52,26 @@ lay = [
              ["追加",["タスクを追加","aaa"]],])],
     [sg.Column(layout=
 
-    [[sg.Checkbox("",default=settings["ck_1"],key="ck_1",visible=settings["vs_1"]),sg.In(default_text=settings["in_1"],key="in_1",size=(40,0.5),visible=settings["vs_1"]),sg.Button("完了",key="bt_1",visible=settings["vs_1"])],
-    [sg.Checkbox("",default=settings["ck_2"],key="ck_2",visible=settings["vs_2"]),sg.In(default_text=settings["in_2"],key="in_2",size=(40,0.5),visible=settings["vs_2"]),sg.Button("完了",key="bt_2",visible=settings["vs_2"])],
-    [sg.Checkbox("",default=settings["ck_3"],key="ck_3",visible=settings["vs_3"]),sg.In(default_text=settings["in_3"],key="in_3",size=(40,0.5),visible=settings["vs_3"]),sg.Button("完了",key="bt_3",visible=settings["vs_3"])],
-    [sg.Checkbox("",default=settings["ck_4"],key="ck_4",visible=settings["vs_4"]),sg.In(default_text=settings["in_4"],key="in_4",size=(40,0.5),visible=settings["vs_4"]),sg.Button("完了",key="bt_4",visible=settings["vs_4"])],
-    [sg.Checkbox("",default=settings["ck_5"],key="ck_5",visible=settings["vs_5"]),sg.In(default_text=settings["in_5"],key="in_5",size=(40,0.5),visible=settings["vs_5"]),sg.Button("完了",key="bt_5",visible=settings["vs_5"])],
-    [sg.Checkbox("",default=settings["ck_6"],key="ck_6",visible=settings["vs_6"]),sg.In(default_text=settings["in_6"],key="in_6",size=(40,0.5),visible=settings["vs_6"]),sg.Button("完了",key="bt_6",visible=settings["vs_6"])],
-    [sg.Checkbox("",default=settings["ck_7"],key="ck_7",visible=settings["vs_7"]),sg.In(default_text=settings["in_7"],key="in_7",size=(40,0.5),visible=settings["vs_7"]),sg.Button("完了",key="bt_7",visible=settings["vs_7"])],
-    [sg.Checkbox("",default=settings["ck_8"],key="ck_8",visible=settings["vs_8"]),sg.In(default_text=settings["in_8"],key="in_8",size=(40,0.5),visible=settings["vs_8"]),sg.Button("完了",key="bt_8",visible=settings["vs_8"])],
-    [sg.Checkbox("",default=settings["ck_9"],key="ck_9",visible=settings["vs_9"]),sg.In(default_text=settings["in_9"],key="in_9",size=(40,0.5),visible=settings["vs_9"]),sg.Button("完了",key="bt_9",visible=settings["vs_9"])],
-    [sg.Checkbox("",default=settings["ck_10"],key="ck_10",visible=settings["vs_10"]),sg.In(default_text=settings["in_10"],key="in_10",size=(40,0.5),visible=settings["vs_10"]),sg.Button("完了",key="bt_10",visible=settings["vs_10"])],
-    [sg.Checkbox("",default=settings["ck_11"],key="ck_11",visible=settings["vs_11"]),sg.In(default_text=settings["in_11"],key="in_11",size=(40,0.5),visible=settings["vs_11"]),sg.Button("完了",key="bt_11",visible=settings["vs_11"])],
-    [sg.Checkbox("",default=settings["ck_12"],key="ck_12",visible=settings["vs_12"]),sg.In(default_text=settings["in_12"],key="in_12",size=(40,0.5),visible=settings["vs_12"]),sg.Button("完了",key="bt_12",visible=settings["vs_12"])],
-    [sg.Checkbox("",default=settings["ck_13"],key="ck_13",visible=settings["vs_13"]),sg.In(default_text=settings["in_13"],key="in_13",size=(40,0.5),visible=settings["vs_13"]),sg.Button("完了",key="bt_13",visible=settings["vs_13"])],
-    [sg.Checkbox("",default=settings["ck_14"],key="ck_14",visible=settings["vs_14"]),sg.In(default_text=settings["in_14"],key="in_14",size=(40,0.5),visible=settings["vs_14"]),sg.Button("完了",key="bt_14",visible=settings["vs_14"])],
-    [sg.Checkbox("",default=settings["ck_15"],key="ck_15",visible=settings["vs_15"]),sg.In(default_text=settings["in_15"],key="in_15",size=(40,0.5),visible=settings["vs_15"]),sg.Button("完了",key="bt_15",visible=settings["vs_15"])],
-    [sg.Checkbox("",default=settings["ck_16"],key="ck_16",visible=settings["vs_16"]),sg.In(default_text=settings["in_16"],key="in_16",size=(40,0.5),visible=settings["vs_16"]),sg.Button("完了",key="bt_16",visible=settings["vs_16"])],
-    [sg.Checkbox("",default=settings["ck_17"],key="ck_17",visible=settings["vs_17"]),sg.In(default_text=settings["in_17"],key="in_17",size=(40,0.5),visible=settings["vs_17"]),sg.Button("完了",key="bt_17",visible=settings["vs_17"])],
-    [sg.Checkbox("",default=settings["ck_18"],key="ck_18",visible=settings["vs_18"]),sg.In(default_text=settings["in_18"],key="in_18",size=(40,0.5),visible=settings["vs_18"]),sg.Button("完了",key="bt_18",visible=settings["vs_18"])],
-    [sg.Checkbox("",default=settings["ck_19"],key="ck_19",visible=settings["vs_19"]),sg.In(default_text=settings["in_19"],key="in_19",size=(40,0.5),visible=settings["vs_19"]),sg.Button("完了",key="bt_19",visible=settings["vs_19"])],
-    [sg.Checkbox("",default=settings["ck_20"],key="ck_20",visible=settings["vs_20"]),sg.In(default_text=settings["in_20"],key="in_20",size=(40,0.5),visible=settings["vs_20"]),sg.Button("完了",key="bt_20",visible=settings["vs_20"])],
+    [[sg.Checkbox("",default=settings["ck_1"],key="ck_1",),sg.In(default_text=settings["in_1"],key="in_1",size=(40,0.5),),sg.Button("完了",key="bt_1",)],
+    [sg.Checkbox("",default=settings["ck_2"],key="ck_2",),sg.In(default_text=settings["in_2"],key="in_2",size=(40,0.5),),sg.Button("完了",key="bt_2",)],
+    [sg.Checkbox("",default=settings["ck_3"],key="ck_3",),sg.In(default_text=settings["in_3"],key="in_3",size=(40,0.5),),sg.Button("完了",key="bt_3",)],
+    [sg.Checkbox("",default=settings["ck_4"],key="ck_4",),sg.In(default_text=settings["in_4"],key="in_4",size=(40,0.5),),sg.Button("完了",key="bt_4",)],
+    [sg.Checkbox("",default=settings["ck_5"],key="ck_5",),sg.In(default_text=settings["in_5"],key="in_5",size=(40,0.5),),sg.Button("完了",key="bt_5",)],
+    [sg.Checkbox("",default=settings["ck_6"],key="ck_6",),sg.In(default_text=settings["in_6"],key="in_6",size=(40,0.5),),sg.Button("完了",key="bt_6",)],
+    [sg.Checkbox("",default=settings["ck_7"],key="ck_7",),sg.In(default_text=settings["in_7"],key="in_7",size=(40,0.5),),sg.Button("完了",key="bt_7",)],
+    [sg.Checkbox("",default=settings["ck_8"],key="ck_8",),sg.In(default_text=settings["in_8"],key="in_8",size=(40,0.5),),sg.Button("完了",key="bt_8",)],
+    [sg.Checkbox("",default=settings["ck_9"],key="ck_9",),sg.In(default_text=settings["in_9"],key="in_9",size=(40,0.5),),sg.Button("完了",key="bt_9",)],
+    [sg.Checkbox("",default=settings["ck_10"],key="ck_10",),sg.In(default_text=settings["in_10"],key="in_10",size=(40,0.5),),sg.Button("完了",key="bt_10",)],
+    [sg.Checkbox("",default=settings["ck_11"],key="ck_11",),sg.In(default_text=settings["in_11"],key="in_11",size=(40,0.5),),sg.Button("完了",key="bt_11",)],
+    [sg.Checkbox("",default=settings["ck_12"],key="ck_12",),sg.In(default_text=settings["in_12"],key="in_12",size=(40,0.5),),sg.Button("完了",key="bt_12",)],
+    [sg.Checkbox("",default=settings["ck_13"],key="ck_13",),sg.In(default_text=settings["in_13"],key="in_13",size=(40,0.5),),sg.Button("完了",key="bt_13",)],
+    [sg.Checkbox("",default=settings["ck_14"],key="ck_14",),sg.In(default_text=settings["in_14"],key="in_14",size=(40,0.5),),sg.Button("完了",key="bt_14",)],
+    [sg.Checkbox("",default=settings["ck_15"],key="ck_15",),sg.In(default_text=settings["in_15"],key="in_15",size=(40,0.5),),sg.Button("完了",key="bt_15",)],
+    [sg.Checkbox("",default=settings["ck_16"],key="ck_16",),sg.In(default_text=settings["in_16"],key="in_16",size=(40,0.5),),sg.Button("完了",key="bt_16",)],
+    [sg.Checkbox("",default=settings["ck_17"],key="ck_17",),sg.In(default_text=settings["in_17"],key="in_17",size=(40,0.5),),sg.Button("完了",key="bt_17",)],
+    [sg.Checkbox("",default=settings["ck_18"],key="ck_18",),sg.In(default_text=settings["in_18"],key="in_18",size=(40,0.5),),sg.Button("完了",key="bt_18",)],
+    [sg.Checkbox("",default=settings["ck_19"],key="ck_19",),sg.In(default_text=settings["in_19"],key="in_19",size=(40,0.5),),sg.Button("完了",key="bt_19",)],
+    [sg.Checkbox("",default=settings["ck_20"],key="ck_20",),sg.In(default_text=settings["in_20"],key="in_20",size=(40,0.5),),sg.Button("完了",key="bt_20",)],
     ])],
 
     
@@ -89,8 +89,10 @@ window = sg.Window("test",layout=lay,enable_close_attempted_event=True,icon="不
 
 
 while True :
-    event, values = window.read(timeout=1000)
-    
+    event, values = window.read(timeout=100)
+    for i in ck_settings_list:
+        if values[i] == True:
+            window[i].hide_row()
     if event == sg.WIN_X_EVENT:
         if  sg.popup_ok_cancel("変更を保存しますか？",) == "OK":
             for ck, iin in zip(ck_settings_list,in_settings_list):
@@ -122,7 +124,7 @@ while True :
        
         coll()
     if event == "タスクを追加":
-        print(search_bt_list())
+        print(settings)
         
     if event == "aaa":
         #ck_key
@@ -138,6 +140,13 @@ while True :
         kk = ck_settings_list
         mm = search_in_list()
         ff = search_bt_list()
+        for iii in kk:
+            print(values[iii])
+
+        print(uu)
+        print(kk)
+        print(mm)
+        print(ff)
         for i,n in zip(uu,kk):
          if  settings[i] == False:
               res[n] = settings[i]
@@ -158,16 +167,16 @@ while True :
 
         settings[tes_now_list] = True
         
-        window[res_now_list].update(visible=True)
-        window[mes_now_list].update(visible=True)
+        #window[res_now_list].update(visible=True)
+        #window[mes_now_list].update(visible=True)
         #window[fes_now_list].update(visible=True)
         
         
         
-        #settings[res_now_list] = False
-        
+        settings[res_now_list] = False
+        print(res_now_list)
         window[res_now_list].update("")
-        
+        window[res_now_list].unhide_row()
     
     
     
