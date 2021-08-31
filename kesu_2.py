@@ -157,7 +157,7 @@ while True :
         fes_now_list = next(iter(fes))
 
         settings[tes_now_list] = True
-        
+        window[res_now_list].unhide_row()
       
         #window[res_now_list].update(visible=True)
         #window[mes_now_list].update(visible=True)
