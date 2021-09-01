@@ -1,6 +1,6 @@
 
 import PySimpleGUI as sg
-from PySimpleGUI.PySimpleGUI import Button, Checkbox, In, Text, Tree, pin
+from PySimpleGUI.PySimpleGUI import Button, Checkbox, In, Input, Text, Tree, pin
 from plyer import notification
 import time
 
@@ -12,6 +12,8 @@ bt_settings_list = ['bt_1', 'bt_2', 'bt_3', 'bt_4', 'bt_5', 'bt_6', 'bt_7', 'bt_
 settings = sg.UserSettings()
 settings.load()
 
+
+demo_layout = [[sg.Text("テスト"),sg.InputText()]]
 
 def coll():
     #保存完了を通知
@@ -52,33 +54,12 @@ lay = [
              ["追加",["タスクを追加","aaa"]],])],
     [sg.Column(layout=
 
-    [[sg.Checkbox("",default=settings["ck_1"],key="ck_1",),sg.In(default_text=settings["in_1"],key="in_1",size=(40,0.5),),sg.Button("完了",key="bt_1",)],
-    [sg.Checkbox("",default=settings["ck_2"],key="ck_2",),sg.In(default_text=settings["in_2"],key="in_2",size=(40,0.5),),sg.Button("完了",key="bt_2",)],
-    [sg.Checkbox("",default=settings["ck_3"],key="ck_3",),sg.In(default_text=settings["in_3"],key="in_3",size=(40,0.5),),sg.Button("完了",key="bt_3",)],
-    [sg.Checkbox("",default=settings["ck_4"],key="ck_4",),sg.In(default_text=settings["in_4"],key="in_4",size=(40,0.5),),sg.Button("完了",key="bt_4",)],
-    [sg.Checkbox("",default=settings["ck_5"],key="ck_5",),sg.In(default_text=settings["in_5"],key="in_5",size=(40,0.5),),sg.Button("完了",key="bt_5",)],
-    [sg.Checkbox("",default=settings["ck_6"],key="ck_6",),sg.In(default_text=settings["in_6"],key="in_6",size=(40,0.5),),sg.Button("完了",key="bt_6",)],
-    [sg.Checkbox("",default=settings["ck_7"],key="ck_7",),sg.In(default_text=settings["in_7"],key="in_7",size=(40,0.5),),sg.Button("完了",key="bt_7",)],
-    [sg.Checkbox("",default=settings["ck_8"],key="ck_8",),sg.In(default_text=settings["in_8"],key="in_8",size=(40,0.5),),sg.Button("完了",key="bt_8",)],
-    [sg.Checkbox("",default=settings["ck_9"],key="ck_9",),sg.In(default_text=settings["in_9"],key="in_9",size=(40,0.5),),sg.Button("完了",key="bt_9",)],
-    [sg.Checkbox("",default=settings["ck_10"],key="ck_10",),sg.In(default_text=settings["in_10"],key="in_10",size=(40,0.5),),sg.Button("完了",key="bt_10",)],
-    [sg.Checkbox("",default=settings["ck_11"],key="ck_11",),sg.In(default_text=settings["in_11"],key="in_11",size=(40,0.5),),sg.Button("完了",key="bt_11",)],
-    [sg.Checkbox("",default=settings["ck_12"],key="ck_12",),sg.In(default_text=settings["in_12"],key="in_12",size=(40,0.5),),sg.Button("完了",key="bt_12",)],
-    [sg.Checkbox("",default=settings["ck_13"],key="ck_13",),sg.In(default_text=settings["in_13"],key="in_13",size=(40,0.5),),sg.Button("完了",key="bt_13",)],
-    [sg.Checkbox("",default=settings["ck_14"],key="ck_14",),sg.In(default_text=settings["in_14"],key="in_14",size=(40,0.5),),sg.Button("完了",key="bt_14",)],
-    [sg.Checkbox("",default=settings["ck_15"],key="ck_15",),sg.In(default_text=settings["in_15"],key="in_15",size=(40,0.5),),sg.Button("完了",key="bt_15",)],
-    [sg.Checkbox("",default=settings["ck_16"],key="ck_16",),sg.In(default_text=settings["in_16"],key="in_16",size=(40,0.5),),sg.Button("完了",key="bt_16",)],
-    [sg.Checkbox("",default=settings["ck_17"],key="ck_17",),sg.In(default_text=settings["in_17"],key="in_17",size=(40,0.5),),sg.Button("完了",key="bt_17",)],
-    [sg.Checkbox("",default=settings["ck_18"],key="ck_18",),sg.In(default_text=settings["in_18"],key="in_18",size=(40,0.5),),sg.Button("完了",key="bt_18",)],
-    [sg.Checkbox("",default=settings["ck_19"],key="ck_19",),sg.In(default_text=settings["in_19"],key="in_19",size=(40,0.5),),sg.Button("完了",key="bt_19",)],
-    [sg.Checkbox("",default=settings["ck_20"],key="ck_20",),sg.In(default_text=settings["in_20"],key="in_20",size=(40,0.5),),sg.Button("完了",key="bt_20",)],
-    ])],
+    [],key="col")],
 
-    
-  
-    [sg.Button("",image_data="",key="bt",button_color=(sg.theme_background_color(),sg.theme_background_color()),border_width=0)],
 
 ]
+
+
 
 
 
@@ -87,12 +68,13 @@ lay = [
 window = sg.Window("test",layout=lay,enable_close_attempted_event=True,icon="不具合.ico",finalize=True)
 
 
-
+count = 0
 while True :
-    event, values = window.read(timeout=100)
-    for i in ck_settings_list:
-        if values[i] == True:
-            window[i].hide_row()
+    event, values = window.read()
+    #for i in vs_settings_list:
+        #if settings[i] == False:
+            #window[i].hide_row()
+    
     if event == sg.WIN_X_EVENT:
         if  sg.popup_ok_cancel("変更を保存しますか？",) == "OK":
             for ck, iin in zip(ck_settings_list,in_settings_list):
@@ -124,8 +106,9 @@ while True :
        
         coll()
     if event == "タスクを追加":
-        print(settings)
-        
+        window.extend_layout(window["col"],[[sg.Text("テスト"),sg.InputText(key=f"input_{count}")]])
+        count += 1
+        settings.save()
     if event == "aaa":
         #ck_key
         res = {}
