@@ -5,10 +5,13 @@ import glob
 import re
 import datetime
 import shutil
+from PySimpleGUI.PySimpleGUI import InputText
+from numpy.core.fromnumeric import size
 import pyperclip
 import test_sginsert_2 as ts
 import sisaku_2
-import huguai_excel
+from select_excel import select
+
 
 # coding: utf-8
 #GUIテーマを設定
@@ -150,34 +153,38 @@ def main_1_window():
 
         
     lay_1 =sg.Frame(title="コメント有り" ,layout=[[sg.Text("ファイル数"),sg.InputText("", key="in_1",size=(4, 1)),sg.Button("フォルダを開く", key="open_start_1", pad=((50,0), (0,0)))],
-        [sg.Radio(text="開く", group_id="A",key="r1_open",enable_events=True), sg.Radio(text="送る", group_id="A",key="r1_send",enable_events=True),sg.Button("クリア",key="ok_1",button_color="red"), sg.Checkbox(text="通知あり",key="ckb_1",enable_events=True,pad=((40,0),(0,0)))],
+        [sg.Radio(text="開く", group_id="A",key="r1_open",enable_events=True), sg.Radio(text="送る", group_id="A",key="r1_send",enable_events=True),sg.Radio(text="詳細", group_id="A",key="r1_detail",enable_events=True),sg.Button("クリア",key="ok_1",button_color="red"), sg.Checkbox(text="通知あり",key="ckb_1",enable_events=True,pad=((0,0),(0,0)))],
         [sg.Listbox(values=main("home"),key="out_1",size=(45,15), background_color="#FFDBC9" ,enable_events=True)]],title_color="blue")
 
     lay_2 =sg.Frame(title="岩田主査確認" ,layout=[[sg.Text("ファイル数"),sg.InputText("", key="in_2",size=(4, 1)),sg.Button("フォルダを開く", key="open_start_2", pad=((50,0), (0,0)))],
-        [sg.Radio(text="開く", group_id="B",key="r2_open",enable_events=True), sg.Radio(text="送る", group_id="B",key="r2_send",enable_events=True),sg.Button("クリア",key="ok_2",button_color="red"), sg.Checkbox(text="通知あり",key="ckb_2",enable_events=True,pad=((40,0),(0,0)))],
+        [sg.Radio(text="開く", group_id="B",key="r2_open",enable_events=True), sg.Radio(text="送る", group_id="B",key="r2_send",enable_events=True),sg.Radio(text="詳細", group_id="B",key="r2_detail",enable_events=True),sg.Button("クリア",key="ok_2",button_color="red"), sg.Checkbox(text="通知あり",key="ckb_2",enable_events=True,pad=((0,0),(0,0)))],
         [sg.Listbox(values=main("shusa"),key="out_2", size=(45,15), background_color="#CBFFD3",enable_events=True) ]],title_color="blue")
 
     lay_3 =sg.Frame(title="部長(確認前)" ,layout=[[sg.Text("ファイル数"),sg.InputText("", key="in_3",size=(4, 1)),sg.Button("フォルダを開く", key="open_start_3", pad=((50,0), (0,0)))],
-        [sg.Radio(text="開く", group_id="C",key="r3_open",enable_events=True), sg.Radio(text="送る", group_id="C",key="r3_send",enable_events=True),sg.Button("クリア",key="ok_3",button_color="red"), sg.Checkbox(text="通知あり",key="ckb_3",enable_events=True,pad=((40,0),(0,0)))],
+        [sg.Radio(text="開く", group_id="C",key="r3_open",enable_events=True), sg.Radio(text="送る", group_id="C",key="r3_send",enable_events=True),sg.Radio(text="詳細", group_id="C",key="r3_detail",enable_events=True),sg.Button("クリア",key="ok_3",button_color="red"), sg.Checkbox(text="通知あり",key="ckb_3",enable_events=True,pad=((0,0),(0,0)))],
         [sg.Listbox(values=main("butho_mae"),key="out_3", size=(45,15), background_color="#EDFFBE",enable_events=True) ]],title_color="blue")
 
     lay_4 =sg.Frame(title="部長(確認済み)" ,layout=[[sg.Text("ファイル数"),sg.InputText("", key="in_4",size=(4, 1)),sg.Button("フォルダを開く", key="open_start_4", pad=((50,0), (0,0)))],
-        [sg.Radio(text="開く", group_id="D",key="r4_open",enable_events=True), sg.Radio(text="送る", group_id="D",key="r4_send",enable_events=True),sg.Button("クリア",key="ok_4",button_color="red"), sg.Checkbox(text="通知あり",key="ckb_4",enable_events=True,pad=((40,0),(0,0)))],
+        [sg.Radio(text="開く", group_id="D",key="r4_open",enable_events=True), sg.Radio(text="送る", group_id="D",key="r4_send",enable_events=True),sg.Radio(text="詳細", group_id="D",key="r4_detail",enable_events=True),sg.Button("クリア",key="ok_4",button_color="red"), sg.Checkbox(text="通知あり",key="ckb_4",enable_events=True,pad=((0,0),(0,0)))],
     
         [sg.Listbox(values=main("butho_go"),key="out_4", size=(45,15), background_color="#DDDDDD", enable_events=True) ]],title_color="blue")
 
     lay_5 =sg.Frame(title="担当者確認" ,layout=[[sg.Text("ファイル数"),sg.InputText("", key="in_5",size=(4, 1)),sg.Button("フォルダを開く", key="open_start_5", pad=((50,0), (0,0)))],
-        [sg.Radio(text="開く", group_id="E",key="r5_open",enable_events=True), sg.Radio(text="送る", group_id="E",key="r5_send",enable_events=True),sg.Button("クリア",key="ok_5",button_color="red"), sg.Checkbox(text="通知あり",key="ckb_5",enable_events=True,pad=((40,0),(0,0)))],
+        [sg.Radio(text="開く", group_id="E",key="r5_open",enable_events=True), sg.Radio(text="送る", group_id="E",key="r5_send",enable_events=True),sg.Radio(text="詳細", group_id="E",key="r5_detail",enable_events=True),sg.Button("クリア",key="ok_5",button_color="red"), sg.Checkbox(text="通知あり",key="ckb_5",enable_events=True,pad=((0,0),(0,0)))],
         [sg.Listbox(values=main("tantou"),key="out_5", size=(45,15), background_color="#B384FF", enable_events= True) ]],title_color="blue")
 
-    lay_6 = sg.Frame(title="その他",layout=[[sg.Text("更新日時"), sg.InputText(size=(28,1), key="out_time")],
-        [sg.Text("ファイル名",pad=((0,0),(15,0))),sg.InputText(size=(35,10), key="list_out",right_click_menu=["",["コピー"]],pad=((10,0),(15,0)))],
-        [sg.Button("指示書送付フォルダ", key="open_souhu",pad=((5,0),(10,0)))],
-        [sg.Button("不具合指示書送付",button_color="green",key="ex_souhu",pad=((5,0),(10,0)))],
-        [sg.Button("金型修理履歴",button_color="green",key="ex_lireki",pad=((5,0),(10,0)))],
-        [sg.Button("手配No.管理表",button_color="green",key="ex_kanri",pad=((5,0),(10,0)))],
-        [sg.Button("ツチヒラ専用PDF変換",button_color="green",key="ex_pdf", pad=((5,0),(10,0)))]
-            ],title_color="blue",)
+    lay_6 = sg.Frame(title="その他",layout=[[sg.Text("更新日時"), sg.InputText(size=(28,10), key="out_time")],
+        [sg.Text("ファイル名",pad=((0,0),(0,0))),sg.InputText(size=(35,10), key="list_out",right_click_menu=["",["コピー"]],pad=((10,0),(0,0)))],
+        [sg.Text("品番"),sg.InputText(size=(20,10),key="hinban"),sg.Text("型番"),sg.InputText(size=(5,10),key="kataban")],
+        [sg.Text("取数"),sg.InputText(size=(5,10),key="torisu"),sg.Text("月産数"),sg.InputText(size=(10,10),key="gesan")],
+        [sg.Text("成形加工区"),sg.InputText(size=(20,10),key="kakouku")],
+        [sg.Text("修理メーカー"),sg.InputText(size=(20,10),key="syuuri")],
+        [sg.Text("開始日"),InputText(size=(20,10),key="kaishi")],
+        [sg.Text("型納期"),InputText(size=(20,10),key="nouki")],
+        [sg.Text("手配ナンバー"),InputText(size=(20,10),key="tehai_NO")],
+        [sg.Text("ショットカウンタ"),InputText(size=(20,10),key="shot_count")]
+        
+        ],title_color="blue",)
 
     #GUIレイアウト　　[["設定",["PATHの設定"]],
     layout = [
@@ -324,6 +331,15 @@ while True:
                     name = window_1["out_1"].get()[0]
                     shutil.move(os.path.join(file_list["home"],name), file_list["tantou"])
 
+
+        elif values["r1_detail"]:
+            if bool(window_1["out_1"].get_list_values()) == True:
+
+                detail_name = window_1["out_1"].get()
+                print(detail_name)
+
+
+
     if event == "out_2":
         if values["r2_open"]:
             if bool(window_1["out_2"].get_list_values()) == True:
@@ -360,7 +376,24 @@ while True:
                 elif win_2[0] == "pop_r5":
                     name = window_1["out_2"].get()[0]
                     shutil.move(os.path.join(file_list["shusa"],name), file_list["tantou"])
-            
+
+        elif values["r2_detail"]:
+            if bool(window_1["out_2"].get_list_values()) == True:
+
+                detail_name = window_1["out_2"].get()[0]
+                detail_list = select(os.path.join(file_list["shusa"],detail_name))
+                window_1["hinban"].update(detail_list["品番"])
+                window_1["kataban"].update(detail_list["型番"])
+                window_1["torisu"].update(detail_list["取数"])
+                window_1["gesan"].update(detail_list["月産数"])
+                window_1["kakouku"].update(detail_list["成形加工区"])
+                window_1["syuuri"].update(detail_list["修理メーカー"])
+                window_1["kaishi"].update(detail_list["開始日"])
+                window_1["nouki"].update(detail_list["型納期"])
+                window_1["tehai_NO"].update(detail_list["手配ナンバー"])
+                window_1["shot_count"].update(detail_list["ショットカウンタ"])
+
+
 
     if event == "out_3":
         if values["r3_open"]:
@@ -481,22 +514,27 @@ while True:
     if event == "ok_1":
         window_1.FindElement("r1_open").update(False)
         window_1.FindElement("r1_send").update(False)
+        window_1.FindElement("r1_detail").update(False)
     
     if event == "ok_2":
         window_1.FindElement("r2_open").update(False)
         window_1.FindElement("r2_send").update(False)
+        window_1.FindElement("r2_detail").update(False)
 
     if event == "ok_3":
         window_1.FindElement("r3_open").update(False)
         window_1.FindElement("r3_send").update(False)
+        window_1.FindElement("r3_detail").update(False)
 
     if event == "ok_4":
         window_1.FindElement("r4_open").update(False)
         window_1.FindElement("r4_send").update(False)
+        window_1.FindElement("r4_detail").update(False)
 
     if event == "ok_5":
         window_1.FindElement("r5_open").update(False)
-        window_1.FindElement("r5_send").update(False)    
+        window_1.FindElement("r5_send").update(False)
+        window_1.FindElement("r5_detail").update(False)    
     
     #list_outの右クリックメニューコピー"が選択されたら中身をコピーする
     if event == "コピー":
