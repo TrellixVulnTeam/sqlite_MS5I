@@ -1,15 +1,20 @@
 
+from ntpath import join
 import PySimpleGUI as sg
 from PySimpleGUI.PySimpleGUI import Button, Checkbox, In, Input, Text, Tree, pin
 from plyer import notification
 import time
+
+open_layout_file = open("layout.txt","r")
+read_layout_file = open_layout_file.read()
+open_layout_file.close()
 
 ck_settings_list = ['ck_1', 'ck_2', 'ck_3', 'ck_4', 'ck_5', 'ck_6', 'ck_7', 'ck_8', 'ck_9', 'ck_10', 'ck_11', 'ck_12', 'ck_13', 'ck_14', 'ck_15', 'ck_16', 'ck_17', 'ck_18', 'ck_19', 'ck_20']
 in_settings_list = ['in_1', 'in_2', 'in_3', 'in_4', 'in_5', 'in_6', 'in_7', 'in_8', 'in_9', 'in_10', 'in_11', 'in_12', 'in_13', 'in_14', 'in_15', 'in_16', 'in_17', 'in_18', 'in_19', 'in_20']
 vs_settings_list = ['vs_1', 'vs_2', 'vs_3', 'vs_4', 'vs_5', 'vs_6', 'vs_7', 'vs_8', 'vs_9', 'vs_10', 'vs_11', 'vs_12', 'vs_13', 'vs_14', 'vs_15', 'vs_16', 'vs_17', 'vs_18', 'vs_19', 'vs_20']
 bt_settings_list = ['bt_1', 'bt_2', 'bt_3', 'bt_4', 'bt_5', 'bt_6', 'bt_7', 'bt_8', 'bt_9', 'bt_10', 'bt_11', 'bt_12', 'bt_13', 'bt_14', 'bt_15', 'bt_16', 'bt_17', 'bt_18', 'bt_19', 'bt_20']
 
-settings = sg.UserSettings()
+settings = sg.UserSettings(autosave=True)
 settings.load()
 
 
@@ -51,7 +56,7 @@ def search_bt_list():
 
 lay = [
     [sg.Menu([["メニュー",["上書き保存"]],
-             ["追加",["タスクを追加","aaa"]],])],
+             ["追加",["タスクを追加","aaa","seting"]],])],
     [sg.Column(layout=
 
     [],key="col")],
@@ -59,7 +64,7 @@ lay = [
 
 ]
 
-
+print(lay)
 
 
 
@@ -97,7 +102,8 @@ while True :
         break
 
     
-
+    if event == "seting":
+        print(lay)
 
     if event == "上書き保存":
         for ck, iin in zip(ck_settings_list,in_settings_list):
@@ -304,7 +310,3 @@ while True :
             settings["vs_20"] = False
         elif values["ck_20"] == False:
             pass
-    
-
-    if event == "__TIMEOUT__":
-        window.refresh()
