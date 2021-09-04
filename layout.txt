@@ -1,1 +1,0 @@
-[<PySimpleGUI.PySimpleGUI.Menu object at 0x00000257EB995730>, <PySimpleGUI.PySimpleGUI.Column object at 0x00000257EB995F40>, <PySimpleGUI.PySimpleGUI.Column object at 0x00000257EDEBF6D0>, <PySimpleGUI.PySimpleGUI.Text object at 0x00000257EB837970>, <PySimpleGUI.PySimpleGUI.Input object at 0x00000257EDEBF6A0>]
