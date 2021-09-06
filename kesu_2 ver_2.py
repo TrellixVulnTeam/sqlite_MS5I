@@ -56,8 +56,7 @@ menu = ['', ['メニュー',["上書き保存"],"追加",["タスクを追加","
 tray = SystemTray(menu=menu,tooltip="タスク管理",single_click_events=False,window=window)
 
 
-
-count = 1
+count = settings["count"]
 while True :
     event, values = window.read()
     #for i in vs_settings_list:
@@ -78,15 +77,18 @@ while True :
     
     if event == "seting":
         print(settings)
+        print(window.element_list())
 
     if event == "上書き保存":
       
         coll()
     if event == "タスクを追加":
-        settings[f"input{count}"] = ""
-        window.extend_layout(window["col"],[([sg.Text(f"No.{count}",key=f"No._{count}"),sg.InputText(default_text=settings[f"input_{count}"],key=f"input_{count}"),sg.Button("完了",key=f"ok_{count}")])])
+        window.extend_layout(window["col"],[([sg.Text(f"No.{count}",key=f"No._{count}"),sg.InputText(default_text=settings[f"contents_{count}"],key=f"input_{count}"),sg.Button("完了",key=f"ok_{count}")])])
         #countの値をユーザー設定に追加
         settings["count"] = count
+        settings[f"input_{count}"] = True
+        settings[f"ok_{count}"] = True
+        settings[f"No._{count}"] = True
         count += 1
         #下記の一文を追加しないと更新されずスクロールバーが機能しない
         window["col"].contents_changed()
@@ -94,6 +96,7 @@ while True :
         
     if event == "aaa":
        print(values)
+       print(window["col"].get_size())
 
     if bool(re.search("ok_*",event)) == True:
         no = re.split("ok_",event)[1]
