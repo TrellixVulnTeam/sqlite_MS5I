@@ -1,13 +1,17 @@
 import openpyxl
-
+import PySimpleGUI as sg
 def select(file_name):
-    wb = openpyxl.load_workbook(file_name)
+    wb = openpyxl.load_workbook(file_name)   
     sheet_name = wb.sheetnames
     try:
-
+        count = 0
         for i in  sheet_name:
             if i == "金型修理改善依頼書":
                 ws =wb["金型修理改善依頼書"]
+                count +=1
+
+                
+                
 
                 name_list = {}
 
@@ -43,8 +47,8 @@ def select(file_name):
                 tehai_NO = ws["V15"]
                 #ショットカウンタ
                 shot_count = ws["Z22"]
-
-                name_list["品番"] = hinban.value
+                    
+                name_list["品番"] = hinban.value 
                 name_list["型番"] = kataban.value
                 name_list["取数"] = torisu.value
                 name_list["月産数"] = gesan.value
@@ -54,11 +58,15 @@ def select(file_name):
                 name_list["修理メーカー"] = syuuri.value
                 name_list["手配ナンバー"] = tehai_NO.value
                 name_list["ショットカウンタ"] = shot_count.value
+        if count == 0:
+            sg.popup_error("シート名が'金型修理改善依頼書'\nではありません")
+            pass
+                
 
         return name_list        
     except:
         pass
-                
-   
-        
+
+
+
 

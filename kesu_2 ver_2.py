@@ -15,7 +15,7 @@ except:
     pass
 
 
-settings = sg.UserSettings(autosave=True)
+settings = sg.UserSettings()
 settings.load()
 
 

@@ -6,12 +6,19 @@ import re
 import datetime
 import shutil
 from PySimpleGUI.PySimpleGUI import InputText
-from numpy.core.fromnumeric import size
+
 import pyperclip
 import test_sginsert_2 as ts
 import sisaku_2
 from select_excel import select
+from psgtray import SystemTray
 
+#画面がぼやけるのを回避するコード
+import ctypes
+try:
+    ctypes.windll.shcore.SetProcessDpiAwareness(True)
+except:
+    pass
 
 # coding: utf-8
 #GUIテーマを設定
@@ -134,6 +141,8 @@ def second_window(name):
                 window["pop_r5"].update(disabled =True)
                 window["pop_r6"].update(disabled =True)
     keys = []
+
+    
     while True:
         event, values = window.read()
         if event == "pop_ok":
@@ -200,61 +209,63 @@ def main_1_window():
 #ウィンドウを定義
 window_1 = main_1_window() 
 
+#システムトレイを定義
+menu = ['', ['メニュー',["指示書送付フォルダ","不具合指示書送付","金型修理履歴","手配No.管理表","ツチヒラ専用PDF変換"],"設定",["PATHの設定"],"終了"]]
+tray = SystemTray(menu=menu,tooltip="タスク管理",single_click_events=False,window=window_1)
 
 #通知有りの処理関数
-def message(name):
+def message(name,file_name):
     num_1 = len(main("home"))
     if name == "home":
         ui_1 = len(window_1["out_1"].get_list_values())
         if ui_1 < num_1:
-            sg.popup("【コメント有り】フォルダに",
-                        "ファイルが追加されました", title="", grab_anywhere=True,keep_on_top=True)
+            tray.show_message("不具合指示書ファイル追加",f"【コメント有り】フォルダにファイルが追加されました\n {file_name}")
 
     num_2 = len(main("shusa"))
     if name == "shusa":
         ui_2 = len(window_1["out_2"].get_list_values())
         if ui_2 < num_2:
-            sg.popup("【岩田主査確認】フォルダに",
-                        "ファイルが追加されました", title="", grab_anywhere=True,keep_on_top=True)
+            tray.show_message("不具合指示書ファイル追加",f"【岩田主査確認】フォルダにファイルが追加されました\n {file_name}")
 
     num_3 = len(main("butho_mae"))
     if name == "butho_mae":
         ui_3 = len(window_1["out_3"].get_list_values())
         if ui_3 < num_3:
-            sg.popup("【部長(確認前)】フォルダに",
-                        "ファイルが追加されました", title="", grab_anywhere=True,keep_on_top=True)
+            tray.show_message("不具合指示書ファイル追加",f"【部長(確認前)】フォルダにファイルが追加されました\n {file_name}")
 
     num_4 = len(main("butho_go"))
     if name == "butho_go":
         ui_4 = len(window_1["out_4"].get_list_values())
         if ui_4 < num_4:
-            sg.popup("【部長(確認済み)】フォルダに",
-                        "ファイルが追加されました", title="", grab_anywhere=True,keep_on_top=True)   
+            tray.show_message("不具合指示書ファイル追加",f"【部長(確認済み)】フォルダにファイルが追加されました\n {file_name}")   
 
     num_5 = len(main("tantou"))
     if name == "tantou":
         ui_5 = len(window_1["out_5"].get_list_values())
         if ui_5 < num_5:
-            sg.popup("【担当者確認】フォルダに",
-                        "ファイルが追加されました", title="", grab_anywhere=True,keep_on_top=True)
+            tray.show_message("不具合指示書ファイル追加",f"【担当者確認】フォルダにファイルが追加されました\n {file_name}")
     
-        
-
-
-
-
-
 listbox_list = ["out_1", "out_2", "out_3", "out_4", "out_5"]
 
 count = True
+
+
+
 while True:
+    
     #タイムアウトを設定することで永続的なイベントループが可能となる
     event , values = window_1.read(timeout=400)
     
+    #システムトレイのメニューコマンドを使えるようにする記述
+    if event == tray.key:
+            event = values[event] 
+
+
     #下段のcountループよりも先に記載しないとウィンドウクラッシュでエラーになる
-    if event in ("test_1", "Quit", None): #　×ボタンを押したら終了
+    if event in ("test_1", "Quit", None, "終了"): #　×ボタンを押したら終了
         break
     
+
     #メニューバーのPATHの設定をクリック時にパス設定を開く
     if event == "PATHの設定":
         sisaku_2.sisaku()
@@ -337,16 +348,29 @@ while True:
 
                 detail_name = window_1["out_1"].get()[0]
                 detail_list = select(os.path.join(file_list["home"],detail_name))
-                window_1["hinban"].update(detail_list["品番"])
-                window_1["kataban"].update(detail_list["型番"])
-                window_1["torisu"].update(detail_list["取数"])
-                window_1["gesan"].update(detail_list["月産数"])
-                window_1["kakouku"].update(detail_list["成形加工区"])
-                window_1["syuuri"].update(detail_list["修理メーカー"])
-                window_1["kaishi"].update(detail_list["開始日"])
-                window_1["nouki"].update(detail_list["型納期"])
-                window_1["tehai_NO"].update(detail_list["手配ナンバー"])
-                window_1["shot_count"].update(detail_list["ショットカウンタ"])
+                if detail_list == None:
+                    window_1["hinban"].update("None")
+                    window_1["kataban"].update("None")
+                    window_1["torisu"].update("None")
+                    window_1["gesan"].update("None")
+                    window_1["kakouku"].update("None")
+                    window_1["syuuri"].update("None")
+                    window_1["kaishi"].update("None")
+                    window_1["nouki"].update("None")
+                    window_1["tehai_NO"].update("None")
+                    window_1["shot_count"].update("None")
+                    continue
+                else:
+                    window_1["hinban"].update(detail_list["品番"])
+                    window_1["kataban"].update(detail_list["型番"])
+                    window_1["torisu"].update(detail_list["取数"])
+                    window_1["gesan"].update(detail_list["月産数"])
+                    window_1["kakouku"].update(detail_list["成形加工区"])
+                    window_1["syuuri"].update(detail_list["修理メーカー"])
+                    window_1["kaishi"].update(detail_list["開始日"])
+                    window_1["nouki"].update(detail_list["型納期"])
+                    window_1["tehai_NO"].update(detail_list["手配ナンバー"])
+                    window_1["shot_count"].update(detail_list["ショットカウンタ"])
 
 
 
@@ -392,16 +416,29 @@ while True:
 
                 detail_name = window_1["out_2"].get()[0]
                 detail_list = select(os.path.join(file_list["shusa"],detail_name))
-                window_1["hinban"].update(detail_list["品番"])
-                window_1["kataban"].update(detail_list["型番"])
-                window_1["torisu"].update(detail_list["取数"])
-                window_1["gesan"].update(detail_list["月産数"])
-                window_1["kakouku"].update(detail_list["成形加工区"])
-                window_1["syuuri"].update(detail_list["修理メーカー"])
-                window_1["kaishi"].update(detail_list["開始日"])
-                window_1["nouki"].update(detail_list["型納期"])
-                window_1["tehai_NO"].update(detail_list["手配ナンバー"])
-                window_1["shot_count"].update(detail_list["ショットカウンタ"])
+                if detail_list == None:
+                    window_1["hinban"].update("None")
+                    window_1["kataban"].update("None")
+                    window_1["torisu"].update("None")
+                    window_1["gesan"].update("None")
+                    window_1["kakouku"].update("None")
+                    window_1["syuuri"].update("None")
+                    window_1["kaishi"].update("None")
+                    window_1["nouki"].update("None")
+                    window_1["tehai_NO"].update("None")
+                    window_1["shot_count"].update("None")
+                    continue
+                else:
+                    window_1["hinban"].update(detail_list["品番"])
+                    window_1["kataban"].update(detail_list["型番"])
+                    window_1["torisu"].update(detail_list["取数"])
+                    window_1["gesan"].update(detail_list["月産数"])
+                    window_1["kakouku"].update(detail_list["成形加工区"])
+                    window_1["syuuri"].update(detail_list["修理メーカー"])
+                    window_1["kaishi"].update(detail_list["開始日"])
+                    window_1["nouki"].update(detail_list["型納期"])
+                    window_1["tehai_NO"].update(detail_list["手配ナンバー"])
+                    window_1["shot_count"].update(detail_list["ショットカウンタ"])
 
 
 
@@ -448,16 +485,29 @@ while True:
 
                 detail_name = window_1["out_3"].get()[0]
                 detail_list = select(os.path.join(file_list["butho_mae"],detail_name))
-                window_1["hinban"].update(detail_list["品番"])
-                window_1["kataban"].update(detail_list["型番"])
-                window_1["torisu"].update(detail_list["取数"])
-                window_1["gesan"].update(detail_list["月産数"])
-                window_1["kakouku"].update(detail_list["成形加工区"])
-                window_1["syuuri"].update(detail_list["修理メーカー"])
-                window_1["kaishi"].update(detail_list["開始日"])
-                window_1["nouki"].update(detail_list["型納期"])
-                window_1["tehai_NO"].update(detail_list["手配ナンバー"])
-                window_1["shot_count"].update(detail_list["ショットカウンタ"])
+                if detail_list == None:
+                    window_1["hinban"].update("None")
+                    window_1["kataban"].update("None")
+                    window_1["torisu"].update("None")
+                    window_1["gesan"].update("None")
+                    window_1["kakouku"].update("None")
+                    window_1["syuuri"].update("None")
+                    window_1["kaishi"].update("None")
+                    window_1["nouki"].update("None")
+                    window_1["tehai_NO"].update("None")
+                    window_1["shot_count"].update("None")
+                    continue
+                else:
+                    window_1["hinban"].update(detail_list["品番"])
+                    window_1["kataban"].update(detail_list["型番"])
+                    window_1["torisu"].update(detail_list["取数"])
+                    window_1["gesan"].update(detail_list["月産数"])
+                    window_1["kakouku"].update(detail_list["成形加工区"])
+                    window_1["syuuri"].update(detail_list["修理メーカー"])
+                    window_1["kaishi"].update(detail_list["開始日"])
+                    window_1["nouki"].update(detail_list["型納期"])
+                    window_1["tehai_NO"].update(detail_list["手配ナンバー"])
+                    window_1["shot_count"].update(detail_list["ショットカウンタ"])
 
 
     if event == "out_4":
@@ -506,16 +556,29 @@ while True:
 
                 detail_name = window_1["out_4"].get()[0]
                 detail_list = select(os.path.join(file_list["butho_go"],detail_name))
-                window_1["hinban"].update(detail_list["品番"])
-                window_1["kataban"].update(detail_list["型番"])
-                window_1["torisu"].update(detail_list["取数"])
-                window_1["gesan"].update(detail_list["月産数"])
-                window_1["kakouku"].update(detail_list["成形加工区"])
-                window_1["syuuri"].update(detail_list["修理メーカー"])
-                window_1["kaishi"].update(detail_list["開始日"])
-                window_1["nouki"].update(detail_list["型納期"])
-                window_1["tehai_NO"].update(detail_list["手配ナンバー"])
-                window_1["shot_count"].update(detail_list["ショットカウンタ"])
+                if detail_list == None:
+                    window_1["hinban"].update("None")
+                    window_1["kataban"].update("None")
+                    window_1["torisu"].update("None")
+                    window_1["gesan"].update("None")
+                    window_1["kakouku"].update("None")
+                    window_1["syuuri"].update("None")
+                    window_1["kaishi"].update("None")
+                    window_1["nouki"].update("None")
+                    window_1["tehai_NO"].update("None")
+                    window_1["shot_count"].update("None")
+                    continue
+                else:
+                    window_1["hinban"].update(detail_list["品番"])
+                    window_1["kataban"].update(detail_list["型番"])
+                    window_1["torisu"].update(detail_list["取数"])
+                    window_1["gesan"].update(detail_list["月産数"])
+                    window_1["kakouku"].update(detail_list["成形加工区"])
+                    window_1["syuuri"].update(detail_list["修理メーカー"])
+                    window_1["kaishi"].update(detail_list["開始日"])
+                    window_1["nouki"].update(detail_list["型納期"])
+                    window_1["tehai_NO"].update(detail_list["手配ナンバー"])
+                    window_1["shot_count"].update(detail_list["ショットカウンタ"])
 
 
     if event == "out_5":
@@ -561,16 +624,30 @@ while True:
 
                 detail_name = window_1["out_5"].get()[0]
                 detail_list = select(os.path.join(file_list["tantou"],detail_name))
-                window_1["hinban"].update(detail_list["品番"])
-                window_1["kataban"].update(detail_list["型番"])
-                window_1["torisu"].update(detail_list["取数"])
-                window_1["gesan"].update(detail_list["月産数"])
-                window_1["kakouku"].update(detail_list["成形加工区"])
-                window_1["syuuri"].update(detail_list["修理メーカー"])
-                window_1["kaishi"].update(detail_list["開始日"])
-                window_1["nouki"].update(detail_list["型納期"])
-                window_1["tehai_NO"].update(detail_list["手配ナンバー"])
-                window_1["shot_count"].update(detail_list["ショットカウンタ"])
+                if detail_list == None:
+                    window_1["hinban"].update("None")
+                    window_1["kataban"].update("None")
+                    window_1["torisu"].update("None")
+                    window_1["gesan"].update("None")
+                    window_1["kakouku"].update("None")
+                    window_1["syuuri"].update("None")
+                    window_1["kaishi"].update("None")
+                    window_1["nouki"].update("None")
+                    window_1["tehai_NO"].update("None")
+                    window_1["shot_count"].update("None")
+                    continue
+                else:
+
+                    window_1["hinban"].update(detail_list["品番"])
+                    window_1["kataban"].update(detail_list["型番"])
+                    window_1["torisu"].update(detail_list["取数"])
+                    window_1["gesan"].update(detail_list["月産数"])
+                    window_1["kakouku"].update(detail_list["成形加工区"])
+                    window_1["syuuri"].update(detail_list["修理メーカー"])
+                    window_1["kaishi"].update(detail_list["開始日"])
+                    window_1["nouki"].update(detail_list["型納期"])
+                    window_1["tehai_NO"].update(detail_list["手配ナンバー"])
+                    window_1["shot_count"].update(detail_list["ショットカウンタ"])
 
     #クリアボタンを押すとラジオボタンの入力がキャンセルされる
     if event == "ok_1":
@@ -620,16 +697,20 @@ while True:
             #window_1.read()
         
         #通知ありのチェックボックスにチェックしたらmessage関数を起動
-        if values["ckb_1"] == True:
-            message("home")
-        if values["ckb_2"] == True:
-            message("shusa")
-        if values["ckb_3"] == True:
-            message("butho_mae")
-        if values["ckb_4"] == True:
-            message("butho_go")
-        if values["ckb_5"] == True:
-            message("tantou")
+        for i in listbox_list:
+        
+            if values[i]:
+                name = window_1[i].get()[0]
+                if values["ckb_1"] == True:
+                    message("home",name)
+                if values["ckb_2"] == True:
+                    message("shusa",name)
+                if values["ckb_3"] == True:
+                    message("butho_mae",name)
+                if values["ckb_4"] == True:
+                    message("butho_go",name)
+                if values["ckb_5"] == True:
+                    message("tantou",name)
 
         #メインループ
         if count:
