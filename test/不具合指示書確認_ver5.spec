@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(['不具合指示書確認_ver5.py'],
-             pathex=['C:\\Users\\60837\\Desktop\\Mypython\\venvs\\pysimplegui\\sqlite_test\\sqlite\\test'],
+             pathex=['C:\\Users\\60837\\Desktop\\Mypython\\Git\\sqlite\\test'],
              binaries=[],
              datas=[],
              hiddenimports=[],
