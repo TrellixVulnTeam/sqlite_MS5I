@@ -1,0 +1,1 @@
+ pyinstaller --hidden-import 'pystray._win32' --noconsole --onefile 'kesu_2_ver_2.py'
