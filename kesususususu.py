@@ -21,3 +21,4 @@ while True:
 
     if event == "ok":
         subprocess.Popen(["start",values["m"]],shell=True)
+        window["m"].update("ここにドラックしてください")

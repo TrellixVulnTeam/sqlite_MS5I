@@ -5,9 +5,12 @@ import subprocess
 from PySimpleGUIQt.PySimpleGUIQt import TRANSPARENT_BUTTON, InputCombo
 import cv2
 from PIL import Image
+import sys
 
 system = sg.SystemTray(menu=["",["メニュー",["OK","b"],"終了"]])
-system.Read(timeout=0)
+
+
+        
 #system.show_message("python","test")
 
 lay = [
@@ -17,7 +20,7 @@ lay = [
     [sg.OK(),sg.Button("b")]
 ]
 
-cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
+#cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
 
 window = sg.Window("",lay,finalize=True)
 list = {}
@@ -26,9 +29,14 @@ list = {}
 while True:
     event,values = window.read(timeout=50)
     try:
+        #システムトレイの定義
+        read = system.Read()
         
+        if read == "終了":
+            event = "終了"
 
         if event in (None,"終了"):
+            system.close()
             break
 
        

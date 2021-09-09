@@ -97,7 +97,7 @@ while True :
 
     if event == "上書き保存":
         coll()
-<<<<<<< HEAD:kesu_2 ver_2.py
+
 
     if event == "values":
         print(values)
@@ -137,7 +137,8 @@ while True :
         window["col"].contents_changed()
         
         
-=======
+
+"""
     try:
 
         if event == "タスクを追加":
@@ -172,3 +173,5 @@ while True :
 
     #print(event)
     #print(bool(re.search("ok_*",event)))
+
+"""
