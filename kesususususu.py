@@ -10,7 +10,7 @@ lay=[
 
 window = sg.Window("",layout = lay)
 
-exec = execute_command_subprocess(command="open")
+#exec = execute_command_subprocess(command="open")
 
 
 while True:
