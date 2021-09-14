@@ -1,9 +1,8 @@
-from sys import winver
+
 import PySimpleGUI as sg
 import sqlite3
 import datetime
 
-from PySimpleGUI.PySimpleGUI import SELECT_MODE_EXTENDED
 col_name  = ["更新時間","タスク名"]
 sg.theme("BluePurple")
 conn = sqlite3.connect("task.db")
@@ -34,7 +33,7 @@ def select_log():
 
 lib_name = select()
 
-la_1=sg.Tab("tab_1",[      
+la_1=sg.Tab("やることリスト",[      
                 [sg.Multiline(key="in")],
                 [sg.Table(values=lib_name,enable_events=True,key="table",col_widths=[13,30],background_color="white",text_color="black",select_mode="extended",headings=col_name,
                     justification="left",auto_size_columns=False,num_rows=10)],
@@ -44,7 +43,8 @@ la_1=sg.Tab("tab_1",[
 la_2=sg.Tab("履歴",[
                 [sg.Multiline(key="in_2")],
                 [sg.Table(values=select_log(),enable_events=True,key="log",col_widths=[13,30],background_color="white",text_color="black",select_mode="extended",headings=col_name,
-                justification="left",auto_size_columns=False,num_rows=10)]])
+                justification="left",auto_size_columns=False,num_rows=10)],
+                [sg.Button("削除",key="del_2")]])
 lay =[
     [sg.TabGroup([[la_1,la_2]])]
     
@@ -56,7 +56,7 @@ window = sg.Window("タスク管理",lay,finalize=True,)
 while True:
     
     event,values = window.read()
-    
+    #tableの要素を削除する
     def delete():
         if values["table"] == []:
             sg.popup_ok("タブを選択してください")
@@ -71,6 +71,20 @@ while True:
             conn.commit()
             window["table"].update(values = select())
 
+    #履歴のlog様をを削除する
+    def delete_log():
+        if values["log"] == []:
+            sg.popup_ok("タブを選択してください")
+            pass
+
+        else:
+
+            elem = window["log"].get()
+            filename = elem[values["log"][0]]
+            
+            c.execute(f"delete from log where outtime = '{filename[0]}' and name = '{filename[1]}'")
+            conn.commit()
+            window["log"].update(values = select_log())
     print(event,values)
     if event == None:
         break
@@ -115,7 +129,8 @@ while True:
     
     
     
-    
+    if event == "del_2":
+        delete_log()
   
     if event == "削除":
         delete()
