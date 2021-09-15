@@ -3,7 +3,16 @@ import PySimpleGUI as sg
 import sqlite3
 import datetime
 
-from PySimpleGUI.PySimpleGUI import InputText
+#ぼやけるのを回避するコード
+import ctypes
+try:
+    ctypes.windll.shcore.SetProcessDpiAwareness(True)
+except:
+    pass
+
+#ユーザーセッティング
+settings = sg.UserSettings()
+settings.load()
 
 col_name  = ["更新時間","タスク名"]
 sg.theme("BluePurple")
@@ -34,16 +43,16 @@ def select_log():
     return out
 
 lib_name = select()
-
+combo_list = ["やること","ToDo"]
 la_1=sg.Tab("やることリスト",[      
-                [sg.Multiline(key="in")],
+                [sg.Multiline(key="in"),sg.Button("内容更新")],
                 [sg.Table(values=lib_name,enable_events=True,key="table",col_widths=[13,30],background_color="white",text_color="black",select_mode="extended",headings=col_name,
                     justification="left",auto_size_columns=False,num_rows=10)],
-                [sg.Button("完了",key="comp")],
+                [sg.Button("完了",key="comp"),sg.Button("削除",key="del_1")],
                 [sg.Menu(menu_definition=[["追加",["タスクを追加する","削除"],]],background_color="white")]])
 
 la_2=sg.Tab("履歴",[
-                [sg.Multiline(key="in_2")],
+                [sg.Multiline(key="in_2"),sg.Combo(values=combo_list, size=(10,5),key="combo",enable_events=True,default_value="やること")],
                 [sg.Table(values=select_log(),enable_events=True,key="log",col_widths=[13,30],background_color="white",text_color="black",select_mode="extended",headings=col_name,
                 justification="left",auto_size_columns=False,num_rows=10)],
                 [sg.Button("削除",key="del_2")]])
@@ -52,21 +61,21 @@ month_list = ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10
 week_list = ["日","月","火","水","木","金","土",]
 la_3=sg.Tab("ToDoリスト",[
                 [sg.Text("いつまでに"),sg.Text("やること",pad=(60,0))],
-                [sg.InputText(key="todo_day_1",size=(10,0)),sg.CalendarButton("日付",format="%Y-%m-%d",month_names=month_list,day_abbreviations=week_list,),sg.InputText(size=(32,0),key="todo_in_1"),sg.Button("完了",key="todo_b1")],
-                [sg.InputText(key="todo_day_2",size=(10,0)),sg.CalendarButton("日付",format="%Y-%m-%d",month_names=month_list,day_abbreviations=week_list,),sg.InputText(size=(32,0),key="todo_in_2"),sg.Button("完了",key="todo_b2")],
-                [sg.InputText(key="todo_day_3",size=(10,0)),sg.CalendarButton("日付",format="%Y-%m-%d",month_names=month_list,day_abbreviations=week_list,),sg.InputText(size=(32,0),key="todo_in_3"),sg.Button("完了",key="todo_b3")],
-                [sg.InputText(key="todo_day_4",size=(10,0)),sg.CalendarButton("日付",format="%Y-%m-%d",month_names=month_list,day_abbreviations=week_list,),sg.InputText(size=(32,0),key="todo_in_4"),sg.Button("完了",key="todo_b4")],
-                [sg.InputText(key="todo_day_5",size=(10,0)),sg.CalendarButton("日付",format="%Y-%m-%d",month_names=month_list,day_abbreviations=week_list,),sg.InputText(size=(32,0),key="todo_in_5"),sg.Button("完了",key="todo_b5")],
-                [sg.InputText(key="todo_day_6",size=(10,0)),sg.CalendarButton("日付",format="%Y-%m-%d",month_names=month_list,day_abbreviations=week_list,),sg.InputText(size=(32,0),key="todo_in_6"),sg.Button("完了",key="todo_b6")],
-                [sg.InputText(key="todo_day_7",size=(10,0)),sg.CalendarButton("日付",format="%Y-%m-%d",month_names=month_list,day_abbreviations=week_list,),sg.InputText(size=(32,0),key="todo_in_7"),sg.Button("完了",key="todo_b7")],
-                [sg.InputText(key="todo_day_8",size=(10,0)),sg.CalendarButton("日付",format="%Y-%m-%d",month_names=month_list,day_abbreviations=week_list,),sg.InputText(size=(32,0),key="todo_in_8"),sg.Button("完了",key="todo_b8")],
+                [sg.InputText(key="todo_day_1",size=(10,0),default_text=settings["todo_day_1"]),sg.CalendarButton("日付",format="%Y-%m-%d",month_names=month_list,day_abbreviations=week_list,),sg.InputText(size=(32,0),key="todo_in_1",default_text=settings["todo_in_1"]),sg.Button("完了",key="todo_b1")],
+                [sg.InputText(key="todo_day_2",size=(10,0),default_text=settings["todo_day_2"]),sg.CalendarButton("日付",format="%Y-%m-%d",month_names=month_list,day_abbreviations=week_list,),sg.InputText(size=(32,0),key="todo_in_2",default_text=settings["todo_in_2"]),sg.Button("完了",key="todo_b2")],
+                [sg.InputText(key="todo_day_3",size=(10,0),default_text=settings["todo_day_3"]),sg.CalendarButton("日付",format="%Y-%m-%d",month_names=month_list,day_abbreviations=week_list,),sg.InputText(size=(32,0),key="todo_in_3",default_text=settings["todo_in_3"]),sg.Button("完了",key="todo_b3")],
+                [sg.InputText(key="todo_day_4",size=(10,0),default_text=settings["todo_day_4"]),sg.CalendarButton("日付",format="%Y-%m-%d",month_names=month_list,day_abbreviations=week_list,),sg.InputText(size=(32,0),key="todo_in_4",default_text=settings["todo_in_4"]),sg.Button("完了",key="todo_b4")],
+                [sg.InputText(key="todo_day_5",size=(10,0),default_text=settings["todo_day_5"]),sg.CalendarButton("日付",format="%Y-%m-%d",month_names=month_list,day_abbreviations=week_list,),sg.InputText(size=(32,0),key="todo_in_5",default_text=settings["todo_in_5"]),sg.Button("完了",key="todo_b5")],
+                [sg.InputText(key="todo_day_6",size=(10,0),default_text=settings["todo_day_6"]),sg.CalendarButton("日付",format="%Y-%m-%d",month_names=month_list,day_abbreviations=week_list,),sg.InputText(size=(32,0),key="todo_in_6",default_text=settings["todo_in_6"]),sg.Button("完了",key="todo_b6")],
+                [sg.InputText(key="todo_day_7",size=(10,0),default_text=settings["todo_day_7"]),sg.CalendarButton("日付",format="%Y-%m-%d",month_names=month_list,day_abbreviations=week_list,),sg.InputText(size=(32,0),key="todo_in_7",default_text=settings["todo_in_7"]),sg.Button("完了",key="todo_b7")],
+                [sg.InputText(key="todo_day_8",size=(10,0),default_text=settings["todo_day_8"]),sg.CalendarButton("日付",format="%Y-%m-%d",month_names=month_list,day_abbreviations=week_list,),sg.InputText(size=(32,0),key="todo_in_8",default_text=settings["todo_in_8"]),sg.Button("完了",key="todo_b8")],
                 ])
 lay =[
     [sg.TabGroup([[la_1,la_3,la_2]])]
     
 ]
 
-window = sg.Window("タスク管理",lay,finalize=True,)
+window = sg.Window("タスク管理",lay,finalize=True,enable_close_attempted_event=True)
 
 
 while True:
@@ -87,7 +96,7 @@ while True:
             conn.commit()
             window["table"].update(values = select())
 
-    #履歴のlog様をを削除する
+    #履歴のlogをを削除する
     def delete_log():
         if values["log"] == []:
             sg.popup_ok("タブを選択してください")
@@ -102,8 +111,28 @@ while True:
             conn.commit()
             window["log"].update(values = select_log())
     print(event,values)
-    if event == None:
+    #windowのenable_close_attempted_eventをTrueにしてsg.WIN_X_EVENTでXボタンを押したときの処理を設定する
+    if event in (None,sg.WIN_X_EVENT):
+        #ウィンドウを閉じる時にToDoリストの内容をユーザーセッティングに保存
+        settings["todo_day_1"] = values["todo_day_1"]
+        settings["todo_day_2"] = values["todo_day_2"]
+        settings["todo_day_3"] = values["todo_day_3"]
+        settings["todo_day_4"] = values["todo_day_4"]
+        settings["todo_day_5"] = values["todo_day_5"]
+        settings["todo_day_6"] = values["todo_day_6"]
+        settings["todo_day_7"] = values["todo_day_7"]
+        settings["todo_day_8"] = values["todo_day_8"]
+
+        settings["todo_in_1"] = values["todo_in_1"]
+        settings["todo_in_2"] = values["todo_in_2"]
+        settings["todo_in_3"] = values["todo_in_3"]
+        settings["todo_in_4"] = values["todo_in_4"]
+        settings["todo_in_5"] = values["todo_in_5"]
+        settings["todo_in_6"] = values["todo_in_6"]
+        settings["todo_in_7"] = values["todo_in_7"]
+        settings["todo_in_8"] = values["todo_in_8"]
         break
+
     
     #tableが選択されたときにタスク内容を表示させる
     if event == "table":
@@ -144,11 +173,12 @@ while True:
         window["table"].update(values = select())
     
     
-    
+    #履歴内の要素を削除する
     if event == "del_2":
         delete_log()
-  
-    if event == "削除":
+    
+    #やることリストの要素を削除する
+    if event in ("削除","del_1"):
         delete()
     #window["table"].update(values = select())
     

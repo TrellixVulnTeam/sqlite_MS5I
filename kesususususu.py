@@ -1,6 +1,14 @@
 from PySimpleGUI.PySimpleGUI import execute_command_subprocess, execute_file_explorer
 import PySimpleGUIQt as sg
 import subprocess
+
+import ctypes
+try:
+    ctypes.windll.shcore.SetProcessDpiAwareness(True)
+except:
+    pass
+
+
 lay=[
     [sg.InputText(key="in"),sg.FileBrowse()],
     [sg.Multiline(default_text="ここにドラックしてください",key="m")],
@@ -10,7 +18,7 @@ lay=[
 
 window = sg.Window("",layout = lay)
 
-#exec = execute_command_subprocess(command="open")
+exec = execute_command_subprocess(command="open")
 
 
 while True:
