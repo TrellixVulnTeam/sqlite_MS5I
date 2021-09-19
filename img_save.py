@@ -5,7 +5,7 @@ from contextlib import closing
 
 rf = r'C:\Users\onoga\OneDrive\Desktop\MyPython\mayuka.png'  #読み込み画像ファイルパス
 wf = 'C:\\test\\write.jpg' #書き込み画像ファイルパス
-img_path = r"C:\Users\onoga\OneDrive\Desktop\sqlite\ドスジャイアン.png"
+img_path = r"ドスジャイアン.png"
 #with closing(sqlite3.connect('path.db')) as db:
   #適当にテーブル作成
  # cursor = db.cursor()
