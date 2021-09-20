@@ -21,6 +21,7 @@ settings.load()
 main_col_name  = ["更新時間","タスク名"]
 log_col_name = ["完了時間","タスク名"]
 log_todo_col_name = ["いつまでに","やること"]
+file_save_col_name = ["更新時間","ファイル名"]
 
 #テーマを設定
 sg.theme("LightBlue3")
@@ -66,7 +67,7 @@ def select_log_todo():
     return out
 #ファイル保存の要素を表示させる
 def select_file_insert():
-    c.execute("select * from 'fileinsert'")
+    c.execute("select outtime,filename from 'file_insert'")
     out = c.fetchall()
     return out
 #内容更新の処理関数
@@ -78,7 +79,7 @@ def updete_act(name,up_name,old_name):
     
     conn.commit()
 
-#画像インサート
+#ファイル追加
 def file_insert():
     try:
         get_file = sgq.popup_get_file("読み込むファイルを選択して下さい")
@@ -95,13 +96,24 @@ def file_insert():
     except:
         pass
 
+#ファイル具現化
+def real(path,name):#name,number
+    row = c.execute(f"select filedata from 'file_insert' where filename = '{name}'").fetchall()
+    
+
+    f = open("{}".format(os.path.join(path,name)),"wb")
+    f.write(row[0][0])
+    f.close()
+    c.close()
+    
+
 lib_name = select()
 combo_list = ["やること","ToDo"]
 la_1=sg.Tab("やることリスト",[      
                 [sg.Multiline(key="in"),sg.Button("内容更新",key="up_1")],
                 [sg.Table(values=lib_name,enable_events=True,key="table",col_widths=[13,30],background_color="white",text_color="black",select_mode="extended",headings=main_col_name,
                     justification="left",auto_size_columns=False,num_rows=10)],
-                [sg.Button("完了",key="comp"),sg.Button("削除",key="del_1"),sg.Button("ok",key="ok")],
+                [sg.Button("完了",key="comp"),sg.Button("削除",key="del_1"),],
                 [sg.Menu(menu_definition=[["追加",["タスクを追加する","削除"],]],background_color="white",)]])
 
 la_2=sg.Tab("履歴",[
@@ -125,7 +137,9 @@ la_3=sg.Tab("ToDoリスト",[
                 ])
 
 la_4 = sg.Tab("ファイル保存",[
-                [sg.Table(values=[[]])]
+                [sg.Table(values=select_file_insert(),enable_events=True,key="file_save",col_widths=[13,30],background_color="white",text_color="black",select_mode="extended",headings=file_save_col_name,
+                justification="left",auto_size_columns=False,num_rows=10)],
+                [sg.Button("ファイル追加",key="file_insert"),sg.Button("ファイル取り出し",key="file_out")]
 ])
 
 lay =[
@@ -139,9 +153,8 @@ menu = ["",["追加",["タスクを追加する"],"削除"]]
 tray = SystemTray(menu=menu,window=window)
 
 while True:
-
-
     event,values = window.read()
+    print(values["file_save"])
     #tableの要素を削除する
     def delete():
         if values["table"] == []:
@@ -202,9 +215,24 @@ while True:
     #システムトレイのボタンを適用
     if event == tray.key:
         event =values[event]
-
-    if event == "ok":
+    #ファイル追加ボタンが押された時の処理
+    if event == "file_insert":
         file_insert()
+        window["file_save"].update(select_file_insert())
+    #ファイル取り出しボタンが押された時の処理
+    if event == "file_out":
+        if values["file_save"] == []:
+            sg.popup_ok("タブを選択してください")
+            pass
+        else:
+            try:
+                path = sg.popup_get_folder("保存先フォルダを選択して下さい",title="保存先選択")
+                get_value = window["file_save"].get()
+                outtime = get_value[values["file_save"][0]][0]
+                file_save_name = get_value[values["file_save"][0]][1]
+                real(path,file_save_name)
+            except:
+                pass
     #tableが選択されたときにタスク内容を表示させる
     if event == "table":
         get_value=window["table"].get()
