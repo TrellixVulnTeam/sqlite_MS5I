@@ -1,3 +1,4 @@
+from tkinter.constants import FALSE
 import PySimpleGUIQt as sgq
 import PySimpleGUI as sg
 import sqlite3
@@ -28,6 +29,8 @@ sgq.theme("LightBlue3")
 #sqliteの設定
 conn = sqlite3.connect("task.db")
 c = conn.cursor()
+
+
 
 # テーブル作成　　c.execute("create table main(nowtime text, name text)")
 #c.execute("insert into main values(?,?)",("6/8","onogami"))
@@ -130,7 +133,7 @@ lay =[
     
 ]
 
-window = sg.Window("タスク管理",lay,finalize=True,enable_close_attempted_event=True)
+window = sg.Window("タスク管理",lay,finalize=True,enable_close_attempted_event=True,keep_on_top=False)
 
 menu = ["",["追加",["タスクを追加する"],"削除"]]
 tray = SystemTray(menu=menu,window=window)
