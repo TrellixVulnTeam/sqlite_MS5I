@@ -29,59 +29,73 @@ sgq.theme("LightBlue3")
 
 #sqliteの設定
 conn = sqlite3.connect("task.db")
-c = conn.cursor()
-
-
 
 # テーブル作成　　c.execute("create table main(nowtime text, name text)")
 #c.execute("insert into main values(?,?)",("6/8","onogami"))
 #mainテーブルに値をインサートする
-def insert(name):
+def insert(name):#関数毎にc=conn.cursor() → c.close()をしないとエラーになる（sqlite3.ProgrammingError: Cannot operate on a closed cursor.）
+    c = conn.cursor()
     time = datetime.datetime.now()
     nowtime = time.strftime("%Y-%m-%d %H:%M")
     c.execute("insert into main values(?,?)",(nowtime,name))
     conn.commit()
+    c.close()
 #logテーブルに値をインサートする
 def insert_log(outtime,name):
+    c = conn.cursor()
     c.execute("insert into 'log' values(?,?)",(outtime,name))
     conn.commit()
+    c.close()
 #log_todoテーブルに値をインサートする
 def insert_log_todo(outtime,name):
+    c = conn.cursor()
     c.execute("insert into 'log_todo' values(?,?)",(outtime,name))
     conn.commit()
     window["log"].update(values = select_log_todo())
+    c.close()
 #やることリストのメインテーブルに表示させる項目
 def select():
+    c = conn.cursor()
     c.execute("select * from main")
     out = c.fetchall()
+    c.close()
     return out
 #やることリストの履歴を表示させる項目
 def select_log():
+    c = conn.cursor()
     c.execute("select * from 'log'")
     out = c.fetchall()
+    c.close()
     return out
 #ToDoリストの履歴を表示させる項目
 def select_log_todo():
+    c = conn.cursor()
     c.execute("select * from 'log_todo'")
     out = c.fetchall()
+    c.close()
     return out
 #ファイル保存の要素を表示させる
 def select_file_insert():
+    c = conn.cursor()
     c.execute("select outtime,filename from 'file_insert'")
     out = c.fetchall()
+    c.close()
     return out
 #内容更新の処理関数
 def updete_act(name,up_name,old_name):
+    c = conn.cursor()
     time = datetime.datetime.now()
     nowtime = time.strftime("%Y-%m-%d %H:%M")
     c.execute("update main set nowtime = '{0}' where nowtime = '{1}' and name = '{2}' ".format(nowtime, name, old_name))
     c.execute("update main set name = '{0}' where name = '{1}'".format(up_name, old_name))
     
     conn.commit()
+    c.close()
 
 #ファイル追加
 def file_insert():
     try:
+        c = conn.cursor()
         get_file = sgq.popup_get_file("読み込むファイルを選択して下さい")
         if bool(re.match("file:///",get_file)) == True:
             get_file = re.split("file:///",get_file)[1]
@@ -93,11 +107,13 @@ def file_insert():
         outtime = time.strftime("%Y-%m-%d %H:%M")
         c.execute("insert into file_insert values(?,?,?)" , (outtime,file_name,base))
         conn.commit()
+        c.close()
     except:
         pass
 
 #ファイル具現化
 def real(path,name):#name,number
+    c = conn.cursor()
     row = c.execute(f"select filedata from 'file_insert' where filename = '{name}'").fetchall()
     
 
@@ -139,7 +155,7 @@ la_3=sg.Tab("ToDoリスト",[
 la_4 = sg.Tab("ファイル保存",[
                 [sg.Table(values=select_file_insert(),enable_events=True,key="file_save",col_widths=[13,30],background_color="white",text_color="black",select_mode="extended",headings=file_save_col_name,
                 justification="left",auto_size_columns=False,num_rows=10)],
-                [sg.Button("ファイル追加",key="file_insert"),sg.Button("ファイル取り出し",key="file_out")]
+                [sg.Button("ファイル追加",key="file_insert"),sg.Button("ファイル取り出し",key="file_out"),sg.Button("削除",key="del_3")]
 ])
 
 lay =[
@@ -147,14 +163,14 @@ lay =[
     
 ]
 
-window = sg.Window("タスク管理",lay,finalize=True,enable_close_attempted_event=True,keep_on_top=False)
+window = sg.Window("タスク管理",lay,finalize=True,enable_close_attempted_event=True,keep_on_top=False,resizable=True)
 
 menu = ["",["追加",["タスクを追加する"],"削除"]]
 tray = SystemTray(menu=menu,window=window)
 
 while True:
     event,values = window.read()
-    print(values["file_save"])
+    
     #tableの要素を削除する
     def delete():
         if values["table"] == []:
@@ -162,13 +178,14 @@ while True:
             pass
 
         else:
-
+            c = conn.cursor()
             elem = window["table"].get()
             filename = elem[values["table"][0]]
             
             c.execute(f"delete from main where nowtime = '{filename[0]}' and name = '{filename[1]}'")
             conn.commit()
             window["table"].update(values = select())
+            c.close()
 
     #履歴のlogをを削除する
     def delete_log():
@@ -180,16 +197,35 @@ while True:
             if values["combo"] == "やること":
                 elem = window["log"].get()
                 filename = elem[values["log"][0]]
-                
+                c = conn.cursor()
                 c.execute(f"delete from log where outtime = '{filename[0]}' and name = '{filename[1]}'")
                 conn.commit()
                 window["log"].update(values = select_log())
+                c.close()
             elif values["combo"] == "ToDo":
+                c = conn.cursor()
                 elem = window["log"].get()
                 filename = elem[values["log"][0]]
                 c.execute(f"delete from log_todo where outtime = '{filename[0]}' and name = '{filename[1]}'")
                 window["log"].update(values = select_log_todo())
                 conn.commit()
+                c.close()
+
+    #ファイル保存の要素を削除する
+    def delete_file_insert():
+        if values["file_save"] == []:
+            sg.popup_ok("タブを選択してください")
+            pass
+
+        else:
+            c = conn.cursor()
+            elem = window["file_save"].get()
+            filename = elem[values["file_save"][0]]
+            
+            c.execute(f"delete from 'file_insert' where outtime = '{filename[0]}' and filename = '{filename[1]}'")
+            conn.commit()
+            window["file_save"].update(values = select_file_insert())
+            c.close()
 
     #windowのenable_close_attempted_eventをTrueにしてsg.WIN_X_EVENTでXボタンを押したときの処理を設定する
     if event in (None,sg.WIN_X_EVENT):
@@ -399,6 +435,10 @@ while True:
     #やることリストの要素を削除する
     if event in ("削除","del_1"):
         delete()
+
+    #ファイル保存の要素を削除する
+    if event == "del_3":
+        delete_file_insert()
     #window["table"].update(values = select())
     
-
+    
