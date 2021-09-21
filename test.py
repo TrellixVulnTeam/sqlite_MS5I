@@ -129,8 +129,9 @@ la_1=sg.Tab("やることリスト",[
                 [sg.Multiline(key="in"),sg.Button("内容更新",key="up_1")],
                 [sg.Table(values=lib_name,enable_events=True,key="table",col_widths=[13,30],background_color="white",text_color="black",select_mode="extended",headings=main_col_name,
                     justification="left",auto_size_columns=False,num_rows=10)],
-                [sg.Button("完了",key="comp"),sg.Button("削除",key="del_1"),],
-                [sg.Menu(menu_definition=[["追加",["タスクを追加する","削除"],]],background_color="white",)]])
+                [sg.Button("完了",key="comp"),sg.Button("削除",key="del_1"),sg.ColorChooserButton("色の選択",)],
+                [sg.Menu(menu_definition=[["追加",["タスクを追加する","---","削除"],],
+                                          ["window",["最前面","---","最前面クリア"]]],background_color="white",)],])
 
 la_2=sg.Tab("履歴",[
                 [sg.Multiline(key="in_2"),sg.Combo(values=combo_list, size=(10,5),key="combo",enable_events=True,default_value="やること")],
@@ -441,4 +442,10 @@ while True:
         delete_file_insert()
     #window["table"].update(values = select())
     
-    
+    #ウィンドウを最前面に持ってくる
+    if event == "最前面":
+        window.keep_on_top_set()
+    elif event == "最前面クリア":
+        window.keep_on_top_clear()
+
+    print(event,values)
