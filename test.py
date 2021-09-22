@@ -96,7 +96,7 @@ def updete_act(name,up_name,old_name):
 def file_insert():
     try:
         c = conn.cursor()
-        get_file = sgq.popup_get_file("読み込むファイルを選択して下さい")
+        get_file = sgq.popup_get_file("読み込むファイルを選択して下さい",keep_on_top=True)
         if bool(re.match("file:///",get_file)) == True:
             get_file = re.split("file:///",get_file)[1]
         file_name = os.path.basename(get_file)
@@ -320,7 +320,7 @@ while True:
     
     #タスクを追加する処理
     if event == "タスクを追加する":
-        get_text = sg.popup_get_text(message="追加するタスク名を入力してください")
+        get_text = sg.popup_get_text(message="追加するタスク名を入力してください",keep_on_top=True)
         if "OK":
             #入力がない状態でOKボタンを押したときに何も処理しない為の記述
             if get_text == "":
