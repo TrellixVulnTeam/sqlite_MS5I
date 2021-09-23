@@ -111,6 +111,8 @@ def clear():
 def roop():
     display()
     window_1["out_time"].update(now_time())
+   
+
 
 #ポップアップウィンドウ
 def second_window(name):
@@ -211,8 +213,7 @@ window_1 = main_1_window()
 
 #システムトレイを定義
 menu = ['', ['メニュー',["指示書送付フォルダ","不具合指示書送付","金型修理履歴","手配No.管理表","ツチヒラ専用PDF変換"],"設定",["PATHの設定"],"終了"]]
-tray = SystemTray(menu=menu,tooltip="タスク管理",single_click_events=False,window=window_1)
-
+tray = SystemTray(menu=menu,tooltip="不具合指示書確認",single_click_events=False,window=window_1)
 #通知有りの処理関数
 def message(name,file_name):
     num_1 = len(main("home"))
@@ -691,29 +692,34 @@ while True:
 
     #タイムアウトが発生したタイミングでループ処理を開始する（この処理をしないとリストボックスの要素が選択認識されなかったりする）
     if event == "__TIMEOUT__":
+    
         
+       
+
+
         #リストボックスの要素が選択されたらタイムアウトの処理を一度ストップする（リストボックスの要素を選択中にタイムアウトが発生すると選択が解除されたり、選択が先頭になったりする）
         #if bool(window_1["out_1"].get()) or bool(window_1["out_2"].get()) or bool(window_1["out_3"].get()) or bool(window_1["out_4"].get()) or bool(window_1["out_5"].get())== True:
             #window_1.read()
         
-        #通知ありのチェックボックスにチェックしたらmessage関数を起動
-        for i in listbox_list:
         
-            if values[i]:
-                name = window_1[i].get()[0]
-                if values["ckb_1"] == True:
-                    message("home",name)
-                if values["ckb_2"] == True:
-                    message("shusa",name)
-                if values["ckb_3"] == True:
-                    message("butho_mae",name)
-                if values["ckb_4"] == True:
-                    message("butho_go",name)
-                if values["ckb_5"] == True:
-                    message("tantou",name)
-
-        #メインループ
+         #通知ありのチェックボックスにチェックしたらmessage関数を起動
+        #for i in listbox_list:
+        
+            #if values[i]:
+                #name = window_1[i].get()[0]
+        if values["ckb_1"] == True:
+            message("home","")
+        if values["ckb_2"] == True:
+            message("shusa","")
+        if values["ckb_3"] == True:
+            message("butho_mae","")
+        if values["ckb_4"] == True:
+            message("butho_go","")
+        if values["ckb_5"] == True:
+            message("tantou","")
+       
+         #メインループ
         if count:
             roop()
-        
+
 window_1.close()
