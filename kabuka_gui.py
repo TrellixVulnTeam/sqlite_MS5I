@@ -4,6 +4,8 @@ import sqlite3
 import PySimpleGUI as sg
 import matplotlib.pyplot as plt
 import os
+import japanize_matplotlib
+import mplfinance as mpf
 
 
 #画面ぼやける回避
@@ -30,6 +32,11 @@ def main(name,start,end):
 
     return dfs
 
+def mpf_main(name,start,end):
+
+    df = pdr.DataReader(name,"yahoo",start=start,end=end)
+  
+    return df
 
 
 
@@ -60,13 +67,38 @@ while True:
     if event == "graph":
         #入力欄に空白があるとmain関数を実行しない様に設定
         if bool(values["in_1"]) and bool(values["in_Start"]) and bool(values["in_End"]) == True:
-            df = main(values["in_1"],values["in_Start"],values["in_End"])
-            plt.plot(df.index,df["始値"])
-            #plt.plot(df["始値"],df["終値"])
-            plt.legend()
-            plt.xticks(rotation=30)
+            #df = main(values["in_1"],values["in_Start"],values["in_End"])
+            df = mpf_main(values["in_1"],values["in_Start"],values["in_End"])
+            #fig = plt.figure(figsize=(6,6))#グラフサイズを指定
+            
+            
+            def start_chart():#始値を描画する
+                plt.plot(df.index,df["始値"],label="始値")
+
+            def end_chart():#終値を描画する
+                plt.plot(df.index,df["終値"],label="終値")
+
+            def high_chart():#高値を描画する
+                plt.plot(df.index,df["高値"],label="高値")
+
+            def low_chart():#安値を描画する
+                plt.plot(df.index,df["安値"],label="安値")
+
+            def AdjClose_chart():#調整済み終値を描画する
+                plt.plot(df.index,df["調整済み終値"],label="調整済み終値")
+
+            #日本語対応する為の記述
+            cs = mpf.make_mpf_style(rc={"font.family":"IPAexGothic"},gridcolor="gray",gridstyle="--")
+            mpf.plot(df,type="candle",volume=True,datetime_format="%Y/%m/%d",
+                    title=values["in_1"],ylabel="株価(ドル/円)",ylabel_lower="出来高",mav=(5,25),style=cs)
+            
+
+            #plt.grid()#グリッドを追加
+            #plt.title(values["in_1"])
+            #plt.legend()
+            #plt.xticks(rotation=30)
             plt.show()
-        
+           
         else:
             sg.popup("入力されていない項目があります")
             pass
@@ -93,7 +125,7 @@ while True:
             file_name = sg.popup_get_text("保存したいファイル名を入力して下さい")
             file_path = os.path.join(folder,f"{file_name}.csv")
             print(file_path)
-            df.to_csv(file_path)
+            df.to_csv(file_path,encoding="shift jis")
         
         else:
             sg.popup("入力されていない項目があります")
