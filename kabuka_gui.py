@@ -1,6 +1,3 @@
-from re import sub
-from traceback import print_tb
-from PySimpleGUI.PySimpleGUI import WIN_CLOSED, InputText
 import pandas_datareader.data as pdr
 import pandas as pd
 import sqlite3
@@ -57,7 +54,7 @@ window = sg.Window("株価取得", lay,finalize=True,resizable=True)
 while True:
     event,values = window.read()
 
-    if event in (None,WIN_CLOSED):
+    if event in (None,sg.WIN_CLOSED):
         break
     #グラフを描画
     if event == "graph":

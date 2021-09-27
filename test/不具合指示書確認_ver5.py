@@ -199,21 +199,21 @@ def main_1_window():
 
     #GUIレイアウト　　[["設定",["PATHの設定"]],
     layout = [
-    [sg.MenuBar([["メニュー",["指示書送付フォルダ","不具合指示書送付","金型修理履歴","手配No.管理表","ツチヒラ専用PDF変換"]],
+    [sg.MenuBar([["メニュー",["指示書送付フォルダ","---","不具合指示書送付","---","金型修理履歴","---","手配No.管理表","---","ツチヒラ専用PDF変換"]],
                   ["設定",["PATHの設定"]]])],
     [[lay_1,lay_2,lay_5]],[[lay_3,lay_4,lay_6]
     ]]
 
     #ウィンドウの作成(タイトル、レイアウト、サイズ、画面リサイズ可、画面移動可)
     return sg.Window("不具合指示書確認", layout, size=(1100, 700), resizable=True, finalize= True, grab_anywhere=False,
-            element_justification="left",icon=r"C:\Users\onoga\OneDrive\Desktop\MyDocker\woman-grayscale.jpg")
+            element_justification="left",icon=r"不具合.ico")
 
 #ウィンドウを定義
 window_1 = main_1_window() 
 
 #システムトレイを定義
-menu = ['', ['メニュー',["指示書送付フォルダ","不具合指示書送付","金型修理履歴","手配No.管理表","ツチヒラ専用PDF変換"],"設定",["PATHの設定"],"終了"]]
-tray = SystemTray(menu=menu,tooltip="不具合指示書確認",single_click_events=False,window=window_1)
+menu = ['', ['メニュー',["指示書送付フォルダ","---","不具合指示書送付","---","金型修理履歴","---","手配No.管理表","---","ツチヒラ専用PDF変換"],"設定",["PATHの設定"],"終了"]]
+tray = SystemTray(menu=menu,tooltip="不具合指示書確認",single_click_events=False,window=window_1,icon="不具合.ico")
 #通知有りの処理関数
 def message(name,file_name):
     num_1 = len(main("home"))

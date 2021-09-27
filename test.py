@@ -167,7 +167,9 @@ lay =[
 window = sg.Window("タスク管理",lay,finalize=True,enable_close_attempted_event=True,keep_on_top=False,resizable=True)
 
 menu = ["",["追加",["タスクを追加する(T)"],"削除"]]
-tray = SystemTray(menu=menu,window=window)
+
+#システムトレイの設定
+tray = SystemTray(menu=menu,window=window,tooltip="タスク管理")
 
 while True:
     event,values = window.read()
