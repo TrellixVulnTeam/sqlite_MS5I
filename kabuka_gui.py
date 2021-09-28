@@ -15,6 +15,19 @@ try:
 except:
     pass
 
+#【日本株】データ取得
+def jp_main(name,start,end):
+    col_name = ["日付","始値","高値","安値","終値","出来高"]
+    df = pdr.DataReader(f"{name}.JP","stooq",start=start,end=end)
+    dfs = pd.DataFrame(df)
+    dfs = dfs.reset_index()
+    dfs.columns = col_name
+    dfs["日付"] = pd.to_datetime(dfs["日付"],format="%Y/%m/%d")
+    dfs.set_index("日付",inplace=True)
+    
+    return dfs
+
+#【米国】データ取得
 def main(name,start,end):
     col_name = ["日付","高値","安値","始値","終値","出来高","調整済み終値"]
     #株価取得
@@ -31,35 +44,55 @@ def main(name,start,end):
     dfs.set_index("日付",inplace=True)
 
     return dfs
-
+#【米国】グラフ描画用
 def mpf_main(name,start,end):
 
     df = pdr.DataReader(name,"yahoo",start=start,end=end)
   
     return df
+#【日本株】グラフ描画用
+def jp_mpf_main(name,start,end):
+    df = pdr.DataReader(f"{name}.JP","stooq",start=start,end=end)
+  
+    return df
 
 
 
-sum = pdr.DataReader("HDV","yahoo",start="2021/09/01",end="2021/09/06")
-aa = pd.DataFrame(sum)
-ui = aa.reset_index()
-val = [["onogami","kahon"],["happy","lose"]]
-
-lay = [
+lay_1 =sg.Tab( "米国株",[
     [sg.Text("データを取得したいティッカー名を入力して下さい　(例)AAPL , AMZM , TSLA")],
     [sg.Text("ティッカー名："),sg.InputText(default_text="AMZN",key="in_1",size=(6,1)),],
     [sg.Text("開始日："),sg.InputText(key="in_Start",size=(11,1)),sg.CalendarButton("日付選択",format="%Y/%m/%d"),
     sg.Text("終了日："),sg.InputText(key="in_End",size=(11,1)),sg.CalendarButton("日付選択",format="%Y/%m/%d")],
     [sg.Button("データ表示",key="start_bt"),sg.Button("csvファイルに保存",key="save_csv"),sg.Button("Excelファイルに保存",key="save_excel")],
-    [sg.Button("グラフを描画",key="graph")],
-    [sg.Output(size=(80,20))]
-    ]
+    [sg.Button("グラフを描画",key="graph"),sg.Button("テスト日本株",key="test_jp")],
+    [sg.Output(size=(80,20),key="out_1",)]
+    ])
 
 
-window = sg.Window("株価取得", lay,finalize=True,resizable=True)
+lay_2 =sg.Tab( "日本株",[
+    [sg.Text("データを取得したいティッカー名を入力して下さい　(例)7203 , 9983 , 4755")],
+    [sg.Text("ティッカー名："),sg.InputText(default_text="7203",key="in_2",size=(6,1)),],
+    [sg.Text("開始日："),sg.InputText(key="in_2_Start",size=(11,1)),sg.CalendarButton("日付選択",format="%Y/%m/%d"),
+    sg.Text("終了日："),sg.InputText(key="in_2_End",size=(11,1)),sg.CalendarButton("日付選択",format="%Y/%m/%d")],
+    [sg.Button("データ表示",key="start_2_bt"),sg.Button("csvファイルに保存",key="save_csv"),sg.Button("Excelファイルに保存",key="save_excel")],
+    [sg.Button("グラフを描画",key="graph_2")],
+    [sg.Output(size=(80,20),key="out_2")]
+    ])
+
+layout = [[sg.TabGroup([[lay_1,lay_2]])]]
+
+window = sg.Window("株価取得", layout,finalize=True,resizable=True)
 
 while True:
     event,values = window.read()
+
+    def out_mes(name,df):
+        m1 = f"ティッカー名：{values[name]}"
+        m2 = "\n*************************************************************************************************\n"
+        m3 = df
+        m4 = "\n*************************************************************************************************"
+        mes = f"{m1}{m2}{m3}{m4}"
+        return mes
 
     if event in (None,sg.WIN_CLOSED):
         break
@@ -103,20 +136,29 @@ while True:
             sg.popup("入力されていない項目があります")
             pass
 
-    #アウトプット欄に株価データを表示
+    #【米国】アウトプット欄に株価データを表示
     if event == "start_bt":
         #入力欄に空白があるとmain関数を実行しない様に設定
         if bool(values["in_1"]) and bool(values["in_Start"]) and bool(values["in_End"]) == True:
             df = main(values["in_1"],values["in_Start"],values["in_End"])
             #window["table"].update(values=ui)
-            
-            print(f"ティッカー名：{values['in_1']}","\n*************************************************************************************************\n",df,
-                        "\n*************************************************************************************************" )
+   
+            window["out_1"].update(value = out_mes("in_1",df))
             
         else:
             sg.popup("入力されていない項目があります")
             pass
-
+    #【日本株】アウトプット欄に株価データを表示
+    if event == "start_2_bt":
+        #入力欄に空白があるとmain関数を実行しない様に設定
+        if bool(values["in_2"]) and bool(values["in_2_Start"]) and bool(values["in_2_End"]) == True:
+            df = jp_main(values["in_2"],values["in_2_Start"],values["in_2_End"])
+            window["out_2"].update(value = out_mes("in_2",df))
+        else:
+            sg.popup("入力されていない項目があります")
+            pass
+    
+    #【米国】csvデータ保存
     if event == "save_csv":
         #入力欄に空白があるとmain関数を実行しない様に設定
         if bool(values["in_1"]) and bool(values["in_Start"]) and bool(values["in_End"]) == True:
@@ -130,7 +172,7 @@ while True:
         else:
             sg.popup("入力されていない項目があります")
             pass
-
+    #【米国】Excelデータ保存
     if event == "save_excel":
         #入力欄に空白があるとmain関数を実行しない様に設定
         if bool(values["in_1"]) and bool(values["in_Start"]) and bool(values["in_End"]) == True:
@@ -144,4 +186,5 @@ while True:
         else:
             sg.popup("入力されていない項目があります")
             pass
-
+    
+ 
