@@ -7,6 +7,7 @@ import os
 import japanize_matplotlib
 import mplfinance as mpf
 
+sg.theme("DarkGreen6")
 
 #画面ぼやける回避
 import ctypes
@@ -64,8 +65,8 @@ lay_1 =sg.Tab( "米国株",[
     [sg.Text("開始日："),sg.InputText(key="in_Start",size=(11,1)),sg.CalendarButton("日付選択",format="%Y/%m/%d"),
     sg.Text("終了日："),sg.InputText(key="in_End",size=(11,1)),sg.CalendarButton("日付選択",format="%Y/%m/%d")],
     [sg.Button("データ表示",key="start_bt"),sg.Button("csvファイルに保存",key="save_csv"),sg.Button("Excelファイルに保存",key="save_excel")],
-    [sg.Button("グラフを描画",key="graph"),sg.Button("テスト日本株",key="test_jp")],
-    [sg.Output(size=(80,20),key="out_1",)]
+    [sg.Button("グラフを描画",key="graph")],
+    [sg.Multiline(size=(80,20),key="out_1",)]
     ])
 
 
@@ -74,9 +75,9 @@ lay_2 =sg.Tab( "日本株",[
     [sg.Text("ティッカー名："),sg.InputText(default_text="7203",key="in_2",size=(6,1)),],
     [sg.Text("開始日："),sg.InputText(key="in_2_Start",size=(11,1)),sg.CalendarButton("日付選択",format="%Y/%m/%d"),
     sg.Text("終了日："),sg.InputText(key="in_2_End",size=(11,1)),sg.CalendarButton("日付選択",format="%Y/%m/%d")],
-    [sg.Button("データ表示",key="start_2_bt"),sg.Button("csvファイルに保存",key="save_csv"),sg.Button("Excelファイルに保存",key="save_excel")],
+    [sg.Button("データ表示",key="start_2_bt"),sg.Button("csvファイルに保存",key="save_2_csv"),sg.Button("Excelファイルに保存",key="save_2_excel")],
     [sg.Button("グラフを描画",key="graph_2")],
-    [sg.Output(size=(80,20),key="out_2")]
+    [sg.Multiline(size=(80,20),key="out_2")]
     ])
 
 layout = [[sg.TabGroup([[lay_1,lay_2]])]]
@@ -96,7 +97,7 @@ while True:
 
     if event in (None,sg.WIN_CLOSED):
         break
-    #グラフを描画
+    #【米国】グラフを描画
     if event == "graph":
         #入力欄に空白があるとmain関数を実行しない様に設定
         if bool(values["in_1"]) and bool(values["in_Start"]) and bool(values["in_End"]) == True:
@@ -135,7 +136,19 @@ while True:
         else:
             sg.popup("入力されていない項目があります")
             pass
+    #【日本株】グラフを描画
+    if event == "graph_2":
+        if bool(values["in_2"]) and bool(values["in_2_Start"]) and bool(values["in_2_End"]) == True:
+            df = jp_mpf_main(values["in_2"],values["in_2_Start"],values["in_2_End"])
+            #日本語対応する為の記述
+            cs = mpf.make_mpf_style(rc={"font.family":"IPAexGothic"},gridcolor="gray",gridstyle="--")
+            mpf.plot(df,type="candle",volume=True,datetime_format="%Y/%m/%d",
+                    title=values["in_2"],ylabel="株価(ドル/円)",ylabel_lower="出来高",mav=(5,25),style=cs)
+            plt.show()        
 
+        else:
+            sg.popup("入力されていない項目があります")
+            pass
     #【米国】アウトプット欄に株価データを表示
     if event == "start_bt":
         #入力欄に空白があるとmain関数を実行しない様に設定
@@ -172,6 +185,20 @@ while True:
         else:
             sg.popup("入力されていない項目があります")
             pass
+    #【日本株】csvデータ保存
+    if event == "save_2_csv":
+        #入力欄に空白があるとmain関数を実行しない様に設定
+        if bool(values["in_2"]) and bool(values["in_2_Start"]) and bool(values["in_2_End"]) == True:
+            df = jp_main(values["in_2"],values["in_2_Start"],values["in_2_End"])
+            folder = sg.popup_get_folder("保存先のフォルダを選択して下さい")
+            file_name = sg.popup_get_text("保存したいファイル名を入力して下さい")
+            file_path = os.path.join(folder,f"{file_name}.csv")
+            print(file_path)
+            df.to_csv(file_path,encoding="shift jis")
+        
+        else:
+            sg.popup("入力されていない項目があります")
+            pass
     #【米国】Excelデータ保存
     if event == "save_excel":
         #入力欄に空白があるとmain関数を実行しない様に設定
@@ -186,5 +213,18 @@ while True:
         else:
             sg.popup("入力されていない項目があります")
             pass
+    #【日本株】Excelデータ保存
+    if event == "save_2_excel":
+        #入力欄に空白があるとmain関数を実行しない様に設定
+        if bool(values["in_2"]) and bool(values["in_2_Start"]) and bool(values["in_2_End"]) == True:
+            df = jp_main(values["in_2"],values["in_2_Start"],values["in_2_End"])
+            folder = sg.popup_get_folder("保存先のフォルダを選択して下さい")
+            file_name = sg.popup_get_text("保存したいファイル名を入力して下さい")
+            file_path = os.path.join(folder,f"{file_name}.xlsx")
+            
+            df.to_excel(file_path)
+        
+        else:
+            sg.popup("入力されていない項目があります")
+            pass
     
- 
