@@ -7,7 +7,7 @@ import os
 import japanize_matplotlib
 import mplfinance as mpf
 
-sg.theme("DarkGreen6")
+sg.theme("Default")
 
 #画面ぼやける回避
 import ctypes
@@ -124,7 +124,7 @@ while True:
             #日本語対応する為の記述
             cs = mpf.make_mpf_style(rc={"font.family":"IPAexGothic"},gridcolor="gray",gridstyle="--")
             mpf.plot(df,type="candle",volume=True,datetime_format="%Y/%m/%d",
-                    title=values["in_1"],ylabel="株価(ドル/円)",ylabel_lower="出来高",mav=(5,25),style=cs)
+                    title=values["in_1"],ylabel="株価(ドル/円)",ylabel_lower="出来高",mav=(5,25,75),style=cs)
             
 
             #plt.grid()#グリッドを追加
@@ -143,7 +143,7 @@ while True:
             #日本語対応する為の記述
             cs = mpf.make_mpf_style(rc={"font.family":"IPAexGothic"},gridcolor="gray",gridstyle="--")
             mpf.plot(df,type="candle",volume=True,datetime_format="%Y/%m/%d",
-                    title=values["in_2"],ylabel="株価(ドル/円)",ylabel_lower="出来高",mav=(5,25),style=cs)
+                    title=values["in_2"],ylabel="株価(ドル/円)",ylabel_lower="出来高",mav=(5,25,75),style=cs)
             plt.show()        
 
         else:
