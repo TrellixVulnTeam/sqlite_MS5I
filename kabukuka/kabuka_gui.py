@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import os
 import japanize_matplotlib
 import mplfinance as mpf
+import datetime
 
 sg.theme("Default")
 
@@ -65,7 +66,7 @@ lay_1 =sg.Tab( "米国株",[
     [sg.Text("開始日："),sg.InputText(key="in_Start",size=(11,1)),sg.CalendarButton("日付選択",format="%Y/%m/%d"),
     sg.Text("終了日："),sg.InputText(key="in_End",size=(11,1)),sg.CalendarButton("日付選択",format="%Y/%m/%d")],
     [sg.Button("データ表示",key="start_bt"),sg.Button("csvファイルに保存",key="save_csv"),sg.Button("Excelファイルに保存",key="save_excel")],
-    [sg.Button("グラフを描画",key="graph")],
+    [sg.Button("グラフを描画",key="graph"),sg.Button("日付比較",key="day_h")],
     [sg.Multiline(size=(80,20),key="out_1",)]
     ])
 
@@ -82,7 +83,7 @@ lay_2 =sg.Tab( "日本株",[
 
 layout = [[sg.TabGroup([[lay_1,lay_2]])]]
 
-window = sg.Window("株価取得", layout,finalize=True,resizable=True)
+window = sg.Window("株価取得", layout,finalize=True,resizable=True,icon="kabu48_48.ico")
 
 while True:
     event,values = window.read()
@@ -101,40 +102,17 @@ while True:
     if event == "graph":
         #入力欄に空白があるとmain関数を実行しない様に設定
         if bool(values["in_1"]) and bool(values["in_Start"]) and bool(values["in_End"]) == True:
-            #df = main(values["in_1"],values["in_Start"],values["in_End"])
+           
             df = mpf_main(values["in_1"],values["in_Start"],values["in_End"])
-            #fig = plt.figure(figsize=(6,6))#グラフサイズを指定
-            
-            
-            def start_chart():#始値を描画する
-                plt.plot(df.index,df["始値"],label="始値")
-
-            def end_chart():#終値を描画する
-                plt.plot(df.index,df["終値"],label="終値")
-
-            def high_chart():#高値を描画する
-                plt.plot(df.index,df["高値"],label="高値")
-
-            def low_chart():#安値を描画する
-                plt.plot(df.index,df["安値"],label="安値")
-
-            def AdjClose_chart():#調整済み終値を描画する
-                plt.plot(df.index,df["調整済み終値"],label="調整済み終値")
-
             #日本語対応する為の記述
             cs = mpf.make_mpf_style(rc={"font.family":"IPAexGothic"},gridcolor="gray",gridstyle="--")
             mpf.plot(df,type="candle",volume=True,datetime_format="%Y/%m/%d",
                     title=values["in_1"],ylabel="株価(ドル/円)",ylabel_lower="出来高",mav=(5,25,75),style=cs)
             
-
-            #plt.grid()#グリッドを追加
-            #plt.title(values["in_1"])
-            #plt.legend()
-            #plt.xticks(rotation=30)
             plt.show()
            
         else:
-            sg.popup("入力されていない項目があります")
+            sg.popup("入力されていない項目があります",icon="kabu48_48.ico")
             pass
     #【日本株】グラフを描画
     if event == "graph_2":
@@ -147,7 +125,7 @@ while True:
             plt.show()        
 
         else:
-            sg.popup("入力されていない項目があります")
+            sg.popup("入力されていない項目があります",icon="kabu48_48.ico")
             pass
     #【米国】アウトプット欄に株価データを表示
     if event == "start_bt":
@@ -159,7 +137,7 @@ while True:
             window["out_1"].update(value = out_mes("in_1",df))
             
         else:
-            sg.popup("入力されていない項目があります")
+            sg.popup("入力されていない項目があります",icon="kabu48_48.ico")
             pass
     #【日本株】アウトプット欄に株価データを表示
     if event == "start_2_bt":
@@ -168,7 +146,7 @@ while True:
             df = jp_main(values["in_2"],values["in_2_Start"],values["in_2_End"])
             window["out_2"].update(value = out_mes("in_2",df))
         else:
-            sg.popup("入力されていない項目があります")
+            sg.popup("入力されていない項目があります",icon="kabu48_48.ico")
             pass
     
     #【米国】csvデータ保存
@@ -176,55 +154,74 @@ while True:
         #入力欄に空白があるとmain関数を実行しない様に設定
         if bool(values["in_1"]) and bool(values["in_Start"]) and bool(values["in_End"]) == True:
             df = main(values["in_1"],values["in_Start"],values["in_End"])
-            folder = sg.popup_get_folder("保存先のフォルダを選択して下さい")
-            file_name = sg.popup_get_text("保存したいファイル名を入力して下さい")
-            file_path = os.path.join(folder,f"{file_name}.csv")
-            print(file_path)
-            df.to_csv(file_path,encoding="shift jis")
+            folder = sg.popup_get_folder("保存先のフォルダを選択して下さい",icon="kabu48_48.ico")
+            if folder == None:
+                pass
+            else:
+
+                file_name = sg.popup_get_text("保存したいファイル名を入力して下さい",icon="kabu48_48.ico")
+                file_path = os.path.join(folder,f"{file_name}.csv")
+                df.to_csv(file_path,encoding="shift jis")
         
         else:
-            sg.popup("入力されていない項目があります")
+            sg.popup("入力されていない項目があります",icon="kabu48_48.ico")
             pass
     #【日本株】csvデータ保存
     if event == "save_2_csv":
         #入力欄に空白があるとmain関数を実行しない様に設定
         if bool(values["in_2"]) and bool(values["in_2_Start"]) and bool(values["in_2_End"]) == True:
             df = jp_main(values["in_2"],values["in_2_Start"],values["in_2_End"])
-            folder = sg.popup_get_folder("保存先のフォルダを選択して下さい")
-            file_name = sg.popup_get_text("保存したいファイル名を入力して下さい")
-            file_path = os.path.join(folder,f"{file_name}.csv")
-            print(file_path)
-            df.to_csv(file_path,encoding="shift jis")
+            folder = sg.popup_get_folder("保存先のフォルダを選択して下さい",icon="kabu48_48.ico")
+            if folder == None:
+                pass
+            else:
+
+                file_name = sg.popup_get_text("保存したいファイル名を入力して下さい",icon="kabu48_48.ico")
+                file_path = os.path.join(folder,f"{file_name}.csv")
+                df.to_csv(file_path,encoding="shift jis")
         
         else:
-            sg.popup("入力されていない項目があります")
+            sg.popup("入力されていない項目があります",icon="kabu48_48.ico")
             pass
     #【米国】Excelデータ保存
     if event == "save_excel":
         #入力欄に空白があるとmain関数を実行しない様に設定
         if bool(values["in_1"]) and bool(values["in_Start"]) and bool(values["in_End"]) == True:
             df = main(values["in_1"],values["in_Start"],values["in_End"])
-            folder = sg.popup_get_folder("保存先のフォルダを選択して下さい")
-            file_name = sg.popup_get_text("保存したいファイル名を入力して下さい")
-            file_path = os.path.join(folder,f"{file_name}.xlsx")
-            
-            df.to_excel(file_path)
+            folder = sg.popup_get_folder("保存先のフォルダを選択して下さい",icon="kabu48_48.ico")
+            if folder == None:
+                pass
+            else:
+
+                file_name = sg.popup_get_text("保存したいファイル名を入力して下さい",icon="kabu48_48.ico")
+                file_path = os.path.join(folder,f"{file_name}.xlsx")
+                df.to_excel(file_path)
         
         else:
-            sg.popup("入力されていない項目があります")
+            sg.popup("入力されていない項目があります",icon="kabu48_48.ico")
             pass
     #【日本株】Excelデータ保存
     if event == "save_2_excel":
         #入力欄に空白があるとmain関数を実行しない様に設定
         if bool(values["in_2"]) and bool(values["in_2_Start"]) and bool(values["in_2_End"]) == True:
             df = jp_main(values["in_2"],values["in_2_Start"],values["in_2_End"])
-            folder = sg.popup_get_folder("保存先のフォルダを選択して下さい")
-            file_name = sg.popup_get_text("保存したいファイル名を入力して下さい")
-            file_path = os.path.join(folder,f"{file_name}.xlsx")
-            
-            df.to_excel(file_path)
+            folder = sg.popup_get_folder("保存先のフォルダを選択して下さい",icon="kabu48_48.ico")
+            if folder == None:
+                pass
+            else:
+
+                file_name = sg.popup_get_text("保存したいファイル名を入力して下さい",icon="kabu48_48.ico")
+                file_path = os.path.join(folder,f"{file_name}.xlsx")
+                df.to_excel(file_path)
         
         else:
-            sg.popup("入力されていない項目があります")
+            sg.popup("入力されていない項目があります",icon="kabu48_48.ico")
             pass
     
+    if event == "day_h":
+        first_day = values["in_Start"]
+        second_day = values["in_End"]
+        today = datetime.date.today()
+        today = today.strftime("%Y/%m/%d")
+        print(today<second_day)
+        print(first_day < second_day)
