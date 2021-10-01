@@ -66,7 +66,7 @@ lay_1 =sg.Tab( "米国株",[
     [sg.Text("開始日："),sg.InputText(key="in_Start",size=(11,1)),sg.CalendarButton("日付選択",format="%Y/%m/%d"),
     sg.Text("終了日："),sg.InputText(key="in_End",size=(11,1)),sg.CalendarButton("日付選択",format="%Y/%m/%d")],
     [sg.Button("データ表示",key="start_bt"),sg.Button("csvファイルに保存",key="save_csv"),sg.Button("Excelファイルに保存",key="save_excel")],
-    [sg.Button("グラフを描画",key="graph"),sg.Button("日付比較",key="day_h")],
+    [sg.Button("グラフを描画",key="graph")],
     [sg.Multiline(size=(80,20),key="out_1",)]
     ])
 
@@ -95,14 +95,26 @@ while True:
         m4 = "\n*************************************************************************************************"
         mes = f"{m1}{m2}{m3}{m4}"
         return mes
-
+    
     if event in (None,sg.WIN_CLOSED):
         break
+    
     #【米国】グラフを描画
     if event == "graph":
         #入力欄に空白があるとmain関数を実行しない様に設定
         if bool(values["in_1"]) and bool(values["in_Start"]) and bool(values["in_End"]) == True:
-           
+            #日付選択で未来の数字を入力した時にメッセージを表示
+            first_day = values["in_Start"]
+            second_day = values["in_End"]
+            today = datetime.date.today()
+            today = today.strftime("%Y/%m/%d")
+            if first_day > today:
+                sg.popup("本日以前の日程を選択して下さい",icon="kabu48_48.ico")
+                continue
+            elif second_day > today:
+                sg.popup("本日以前の日程を選択して下さい",icon="kabu48_48.ico")
+                continue
+
             df = mpf_main(values["in_1"],values["in_Start"],values["in_End"])
             #日本語対応する為の記述
             cs = mpf.make_mpf_style(rc={"font.family":"IPAexGothic"},gridcolor="gray",gridstyle="--")
@@ -131,6 +143,17 @@ while True:
     if event == "start_bt":
         #入力欄に空白があるとmain関数を実行しない様に設定
         if bool(values["in_1"]) and bool(values["in_Start"]) and bool(values["in_End"]) == True:
+            #日付選択で未来の数字を入力した時にメッセージを表示
+            first_day = values["in_Start"]
+            second_day = values["in_End"]
+            today = datetime.date.today()
+            today = today.strftime("%Y/%m/%d")
+            if first_day > today:
+                sg.popup("本日以前の日程を選択して下さい",icon="kabu48_48.ico")
+                continue
+            elif second_day > today:
+                sg.popup("本日以前の日程を選択して下さい",icon="kabu48_48.ico")
+                continue
             df = main(values["in_1"],values["in_Start"],values["in_End"])
             #window["table"].update(values=ui)
    
@@ -153,6 +176,17 @@ while True:
     if event == "save_csv":
         #入力欄に空白があるとmain関数を実行しない様に設定
         if bool(values["in_1"]) and bool(values["in_Start"]) and bool(values["in_End"]) == True:
+            #日付選択で未来の数字を入力した時にメッセージを表示
+            first_day = values["in_Start"]
+            second_day = values["in_End"]
+            today = datetime.date.today()
+            today = today.strftime("%Y/%m/%d")
+            if first_day > today:
+                sg.popup("本日以前の日程を選択して下さい",icon="kabu48_48.ico")
+                continue
+            elif second_day > today:
+                sg.popup("本日以前の日程を選択して下さい",icon="kabu48_48.ico")
+                continue
             df = main(values["in_1"],values["in_Start"],values["in_End"])
             folder = sg.popup_get_folder("保存先のフォルダを選択して下さい",icon="kabu48_48.ico")
             if folder == None:
@@ -187,6 +221,17 @@ while True:
     if event == "save_excel":
         #入力欄に空白があるとmain関数を実行しない様に設定
         if bool(values["in_1"]) and bool(values["in_Start"]) and bool(values["in_End"]) == True:
+            #日付選択で未来の数字を入力した時にメッセージを表示
+            first_day = values["in_Start"]
+            second_day = values["in_End"]
+            today = datetime.date.today()
+            today = today.strftime("%Y/%m/%d")
+            if first_day > today:
+                sg.popup("本日以前の日程を選択して下さい",icon="kabu48_48.ico")
+                continue
+            elif second_day > today:
+                sg.popup("本日以前の日程を選択して下さい",icon="kabu48_48.ico")
+                continue
             df = main(values["in_1"],values["in_Start"],values["in_End"])
             folder = sg.popup_get_folder("保存先のフォルダを選択して下さい",icon="kabu48_48.ico")
             if folder == None:
@@ -218,10 +263,3 @@ while True:
             sg.popup("入力されていない項目があります",icon="kabu48_48.ico")
             pass
     
-    if event == "day_h":
-        first_day = values["in_Start"]
-        second_day = values["in_End"]
-        today = datetime.date.today()
-        today = today.strftime("%Y/%m/%d")
-        print(today<second_day)
-        print(first_day < second_day)
