@@ -1,7 +1,7 @@
 
 from pathlib import Path
 from pdf2image import convert_from_path
-import PySimpleGUIQt as sg
+import PySimpleGUI as sg
 import subprocess
 import openpyxl
 import os
@@ -11,6 +11,14 @@ from openpyxl.drawing.image import Image
 import shutil
 import re
 
+#画面がぼやけるのを回避するコード
+import ctypes
+try:
+    ctypes.windll.shcore.SetProcessDpiAwareness(True)
+except:
+    pass
+#オプション設定
+sg.set_options(use_ttk_buttons=True)
 
 #pyinstallerでexe化する時にエラーを回避する為の表記↓
 _original_constructor = subprocess.Popen.__init__

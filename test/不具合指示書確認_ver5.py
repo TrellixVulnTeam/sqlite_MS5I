@@ -19,7 +19,8 @@ try:
     ctypes.windll.shcore.SetProcessDpiAwareness(True)
 except:
     pass
-
+#オプション設定
+sg.set_options(icon="不具合.ico",use_ttk_buttons=True)
 # coding: utf-8
 #GUIテーマを設定
 sg.theme("Default")

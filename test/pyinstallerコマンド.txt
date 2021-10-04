@@ -1,0 +1,1 @@
+pyinstaller --icon=不具合.ico --noconsole 不具合指示書確認_ver5.py

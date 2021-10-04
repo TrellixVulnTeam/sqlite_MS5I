@@ -65,6 +65,7 @@ def select(file_name):
 
         return name_list        
     except:
+        sg.popup("データを取得できません\n入力されていない項目があります")
         pass
 
 

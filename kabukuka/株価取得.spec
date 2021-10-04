@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(['株価取得.py'],
-             pathex=['C:\\Users\\onoga\\desktop\\MyDocker\\Git\\sqlite\\kabukuka'],
+             pathex=['C:\\Users\\60837\\Desktop\\Mypython\\Git\\sqlite\\kabukuka'],
              binaries=[],
              datas=[],
              hiddenimports=[],
