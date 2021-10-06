@@ -22,12 +22,15 @@ sg.set_options(use_ttk_buttons=True)
 
 #pyinstallerでexe化する時にエラーを回避する為の表記↓
 _original_constructor = subprocess.Popen.__init__
+
 def _patched_constructor(*args, **kwargs):
-    kwargs['stdin'] = subprocess.PIPE
+    for key in ('stdin', 'stdout', 'stderr'):
+        if key not in kwargs:
+            kwargs[key] = subprocess.PIPE
 
     return _original_constructor(*args, **kwargs)
-subprocess.Popen.__init__ = _patched_constructor
 
+subprocess.Popen.__init__ = _patched_constructor
 
 
 #test_dirがCドライブに存在している場合は削除する
