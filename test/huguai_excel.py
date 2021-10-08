@@ -2,7 +2,7 @@ import openpyxl
 import pandas as pd
 
 def excel(file_name):
-    wb = openpyxl.load_workbook(file_name)
+    wb = openpyxl.load_workbook(file_name,read_only=True)
     ws = wb["金型修理改善依頼書"]
     #品番
     hinban = ws["C13"]
