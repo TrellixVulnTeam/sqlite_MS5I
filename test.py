@@ -27,6 +27,12 @@ file_save_col_name = ["更新時間","ファイル名"]
 sg.theme("LightBlue3")
 sgq.theme("LightBlue3")
 
+#オプション設定
+sg.set_options(
+    use_ttk_buttons=True
+)
+
+
 #sqliteの設定
 conn = sqlite3.connect("task.db")
 
@@ -125,11 +131,11 @@ def real(path,name):#name,number
 
 lib_name = select()
 combo_list = ["やること","ToDo"]
-la_1=sg.Tab("やることリスト",[      
+la_1=sg.Tab("やることリスト",[     
                 [sg.Multiline(key="in"),sg.Button("内容更新",key="up_1")],
                 [sg.Table(values=lib_name,enable_events=True,key="table",col_widths=[13,30],background_color="white",text_color="black",select_mode="extended",headings=main_col_name,
-                    justification="left",auto_size_columns=False,num_rows=10)],
-                [sg.Button("完了",key="comp"),sg.Button("削除",key="del_1"),sg.Button("Gitコピー",key="cp")],
+                  justification="left",auto_size_columns=False,num_rows=10,row_colors=(settings["table_color"]),right_click_menu=["",["マーク","マーク解除"]])],
+                [sg.Button("完了",key="comp"),sg.Button("削除",key="del_1"),sg.Button("Gitコピー",key="cp"),sg.Button("プロキシコピー",key="pro")],
                 [sg.Menu(menu_definition=[["タスクを追加する(&T)",["タスクを追加する(&T)"]],
                                           ["window",["最前面","---","最前面クリア"]]],background_color="white",)],])
 
@@ -189,6 +195,8 @@ while True:
             conn.commit()
             window["table"].update(values = select())
             c.close()
+            window["table"].update(row_colors=(settings["table_color"]))
+            settings["table_color"] = settings["table_color"]+[[values["table"][0],"black","white"]]
 
     #履歴のlogをを削除する
     def delete_log():
@@ -205,6 +213,7 @@ while True:
                 conn.commit()
                 window["log"].update(values = select_log())
                 c.close()
+                
             elif values["combo"] == "ToDo":
                 c = conn.cursor()
                 elem = window["log"].get()
@@ -305,6 +314,7 @@ while True:
 
             updete_act(name=outtime, up_name=values["in"], old_name=log_name)
             window["table"].update(values = select())
+            window["table"].update(row_colors=(settings["table_color"]))
     #完了ボタンを押したときの処理
     if event == "comp":
         if values["table"] == []:
@@ -319,6 +329,7 @@ while True:
             insert_log(nowtime,log_name)
             window["log"].update(values = select_log())
             delete()
+            settings["table_color"] = settings["table_color"]+[[values["table"][0],"black","white"]]
 
 
     #タスクを追加する処理
@@ -336,6 +347,7 @@ while True:
                 insert(get_text)
     
         window["table"].update(values = select())
+        window["table"].update(row_colors=(settings["table_color"]))
     
     #ToDoリストの完了ボタンを押したときの処理
     if event == "todo_b1":
@@ -453,3 +465,25 @@ while True:
     #git　トークンのコピー
     if event == "cp":
         sg.clipboard_set("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")
+
+    #プロキシ設定コピー
+    if event == "pro":
+        sg.clipboard_set("set HTTPS_PROXY=192.168.224.10:8080")
+    
+    #やることリストテーブル色をマークする
+    if event == "マーク":
+        if values["table"] == []:
+            sg.popup("テーブルを選択して下さい")
+        else:
+            window["table"].update(row_colors=([[values["table"][0],"black","yellow"]]))
+            settings["table_color"] = settings["table_color"]+[[values["table"][0],"black","yellow"]]
+
+    #やることリストテーブル色マーク解除
+    if event == "マーク解除":
+        if values["table"] == []:
+            sg.popup("テーブルを選択して下さい")
+        else:
+            window["table"].update(row_colors=([[values["table"][0],"black","white"]]))
+            settings["table_color"] = settings["table_color"]+[[values["table"][0],"black","white"]]
+    
+    
