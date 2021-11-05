@@ -464,7 +464,7 @@ while True:
         window.keep_on_top_clear()
     #git　トークンのコピー
     if event == "cp":
-        sg.clipboard_set("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")
+        sg.clipboard_set("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")
 
     #プロキシ設定コピー
     if event == "pro":
