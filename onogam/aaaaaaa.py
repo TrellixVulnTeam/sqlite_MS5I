@@ -20,7 +20,7 @@ gc = gspread.authorize(credentials)
 cell_number = "B2"
 input_value = "TEST"
 wks = gc.open(sheet_name).sheet1
-wks_key = gc.open(sheet_name)
+
 #wks.update_acell(cell_number,input_value)
 #wks.update_acell("A5","onoami27")
 def sp():
@@ -40,7 +40,7 @@ count = 0+int(count_now)
 lay= [
     [sg.Button("push",key="bt_1"),sg.Button("reset",key="reset",button_color="red")],
     [sg.Text(count,key="tx_1")],
-    [sg.Button("スプレッドシート",enable_events=True,key="url")]
+    [sg.Button("スプレッドシート",enable_events=True,key="url"),sg.Button("add",key="add")]
 ]
 
 
@@ -66,7 +66,11 @@ while True:
             wks.update_acell(cell_number,count)
             wks.update_acell("C2",f"{date_now}")
     except:
-        pass
+        gc = gspread.authorize(credentials)
+        wks = gc.open(sheet_name).sheet1
 
     if event == "url":
         webbrowser.open("https://docs.google.com/spreadsheets/d/1TxLzcHODFNkWDrJyT7931PQrbndDyW08CSKIAWJ_VqE/edit?usp=sharing")
+
+    if event == "add":
+        wks.append_row(["1",count,f"{date_now}"])
