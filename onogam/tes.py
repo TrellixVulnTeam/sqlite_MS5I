@@ -11,12 +11,12 @@ creator.create( "FitnessMax", base.Fitness, weights=(1.0,) )
 creator.create("Individual", list, fitness = creator.FitnessMax )
 #各品物の（重さ,価値）をitemsに格納
 items = {}
-items[0]=(5,110)
-items[1]=(10,140)
-items[2]=(9,150)
-items[3]=(5,130)
-items[4]=(5,110)
-items[5]=(4,90)
+items[0] = (5,100)#おにぎり
+items[1] = (10,140)#ポテチ
+items[2] = (9,150)#お茶
+items[3] = (5,130)#コーヒー
+items[4] = (5,110)#バナナ
+items[5] = (4,90)#パン
 #目的関数の定義。#必ずreturnの後に,をつける
 #個体は(1,3,0,2,4,3)などであり、総価値と総重量を計算します。
 #重量が100を超えてはいけないので、100を超えた場合、価値を0にします。
@@ -48,9 +48,9 @@ toolbox.register("evaluate", evalKnapsack)
 #乱数の固定
 random.seed(128)
 #何世代まで行うか
-NGEN = 60
+NGEN = 100
 #集団の個体数
-POP = 10000
+POP = 100
 #交叉確率
 CXPB = 0.9
 #個体が突然変異を起こす確率
