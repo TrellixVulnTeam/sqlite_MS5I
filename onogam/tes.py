@@ -48,13 +48,13 @@ toolbox.register("evaluate", evalKnapsack)
 #乱数の固定
 random.seed(128)
 #何世代まで行うか
-NGEN = 60
+NGEN = 100
 #集団の個体数
 POP = 10000
 #交叉確率
 CXPB = 0.9
 #個体が突然変異を起こす確率
-MUTPB = 0.1
+MUTPB = 0.2
 #集団は80個体という情報の設定
 pop = toolbox.population(n=POP)
 #集団内の個体それぞれの適応度（目的関数の値）を計算

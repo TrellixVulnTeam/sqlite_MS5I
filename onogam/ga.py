@@ -19,7 +19,7 @@ creator.create("Individual", list, fitness=creator.FitnessMin)
 def obfunc(individual):
     x = individual[0]
     y = individual[1]
-    object = (x-1)**2 + (y-2)**2
+    object = (x*50-6)**2 + (y-2)**2
     #(x,y)=(1,2)で最小になるはず。これを遺伝的アルゴリズムで求める
     return object,
 
@@ -49,7 +49,7 @@ random.seed(64)
 #何世代まで行うか
 NGEN = 50
 #集団の個体数
-POP = 80
+POP = 100
 #交叉確率
 CXPB = 0.9
 #個体が突然変異を起こす確率

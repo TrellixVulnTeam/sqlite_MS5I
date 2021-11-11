@@ -274,7 +274,7 @@ while True:
             pass
         else:
             try:
-                path = sg.popup_get_folder("保存先フォルダを選択して下さい",title="保存先選択")
+                path = sg.popup_get_folder("保存先フォルダを選択して下さい",title="保存先選択",history=True)
                 get_value = window["file_save"].get()
                 outtime = get_value[values["file_save"][0]][0]
                 file_save_name = get_value[values["file_save"][0]][1]
