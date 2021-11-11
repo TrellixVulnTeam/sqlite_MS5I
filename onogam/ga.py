@@ -19,7 +19,11 @@ creator.create("Individual", list, fitness=creator.FitnessMin)
 def obfunc(individual):
     x = individual[0]
     y = individual[1]
+<<<<<<< HEAD
     object = (x*50-6)**2 + (y-2)**2
+=======
+    object = (x-5)**2 + (y-2)**2
+>>>>>>> 38865c6bae90f84556768ecd26215fddd4b78a6a
     #(x,y)=(1,2)で最小になるはず。これを遺伝的アルゴリズムで求める
     return object,
 
@@ -33,7 +37,7 @@ toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.att
 #集団の個体数を設定するための関数を準備
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 #トーナメント方式で次世代に子を残す親を選択（tornsizeは各トーナメントに参加する個体の数）
-toolbox.register("select", tools.selTournament, tournsize=5)
+toolbox.register("select", tools.selTournament, tournsize=10)
 #交叉関数の設定。ブレンド交叉という手法を採用
 toolbox.register("mate", tools.cxBlend,alpha=0.2)
 #突然変異関数の設定。indpbは各遺伝子が突然変異を起こす確率。muとsigmaは変異の平均と標準偏差
@@ -49,7 +53,11 @@ random.seed(64)
 #何世代まで行うか
 NGEN = 50
 #集団の個体数
+<<<<<<< HEAD
 POP = 100
+=======
+POP = 120
+>>>>>>> 38865c6bae90f84556768ecd26215fddd4b78a6a
 #交叉確率
 CXPB = 0.9
 #個体が突然変異を起こす確率
