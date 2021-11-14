@@ -11,4 +11,4 @@ toolbox.register("init",tools.initRepeat, creator.Individual, toolbox.a,2)
 
 x = tools.initRepeat(creator.Individual,random.random,4)
 #y = tools.
-print(toolbox.evaluate(1))
+algorithms.eaSimple(population=1,toolbox=toolbox,cxpb=0.9,mutpb=0.1,ngen=50,halloffame=tools.ParetoFront())
