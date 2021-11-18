@@ -6,7 +6,11 @@ import time
 import PySimpleGUI as sg
 import datetime
 import webbrowser
+
+
 key_name = r"python-api-project-331021-5d18bfc4ee9a.json" #jsonキー名
+
+
 sheet_name = "testcsv" #スプレッドシート名
 
 #APIにアクセス

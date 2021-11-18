@@ -18,3 +18,6 @@ toolbox.register("mutate", tools.mutUniformInt, low=0, up=20,indpd =0.2)
 x = tools.initRepeat(creator.Individual,random.random,4)
 #y = tools.
 print(x)
+
+algorithms.eaSimple(population=1,toolbox=toolbox,cxpb=0.9,mutpb=0.1,ngen=50,halloffame=tools.ParetoFront())
+
