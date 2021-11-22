@@ -1,7 +1,15 @@
 import cv2
 import numpy as np
 
-img = cv2.imread(r"C:\Users\60837\Desktop\Resized\PXL_20211109_071617813.jpg")
+img = cv2.imread(r"C:\Users\onoga\desktop\MyDocker\Git\sqlite\onogam\ok\an1.png")
+
+#画像高さを取得
+height = img.shape[0]
+#画像幅を取得
+width = img.shape[1]
+print(height,width)
+
+cv2.line(img, (0,0), (width, height),(255,255,0),5)
 
 def onMouse (event, x, y, flags, params):
     
@@ -21,7 +29,6 @@ def onMouse (event, x, y, flags, params):
         cv2.imshow("", img)
             
         
-        
         #マウスの位置に青線を追加する
     if event == cv2.EVENT_MOUSEMOVE:  # マウスが移動したときにx線とy線を更新する
         img2 = np.copy(img)
@@ -29,8 +36,14 @@ def onMouse (event, x, y, flags, params):
         cv2.line(img2, (x, 0), (x, h - 1), (255, 0, 0))
         cv2.line(img2, (0, y), (w - 1, y), (255, 0, 0))
         cv2.imshow("", img2)
+
             
-cv2.imshow("",img)
+
+cv2.imshow("", img)
 
 cv2.setMouseCallback("",onMouse)
-cv2.waitKey(0)
+while (True):
+    
+    
+    if cv2.waitKey(1) & 0xFF == ord("q"):
+        break
