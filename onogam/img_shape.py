@@ -1,7 +1,22 @@
 import cv2
 import numpy as np
+import sys
+img = cv2.imread(r"C:\Users\60837\Desktop\Resized\PXL_20211116_040747315.NIGHT.jpg")
 
-img = cv2.imread(r"C:\Users\onoga\desktop\MyDocker\Git\sqlite\onogam\ok\an1.png")
+class PointList():
+    def __init__(self, npoints):
+        self.npoints = npoints
+        self.ptlist = np.empty((npoints, 2), dtype=int)
+        self.pos = 0
+
+    def add(self, x, y):
+        if self.pos < self.npoints:
+            self.ptlist[self.pos, :] = [x, y]
+            self.pos += 1
+            return True
+        return False
+
+
 
 #画像高さを取得
 height = img.shape[0]
@@ -10,7 +25,8 @@ width = img.shape[1]
 print(height,width)
 
 cv2.line(img, (0,0), (width, height),(255,255,0),5)
-
+cv2.rectangle(img, (100,20),(120,50),(0,0,255),1)
+count = 0
 def onMouse (event, x, y, flags, params):
     
      
@@ -27,6 +43,8 @@ def onMouse (event, x, y, flags, params):
         #cv2.line(img,(x,y),(0,y),(0,255,0),thickness=2)
         #cv2.line(img,(x,y),(x,0),(0,255,0),thickness=2)
         cv2.imshow("", img)
+        
+        
             
         
         #マウスの位置に青線を追加する
@@ -37,13 +55,14 @@ def onMouse (event, x, y, flags, params):
         cv2.line(img2, (0, y), (w - 1, y), (255, 0, 0))
         cv2.imshow("", img2)
 
+    if count >2:
+        sys.exit()
             
 
 cv2.imshow("", img)
-
-cv2.setMouseCallback("",onMouse)
-while (True):
-    
-    
-    if cv2.waitKey(1) & 0xFF == ord("q"):
-        break
+npoints = 4
+ptlist = PointList(npoints)
+cv2.setMouseCallback("", onMouse, ["", img, ptlist])
+cv2.imshow("", img)
+cv2.waitKey()
+cv2.destroyAllWindows()
