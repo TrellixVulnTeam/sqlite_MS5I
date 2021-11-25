@@ -47,7 +47,7 @@ class PointList():
 
 
 def onMouse(event, x, y, flag, params):
-    count = 0
+    
     wname, img, ptlist = params
     if event == cv2.EVENT_MOUSEMOVE:  # マウスが移動したときにx線とy線を更新する
         img2 = np.copy(img)
@@ -55,7 +55,7 @@ def onMouse(event, x, y, flag, params):
         cv2.line(img2, (x, 0), (x, h - 1), (255, 0, 0))
         cv2.line(img2, (0, y), (w - 1, y), (255, 0, 0))
         cv2.imshow(wname, img2)
-        count +=1
+        
 
     if event == cv2.EVENT_LBUTTONDOWN:  # レフトボタンをクリックしたとき、ptlist配列にx,y座標を格納する
         if ptlist.add(x, y):
@@ -74,8 +74,7 @@ def onMouse(event, x, y, flag, params):
                      (ptlist.ptlist[3][0], ptlist.ptlist[3][1]), (0, 255, 0), 3)
             cv2.line(img, (ptlist.ptlist[3][0], ptlist.ptlist[3][1]),
                      (ptlist.ptlist[0][0], ptlist.ptlist[0][1]), (0, 255, 0), 3)
-    if count >2:
-        sys.exit()
+   
 
 if __name__ == '__main__':
     img = cv2.imread(r"C:\Users\60837\Desktop\Resized\PXL_20211116_040747315.NIGHT.jpg")
