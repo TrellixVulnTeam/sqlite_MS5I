@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import sys
-img = cv2.imread(r"C:\Users\60837\Desktop\Resized\PXL_20211116_040747315.NIGHT.jpg")
+img = cv2.imread(r"C:\Users\onoga\desktop\MyDocker\Git\origin\test\pos\ok_1.png")
 
 class PointList():
     def __init__(self, npoints):

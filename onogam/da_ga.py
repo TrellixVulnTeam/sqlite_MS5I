@@ -77,7 +77,7 @@ def onMouse(event, x, y, flag, params):
    
 
 if __name__ == '__main__':
-    img = cv2.imread(r"C:\Users\60837\Desktop\Resized\PXL_20211116_040747315.NIGHT.jpg")
+    img = cv2.imread(r"C:\Users\onoga\desktop\MyDocker\Git\origin\test\pos\ok_1.png")
     wname = "MouseEvent"
     cv2.namedWindow(wname)
     npoints = 4
