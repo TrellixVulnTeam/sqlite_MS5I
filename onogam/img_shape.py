@@ -28,7 +28,7 @@ cv2.line(img, (0,0), (width, height),(255,255,0),5)
 cv2.rectangle(img, (100,20),(120,50),(0,0,255),1)
 count = 0
 def onMouse (event, x, y, flags, params):
-    
+   
      
     if event == cv2.EVENT_LBUTTONDOWN:# レフトボタンをクリックしたとき、ptlist配列にx,y座標を格納する 
  
@@ -58,11 +58,23 @@ def onMouse (event, x, y, flags, params):
     if count >2:
         sys.exit()
             
-
+def event_mouse(event, x, y,a,b):
+    global n1 , n2 , count
+    n1 = x
+    n2 = y
+    if event == cv2.EVENT_LBUTTONDOWN:
+        count += 1
+    if count == 2:
+        print(n1, n2)
+        
+        return n1,n2
+        
 cv2.imshow("", img)
-npoints = 4
-ptlist = PointList(npoints)
-cv2.setMouseCallback("", onMouse, ["", img, ptlist])
+#npoints = 4
+#ptlist = PointList(npoints)
+
+list = cv2.setMouseCallback("", event_mouse,)
+
 cv2.imshow("", img)
 cv2.waitKey()
 cv2.destroyAllWindows()
