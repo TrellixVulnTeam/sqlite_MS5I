@@ -8,6 +8,7 @@ import sys
 outlook = win32com.client.Dispatch("Outlook.Application").GetNamespace("MAPI")
 
 accounts = outlook.Folders
-for account in accounts:
-    print(account)
+print(outlook.Folders)
+#for account in accounts:
+ #   print(account)
     
