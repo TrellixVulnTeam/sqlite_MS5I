@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import sys
-img = cv2.imread(r"C:\Users\60837\Desktop\Resized\PXL_20211123_034215316.jpg")
+img = cv2.imread(r"C:\Users\onoga\desktop\MyDocker\Git\sqlite\onogam\ok\an1.png")
 
 class PointList():
     def __init__(self, npoints):
@@ -64,7 +64,7 @@ p_3 = []
 p_4 = [] 
 total = []         
 def event_mouse(event, x, y,a,b):
-    global  count
+    global  count , aa , bb
     
     count = count
 
@@ -75,7 +75,8 @@ def event_mouse(event, x, y,a,b):
             pt_1.append((x,y))
             total.append(x)
             total.append(y)
-            cv2.circle(img, (x,y), 1,(255,0,0),thickness=3)
+            cv2.circle(img, (x,y), 1,(255,0,0),thickness=2)
+            
             cv2.imshow("",img)
             
                 
@@ -84,26 +85,43 @@ def event_mouse(event, x, y,a,b):
             pt_2.append((x,y))
             total.append(x - pt_1[0][0])
             total.append(y - pt_1[0][1])
-            cv2.circle(img, (x,y), 1,(255,0,0),thickness=3)
+            cv2.circle(img, (x,y), 1,(255,0,0),thickness=2)
             cv2.rectangle(img, pt_1[0],pt_2[0],(0,0,255),thickness=3)
             cv2.imshow("",img)
             print(pt_1,pt_2)
             print(total)
-            
-        
-        if count == 3:
+           
+            #リセットする
             count = 0
             pt_1.clear()
             pt_2.clear()
             total.clear()
             
-            
     if event == cv2.EVENT_MOUSEMOVE:  # マウスが移動したときにx線とy線を更新する
-        img2 = np.copy(img)
-        h, w = img2.shape[0], img2.shape[1]
-        cv2.line(img2, (x, 0), (x, h - 1), (255, 0, 0))
-        cv2.line(img2, (0, y), (w - 1, y), (255, 0, 0))
-        cv2.imshow("", img2)        
+        if count == 0:
+            
+            img2 = np.copy(img)
+            h, w = img2.shape[0], img2.shape[1]
+            cv2.line(img2, (x, 0), (x, h - 1), (255, 0, 0))
+            cv2.line(img2, (0, y), (w - 1, y), (255, 0, 0))
+            cv2.imshow("", img2) 
+            
+        if count == 1:
+            
+            img2 = np.copy(img)
+            h, w = img2.shape[0], img2.shape[1]
+            cv2.rectangle(img2, pt_1[0], (x,y), (255,0,0),thickness=1)
+            #cv2.line(img2, pt_1[0], (x, pt_1[0][1]), (255, 0, 0))
+            #cv2.line(img2, pt_1[0], (pt_1[0][0], y), (255, 0, 0))
+            cv2.imshow("", img2) 
+     
+            
+  #  if event == cv2.EVENT_MOUSEMOVE:  # マウスが移動したときにx線とy線を更新する
+  #      img2 = np.copy(img)
+  #      h, w = img2.shape[0], img2.shape[1]
+  #      cv2.line(img2, (x, 0), (x, h - 1), (255, 0, 0))
+  #      cv2.line(img2, (0, y), (w - 1, y), (255, 0, 0))
+  #      cv2.imshow("", img2)        
             
         
             
