@@ -5,8 +5,6 @@ import random
 import sys
 import os
 
-import xlwings
-
 
 list = ["a","b","c"]
 out_list = []
