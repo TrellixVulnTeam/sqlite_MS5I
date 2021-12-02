@@ -3,9 +3,26 @@ import numpy as np
 import os
 
 count = 0
+
+#カレントディレクトリのパスを取得する
+def get_path(path):
+    file_list = []
+    #カレントディレクトリを移動する
+    os.chdir(path)
+    #ディレクトリ内のファイルを取得
+    file_path = os.listdir(path)
+    for i in file_path:
+        #絶対パスで表示させる
+        x = os.path.abspath(i)
+        file_list.append(x)
+    
+    return file_list
+
+
+
 def main(img_path):
     #写真データ読み込み
-    img = cv2.imread(r"{}".format(img_path))
+    img = cv2.imread(img_path)
     
     pt_1 = []
     pt_2 = [] 
@@ -73,22 +90,9 @@ def main(img_path):
     cv2.waitKey()
     cv2.destroyAllWindows()
 
-#カレントディレクトリのパスを取得する
-def get_path(path):
-    
-    #カレントディレクトリのpath取得
-    cd_path = os.getcwd()
 
-    #ファイルパス取得
-    file_path = os.listdir(r"{}".format(path))
+file_path = get_path(r"C:\Users\onoga\desktop\test_pic")
 
-    file_list = []
-    #パスの結合
-    for i in file_path:
-        
-        file_path_end = os.path.join(cd_path,i)
-        file_list.append(file_path_end)
-    
-    return file_list
-
-print(get_path(r"C:\Users\60837\Desktop\Resized"))
+#メイン
+for i in file_path:
+    main(i)
