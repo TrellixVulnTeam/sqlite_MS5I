@@ -147,5 +147,6 @@ while True:
             file_name = os.path.join(value["output"],value["out_name"])
             f = open(file_name, "a")
             f.write(f"{i} {final[0]}{final[1]}\n")
+            f.close()
             #lecをクリア
             lec = ""

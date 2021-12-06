@@ -90,7 +90,6 @@ def main(img_path):
 
     #マウスイベント（コールバック関数）を定義
     cv2.setMouseCallback("", event_mouse,)
-
     cv2.waitKey()
     cv2.destroyAllWindows()
     return {"total" :total , "num" :num[0]}
