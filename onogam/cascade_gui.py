@@ -14,12 +14,12 @@ def get_path(path):
     os.chdir(path)
     #ディレクトリ内のファイルを取得
     file_path = os.listdir(path)
-    for i in file_path:
+    #for i in file_path:
         #絶対パスで表示させる
-        x = os.path.abspath(i)
-        file_list.append(x)
+        #x = os.path.abspath(i)
+        #file_list.append(x)
     
-    return file_list
+    return file_path
 
 #画面がぼやけるのを回避するコード
 import ctypes
