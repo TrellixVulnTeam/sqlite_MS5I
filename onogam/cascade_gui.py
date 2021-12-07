@@ -104,7 +104,7 @@ def main(img_path):
     return {"total" :total , "num" :num[0]}
 
 #レイアウト
-lay = [
+pos_file = sg.Tab("poslistファイル作成",[
     [sg.Text("画像ファイルが格納してあるフォルダを選択してください")],
     [sg.InputText(key="input"), sg.FolderBrowse(button_text="選択")],
     [sg.Text("出力先のフォルダを選択してください")],
@@ -112,10 +112,15 @@ lay = [
     [sg.Text("出力ファイル名"),sg.InputText(default_text="poslist.txt",size=(20,10),key=("out_name"))],
     [sg.Button("開始",key="bt_start")]
     
-]
+])
 
+rename = sg.Tab("ファイルリネーム",[
+    [sg.Text("aaaa")]
+])
 
-window = sg.Window("画像　アノテーション　ツール", lay)
+fin =[[ sg.TabGroup([[rename,pos_file]])]]
+
+window = sg.Window("画像　アノテーション　ツール", fin)
 
 while True:
     event,value = window.read()
