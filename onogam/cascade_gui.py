@@ -9,7 +9,7 @@ sg.set_options(use_ttk_buttons=True)
 #テーマの設定
 sg.theme("DarkGrey2")
 #ユーザーセッティング
-settings = sg.UserSettings()
+settings = sg.UserSettings(filename="onogami_test")
 settings.load()
 
 #カレントディレクトリのパスを取得する
@@ -124,8 +124,13 @@ def file_rename(path,cas_name):
 #各種設定ウィンドウ
 def set():
     
+    
+    
     layout = [
+        [sg.Text("➀作業フォルダを選択してください")],
         [sg.InputText(key="input_path",default_text=settings["file_path"]),sg.FolderBrowse("選択")],
+        [sg.Text("➁各種フォルダを作成"),sg.Button("作成",key="make_bt")],
+        [sg.Button("設定保存",key="save")]
         
     ]
     
@@ -133,6 +138,14 @@ def set():
     
     while True:
         event,value = window.read()
+        
+        def new_folder():
+            os.mkdir(os.path.join(value["input_path"],"cascade"))
+            os.mkdir(os.path.join(value["input_path"],"neg"))
+            os.mkdir(os.path.join(value["input_path"],"neg"))
+            os.mkdir(os.path.join(value["input_path"],"vec"))
+        
+        
         if event == None:
             break
 
