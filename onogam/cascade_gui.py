@@ -4,8 +4,13 @@ import os
 import PySimpleGUI as sg
 
 count = 0
+#オプション設定
 sg.set_options(use_ttk_buttons=True)
+#テーマの設定
 sg.theme("DarkGrey2")
+#ユーザーセッティング
+settings = sg.UserSettings()
+settings.load()
 
 #カレントディレクトリのパスを取得する
 def get_path(path):
@@ -103,24 +108,60 @@ def main(img_path):
     
     return {"total" :total , "num" :num[0]}
 
-#レイアウト
-pos_file = sg.Tab("poslistファイル作成",[
-    [sg.Text("画像ファイルが格納してあるフォルダを選択してください")],
-    [sg.InputText(key="input"), sg.FolderBrowse(button_text="選択")],
-    [sg.Text("出力先のフォルダを選択してください")],
-    [sg.InputText(key="output"), sg.FolderBrowse(button_text="選択")],
-    [sg.Text("出力ファイル名"),sg.InputText(default_text="poslist.txt",size=(20,10),key=("out_name"))],
-    [sg.Button("開始",key="bt_start")]
+#ファイルを一括リネーム
+def file_rename(path,cas_name):
+    
+    count = 1
+    file = os.listdir(path)
+    
+    for zname in file:
+        under_name = os.path.splitext(zname)[1] #拡張子取得
+        new_name = os.path.join(path,zname) #取得したファイル名を絶対パスに変更
+ 
+        os.rename(new_name,os.path.join(path,f"{cas_name}{count}{under_name}"))#リネーム
+        count +=1
+
+#各種設定ウィンドウ
+def set():
+    
+    layout = [
+        [sg.InputText(key="input_path",default_text=settings["file_path"]),sg.FolderBrowse("選択")],
+        
+    ]
+    
+    window = sg.Window("環境設定",layout)
+    
+    while True:
+        event,value = window.read()
+        if event == None:
+            break
+
+
+rename = sg.Tab("ファイルリネーム",[
+    [sg.Text("ファイル名一括リネームしたいフォルダを選択")],
+    [sg.InputText(key="input_1"), sg.FolderBrowse("選択")],
+    [sg.Text("ファイル名:"),sg.InputText(default_text="pos_",key="file_name",size=(20,10))],
+    [sg.Text("※ファイル名がpos_の場合pos_1,pos_2という様になります",text_color="yellow",)],
+    [sg.Button("開始",key="bt_start_1"),sg.Output()],
     
 ])
 
-rename = sg.Tab("ファイルリネーム",[
-    [sg.Text("aaaa")]
+#レイアウト
+pos_file = sg.Tab("poslistファイル作成",[
+    [sg.Text("画像ファイルが格納してあるフォルダを選択してください")],
+    [sg.InputText(key="input_2"), sg.FolderBrowse(button_text="選択")],
+    [sg.Text("出力先のフォルダを選択してください")],
+    [sg.InputText(key="output"), sg.FolderBrowse(button_text="選択")],
+    [sg.Text("出力ファイル名"),sg.InputText(default_text="poslist.txt",size=(20,10),key=("out_name"))],
+    [sg.Button("開始",key="bt_start_2")],
+    [sg.Menu(menu_definition=[["設定","設定"]],background_color="white")],
+    
 ])
 
-fin =[[ sg.TabGroup([[rename,pos_file]])]]
 
-window = sg.Window("画像　アノテーション　ツール", fin)
+fin =[[ sg.TabGroup([[rename,pos_file]]),]]
+
+window = sg.Window("画像　アノテーション　ツール",layout=fin,finalize=True,)
 
 while True:
     event,value = window.read()
@@ -128,8 +169,21 @@ while True:
     if event == None:
         break
     
-    if event == "bt_start":
-        if value["input"] == "":
+    if event == "設定":
+        set()
+    
+    if event == "bt_start_1":
+        if value["input_1"] == "":
+            sg.popup("選択されていない項目があります")
+            continue
+        if value["file_name"] == "":
+            sg.popup("選択されていない項目があります")
+            continue
+        print(settings["file_path"])
+        file_rename(value["input_1"],value["file_name"])
+        
+    if event == "bt_start_2":
+        if value["input_2"] == "":
             sg.popup("選択されていない項目があります")
             continue
         if value["output"] == "":
@@ -138,7 +192,7 @@ while True:
         if value["out_name"] == "":
             sg.popup("選択されていない項目があります")
             continue
-        file_path = get_path(value["input"])
+        file_path = get_path(value["input_2"])
         lec = ""
         #メイン
         for i in file_path:
@@ -155,3 +209,4 @@ while True:
             f.close()
             #lecをクリア
             lec = ""
+    
