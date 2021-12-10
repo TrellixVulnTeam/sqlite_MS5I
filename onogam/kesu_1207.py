@@ -17,4 +17,9 @@ def rename(path,cas_name):
         os.rename(new_name,os.path.join(path,f"{cas_name}{count}{under_name}"))#リネーム
         count +=1
 
-rename(r"C:\Users\onoga\desktop\test_img", "pos_")
+
+list = ["a","b",1,2,"Z"]
+
+test = int("1") in list
+
+print(test)

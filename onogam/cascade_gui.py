@@ -1,3 +1,4 @@
+from PySimpleGUI.PySimpleGUI import FolderBrowse
 import cv2
 import numpy as np
 import os
@@ -129,8 +130,12 @@ def set():
     layout = [
         [sg.Text("➀作業フォルダを選択してください")],
         [sg.InputText(key="input_path",default_text=settings["file_path"]),sg.FolderBrowse("選択")],
+        [sg.Button("設定保存",key="save"),sg.Text("※フォルダ選択後設定保存を押してください",text_color="yellow")],
         [sg.Text("➁各種フォルダを作成"),sg.Button("作成",key="make_bt")],
-        [sg.Button("設定保存",key="save")]
+        [sg.Text("'cascade'フォルダを作成しました",visible=False,key="T_cascade",text_color="blue")],
+        [sg.Text("'neg'フォルダを作成しました",visible=False,key="T_neg",text_color="blue")],
+        [sg.Text("'pos'フォルダを作成しました",visible=False,key="T_pos",text_color="blue")],
+        [sg.Text("'vec'フォルダを作成しました",visible=False,key="T_vec",text_color="blue")],
         
     ]
     
@@ -139,13 +144,37 @@ def set():
     while True:
         event,value = window.read()
         
-        def new_folder():
-            os.mkdir(os.path.join(value["input_path"],"cascade"))
-            os.mkdir(os.path.join(value["input_path"],"neg"))
-            os.mkdir(os.path.join(value["input_path"],"neg"))
-            os.mkdir(os.path.join(value["input_path"],"vec"))
+        def new_folder(path):
+            os.chdir(path)
+            file_list = os.listdir()
+            #指定フォルダの中に["cascade","neg","pos","vec"のフォルダが無ければ新規作成する]
+            cascade_j = "cascade" in file_list
+            neg_j = "neg" in file_list
+            pos_j = "pos" in file_list
+            vec_j = "vec" in file_list
+            if cascade_j == False:  
+                os.mkdir(os.path.join(value["input_path"],"cascade"))
+                
+                window["T_cascade"].update(visible=True)
+                
+            if neg_j == False:
+                os.mkdir(os.path.join(value["input_path"],"neg"))
+                
+                window["T_neg"].update(visible=True)
+            if pos_j == False:
+                os.mkdir(os.path.join(value["input_path"],"pos"))
+                
+                window["T_pos"].update(visible=True)
+            if vec_j == False:
+                os.mkdir(os.path.join(value["input_path"],"vec"))
+                
+                window["T_vec"].update(visible=True)
         
+        if event == "make_bt":
+            new_folder(value["input_path"])
         
+        if event == "save":
+            settings["file_path"] = value["input_path"]
         if event == None:
             break
 
@@ -155,7 +184,7 @@ rename = sg.Tab("ファイルリネーム",[
     [sg.InputText(key="input_1"), sg.FolderBrowse("選択")],
     [sg.Text("ファイル名:"),sg.InputText(default_text="pos_",key="file_name",size=(20,10))],
     [sg.Text("※ファイル名がpos_の場合pos_1,pos_2という様になります",text_color="yellow",)],
-    [sg.Button("開始",key="bt_start_1"),sg.Output()],
+    [sg.Button("開始",key="bt_start_1")],
     
 ])
 
