@@ -1,3 +1,4 @@
+from tkinter.constants import FALSE
 from PySimpleGUI.PySimpleGUI import FolderBrowse
 import cv2
 import numpy as np
@@ -13,19 +14,29 @@ sg.theme("DarkGrey2")
 settings = sg.UserSettings(filename="onogami_test")
 settings.load()
 
-#カレントディレクトリのパスを取得する
-def get_path(path):
+#指定したフォルダ内のファイル名を取得
+def get_path_pos(path):
     file_list = []
     #カレントディレクトリを移動する
     os.chdir(path)
     #ディレクトリ内のファイルを取得
     file_path = os.listdir(path)
-    #for i in file_path:
-        #絶対パスで表示させる
-        #x = os.path.abspath(i)
-        #file_list.append(x)
     
     return file_path
+        
+#指定したフォルダ内のファイル名を絶対パスで取得
+def get_path_neg(path):
+    file_list = []
+    #カレントディレクトリを移動する
+    os.chdir(path)
+    #ディレクトリ内のファイルを取得
+    file_path = os.listdir(path)
+    for i in file_path:
+        #絶対パスで表示させる
+        x = os.path.abspath(i)
+        file_list.append(x)
+    
+    return file_list
 
 #画面がぼやけるのを回避するコード
 import ctypes
@@ -128,15 +139,18 @@ def set():
     
     
     layout = [
-        [sg.Text("➀作業フォルダを選択してください")],
+        [sg.Text("➀作業フォルダを選択してください",text_color="#ff00ff")],
         [sg.InputText(key="input_path",default_text=settings["file_path"]),sg.FolderBrowse("選択")],
+        [sg.Text("➁各種フォルダを作成",text_color="#ff00ff"),sg.Button("作成",key="make_bt")],
+        [sg.Text("'cascade'フォルダを作成しました",visible=False,key="T_cascade",text_color="#00bfff")],
+        [sg.Text("'neg'フォルダを作成しました",visible=False,key="T_neg",text_color="#00bfff")],
+        [sg.Text("'pos'フォルダを作成しました",visible=False,key="T_pos",text_color="#00bfff")],
+        [sg.Text("'vec'フォルダを作成しました",visible=False,key="T_vec",text_color="#00bfff")],
+        [sg.Text("➂PATHの設定",text_color="#ff00ff")],
+        [sg.Text("opencv_createsamples.exeのpathを選択"),sg.InputText(default_text=settings["createsamples_path"],key=("createsamples_path"),size=(20,10)),sg.FileBrowse("選択")],
+        [sg.Text("opencv_traincascade.exeのpathを選択"),sg.InputText(default_text=settings["traincascade_path"],key=("traincascade_path"),size=(20,10)),sg.FileBrowse("選択")],
+        [sg.Text("opencv_world3416.dllのpathを選択"),sg.InputText(settings["world3416_path"],key=("world3416_path"),size=(20,10)),sg.FileBrowse("選択")],
         [sg.Button("設定保存",key="save"),sg.Text("※フォルダ選択後設定保存を押してください",text_color="yellow")],
-        [sg.Text("➁各種フォルダを作成"),sg.Button("作成",key="make_bt")],
-        [sg.Text("'cascade'フォルダを作成しました",visible=False,key="T_cascade",text_color="blue")],
-        [sg.Text("'neg'フォルダを作成しました",visible=False,key="T_neg",text_color="blue")],
-        [sg.Text("'pos'フォルダを作成しました",visible=False,key="T_pos",text_color="blue")],
-        [sg.Text("'vec'フォルダを作成しました",visible=False,key="T_vec",text_color="blue")],
-        
     ]
     
     window = sg.Window("環境設定",layout)
@@ -144,6 +158,7 @@ def set():
     while True:
         event,value = window.read()
         
+        #初期設定フォルダを作成する関数
         def new_folder(path):
             os.chdir(path)
             file_list = os.listdir()
@@ -170,36 +185,82 @@ def set():
                 
                 window["T_vec"].update(visible=True)
         
+        #フォルダ作成ボタンを押したときの処理
         if event == "make_bt":
+            if value["input_path"] == "":
+                sg.popup("作業フォルダを選択してください")
+                continue
+            elif value["createsamples_path"] == "":
+                sg.popup("opencv_createsamples.exeのpathを選択してください")
+                continue
+            elif value["traincascade_path"] == "":
+                sg.popup("opencv_traincascade.exeのpathを選択してください")
+                continue
+            elif value["world3416_path"] == "":
+                sg.popup("opencv_world3416.dllのpathを選択してください")
+                continue
             new_folder(value["input_path"])
-        
+        #設定保存ボタンを押したときの処理
         if event == "save":
+            if value["input_path"] == "":
+                sg.popup("作業フォルダを選択してください")
+                continue
+            elif value["createsamples_path"] == "":
+                sg.popup("opencv_createsamples.exeのpathを選択してください")
+                continue
+            elif value["traincascade_path"] == "":
+                sg.popup("opencv_traincascade.exeのpathを選択してください")
+                continue
+            elif value["world3416_path"] == "":
+                sg.popup("opencv_world3416.dllのpathを選択してください")
+                continue
+            
             settings["file_path"] = value["input_path"]
+            settings["createsamples_path"] = value["createsamples_path"]
+            settings["traincascade_path"] = value["traincascade_path"]
+            settings["world3416_path"] = value["world3416_path"]
         if event == None:
             break
 
 
-rename = sg.Tab("ファイルリネーム",[
+rename = sg.Tab("ステップ➀",[
+    [sg.Frame("ファイルリネーム",layout=[
     [sg.Text("ファイル名一括リネームしたいフォルダを選択")],
-    [sg.InputText(key="input_1"), sg.FolderBrowse("選択")],
+    [sg.InputText(key="input_rename"), sg.FolderBrowse("選択")],
     [sg.Text("ファイル名:"),sg.InputText(default_text="pos_",key="file_name",size=(20,10))],
     [sg.Text("※ファイル名がpos_の場合pos_1,pos_2という様になります",text_color="yellow",)],
-    [sg.Button("開始",key="bt_start_1")],
-    
+    [sg.Button("開始",key="bt_start_rename")],
+    ])],
+    [sg.Frame("neglist作成",layout=[
+        [sg.Text("画像ファイルが格納してあるフォルダを選択してください")],
+        [sg.InputText(key="input_neg"), sg.FolderBrowse(button_text="選択")],
+        [sg.Text("出力先のフォルダを選択してください")],
+        [sg.InputText(key="output_neg"), sg.FolderBrowse(button_text="選択")],
+        [sg.Text("出力ファイル名"),sg.InputText(default_text="neglist.txt",size=(20,10),key=("neg_name"))],
+        [sg.Button("作成",key="bt_start_neg"),sg.Text("処理が完了しました",key="neg_end",text_color="#00bfff",visible=False)],
+        []
+    ])],
 ])
 
 #レイアウト
-pos_file = sg.Tab("poslistファイル作成",[
-    [sg.Text("画像ファイルが格納してあるフォルダを選択してください")],
-    [sg.InputText(key="input_2"), sg.FolderBrowse(button_text="選択")],
-    [sg.Text("出力先のフォルダを選択してください")],
-    [sg.InputText(key="output"), sg.FolderBrowse(button_text="選択")],
-    [sg.Text("出力ファイル名"),sg.InputText(default_text="poslist.txt",size=(20,10),key=("out_name"))],
-    [sg.Button("開始",key="bt_start_2")],
-    [sg.Menu(menu_definition=[["設定","設定"]],background_color="white")],
+pos_file = sg.Tab("ステップ➁",[
+    [sg.Frame("poslist作成",layout=[
+        [sg.Text("画像ファイルが格納してあるフォルダを選択してください")],
+        [sg.InputText(key="input_pos"), sg.FolderBrowse(button_text="選択")],
+        [sg.Text("出力先のフォルダを選択してください")],
+        [sg.InputText(key="output_pos"), sg.FolderBrowse(button_text="選択")],
+        [sg.Text("出力ファイル名"),sg.InputText(default_text="poslist.txt",size=(20,10),key=("pos_name"))],
+        [sg.Button("作成",key="bt_start_pos")],
+        [sg.Menu(menu_definition=[["設定","環境設定"]],background_color="white")]],)],
+    [sg.Frame("vecファイル作成",layout=[
+        [sg.Text("poslistを選択してください")],
+        [sg.InputText(key="poslist_path"),sg.FileBrowse("選択")],
+        [sg.Button("作成",key="bt_start_vec")]
+    ])]
+    
+    
     
 ])
-
 
 fin =[[ sg.TabGroup([[rename,pos_file]]),]]
 
@@ -211,30 +272,60 @@ while True:
     if event == None:
         break
     
-    if event == "設定":
+    if event == "環境設定":
         set()
-    
-    if event == "bt_start_1":
-        if value["input_1"] == "":
+    #リネーム処理
+    if event == "bt_start_rename":
+        if value["input_rename"] == "":
             sg.popup("選択されていない項目があります")
             continue
         if value["file_name"] == "":
             sg.popup("選択されていない項目があります")
             continue
         print(settings["file_path"])
-        file_rename(value["input_1"],value["file_name"])
+        file_rename(value["input_rename"],value["file_name"])
         
-    if event == "bt_start_2":
-        if value["input_2"] == "":
+    #neglist作成
+    if event == "bt_start_neg":
+        if value["input_neg"] == "":
             sg.popup("選択されていない項目があります")
             continue
-        if value["output"] == "":
+        if value["output_neg"] == "":
             sg.popup("選択されていない項目があります")
             continue
-        if value["out_name"] == "":
+        if value["neg_name"] == "":
             sg.popup("選択されていない項目があります")
             continue
-        file_path = get_path(value["input_2"])
+        
+        file_path = get_path_neg(value["input_neg"])
+        #フォルダ内にテキストファイルがあるか判定しある場合は処理を中断する
+        neg_file_name = ".txt" in f"{file_path}"
+        if neg_file_name == True:
+            sg.popup(".txtファイルが存在します")
+            pass
+        else: #テキストファイルが存在しなければ通常通り処理をする
+            for i in file_path:
+                
+                #テキストファイルに書き込み
+                file_name = os.path.join(value["output_neg"],value["neg_name"])
+                f = open(file_name, "a")
+                f.write(f"{i}\n")
+                f.close()
+                window["neg_end"].update(visible = True)
+            
+    
+    #poslist作成    
+    if event == "bt_start_pos":
+        if value["input_pos"] == "":
+            sg.popup("選択されていない項目があります")
+            continue
+        if value["output_pos"] == "":
+            sg.popup("選択されていない項目があります")
+            continue
+        if value["pos_name"] == "":
+            sg.popup("選択されていない項目があります")
+            continue
+        file_path = get_path_pos(value["input_pos"])
         lec = ""
         #メイン
         for i in file_path:
@@ -245,7 +336,7 @@ while True:
                 lec = lec + f" {ff}"
             final = f"{num}",lec
             #テキストファイルに書き込み
-            file_name = os.path.join(value["output"],value["out_name"])
+            file_name = os.path.join(value["output_pos"],value["pos_name"])
             f = open(file_name, "a")
             f.write(f"{i} {final[0]}{final[1]}\n")
             f.close()
