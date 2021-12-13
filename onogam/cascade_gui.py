@@ -229,7 +229,7 @@ rename = sg.Tab("ステップ➀",[
     [sg.InputText(key="input_rename"), sg.FolderBrowse("選択")],
     [sg.Text("ファイル名:"),sg.InputText(default_text="pos_",key="file_name",size=(20,10))],
     [sg.Text("※ファイル名がpos_の場合pos_1,pos_2という様になります",text_color="yellow",)],
-    [sg.Button("開始",key="bt_start_rename")],
+    [sg.Button("開始",key="bt_start_rename"),sg.Text("処理が完了しました",key="rename_end",text_color="#00bfff",visible=False)],
     ])],
     [sg.Frame("neglist作成",layout=[
         [sg.Text("画像ファイルが格納してあるフォルダを選択してください")],
@@ -284,6 +284,7 @@ while True:
             continue
         print(settings["file_path"])
         file_rename(value["input_rename"],value["file_name"])
+        window["rename_end"].update(visible = True)
         
     #neglist作成
     if event == "bt_start_neg":
