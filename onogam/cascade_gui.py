@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 import os
 import PySimpleGUI as sg
+import subprocess
 
 count = 0
 #オプション設定
@@ -37,6 +38,11 @@ def get_path_neg(path):
         file_list.append(x)
     
     return file_list
+
+#ベクトルファイル作成
+def vec_make(path):
+    subprocess.Popen("")
+    
 
 #画面がぼやけるのを回避するコード
 import ctypes
@@ -250,12 +256,12 @@ pos_file = sg.Tab("ステップ➁",[
         [sg.Text("出力先のフォルダを選択してください")],
         [sg.InputText(key="output_pos"), sg.FolderBrowse(button_text="選択")],
         [sg.Text("出力ファイル名"),sg.InputText(default_text="poslist.txt",size=(20,10),key=("pos_name"))],
-        [sg.Button("作成",key="bt_start_pos")],
+        [sg.Button("作成",key="bt_start_pos"),sg.Text("処理が完了しました",key="pos_end",text_color="#00bfff",visible=False)],
         [sg.Menu(menu_definition=[["設定","環境設定"]],background_color="white")]],)],
     [sg.Frame("vecファイル作成",layout=[
         [sg.Text("poslistを選択してください")],
         [sg.InputText(key="poslist_path"),sg.FileBrowse("選択")],
-        [sg.Button("作成",key="bt_start_vec")]
+        [sg.Button("作成",key="bt_start_vec"),sg.Text("処理が完了しました",key="vec_end",text_color="#00bfff",visible=False)]
     ])]
     
     
@@ -343,4 +349,5 @@ while True:
             f.close()
             #lecをクリア
             lec = ""
+        window["pos_end"].update(visible = True)
     
