@@ -8,11 +8,13 @@ import subprocess
 
 count = 0
 #オプション設定
-sg.set_options(use_ttk_buttons=True)
+sg.set_options(use_ttk_buttons=True,
+               dpi_awareness=True,
+              )
 #テーマの設定
 sg.theme("DarkGrey2")
 #ユーザーセッティング
-settings = sg.UserSettings(filename="onogami_test")
+settings = sg.UserSettings(filename="set_path")
 settings.load()
 
 #指定したフォルダ内のファイル名を取得
@@ -44,12 +46,6 @@ def vec_make(path):
     subprocess.Popen("")
     
 
-#画面がぼやけるのを回避するコード
-import ctypes
-try:
-    ctypes.windll.shcore.SetProcessDpiAwareness(True)
-except:
-    pass
 
 
 num = 1
