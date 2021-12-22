@@ -2,17 +2,18 @@ import cv2
 import numpy as np
 import os
 import PySimpleGUI as sg
-import subprocess
+import shutil
 
 count = 0
 #オプション設定
 sg.set_options(use_ttk_buttons=True,
-               dpi_awareness=True,
+               dpi_awareness=True, #画面のぼやけを無くす
+               font=("meiryo",10) #フォントを指定
               )
 #テーマの設定
 sg.theme("DarkGrey2")
 #ユーザーセッティング
-settings = sg.UserSettings(filename="set_path",path=r"C:\Users\60837\Desktop\Mypython\Git\sqlite\onogam")
+settings = sg.UserSettings(filename="set_path",path= os.path.split(__file__)[0])
 settings.load()
 
 #指定したフォルダ内のファイル名を取得
@@ -41,7 +42,8 @@ def get_path_neg(path):
 
 #ベクトルファイル作成
 def vec_make(path):
-    subprocess.Popen("")
+    os.chdir(path)
+    sg.execute_command_subprocess("start","opencv_createsamples.exe -info pos/poslist.txt -vec vec/positive.vec -num 1000")
     
 
 
@@ -133,6 +135,10 @@ def file_rename(path,cas_name):
         os.rename(new_name,os.path.join(path,f"{cas_name}{count}{under_name}"))#リネーム
         count +=1
 
+
+
+
+
 #各種設定ウィンドウ
 def set():
     
@@ -219,6 +225,10 @@ def set():
             settings["createsamples_path"] = value["createsamples_path"]
             settings["traincascade_path"] = value["traincascade_path"]
             settings["world3416_path"] = value["world3416_path"]
+            #作業フォルダにopencv_createsamples.exe, opencv_traincascade.exe, opencv_world3416.dllをコピーする
+            shutil.copyfile(settings["createsamples_path"],os.path.join(settings["file_path"],os.path.split(settings["createsamples_path"])[1]))
+            shutil.copyfile(settings["traincascade_path"],os.path.join(settings["file_path"],os.path.split(settings["traincascade_path"])[1]))
+            shutil.copyfile(settings["world3416_path"],os.path.join(settings["file_path"],os.path.split(settings["world3416_path"])[1]))
         if event == None:
             break
 
@@ -344,4 +354,9 @@ while True:
             #lecをクリア
             lec = ""
         window["pos_end"].update(visible = True)
+        
     
+    #ベクトルファイル作成
+    if event == "bt_start_vec":
+        
+        vec_make(settings["file_path"])

@@ -1,6 +1,7 @@
 import subprocess
 import os
 import re
+import shutil
 #subprocess.run(r"C:\Users\onoga\desktop\MyDocker\Git\origin\test\opencv_createsamples.exe -info C:\Users\onoga\desktop\MyDocker\Git\origin\test\pos\poslist.txt -vec C:\Users\onoga\desktop\MyDocker\Git\origin\test\vec\positive.vec -num 1000 -maxidev 40 -maxxangle 0.8 -maxyangle 0.8 -maxzangle 0.5 ")
 #subprocess.run(r"C:\Users\onoga\desktop\MyDocker\Git\origin\test\opencv_traincascade.exe -data C:\Users\onoga\desktop\MyDocker\Git\origin\test\cascade -vec C:\Users\onoga\desktop\MyDocker\Git\origin\test\vec\positive.vec -bg C:\Users\onoga\desktop\MyDocker\Git\origin\test\neg\neglist.txt -numPos 10 -numNeg 20")
 
@@ -17,8 +18,4 @@ def rename(path,cas_name):
         os.rename(new_name,os.path.join(path,f"{cas_name}{count}{under_name}"))#リネーム
         count +=1
 
-
-list = ["a.jpg","b.jpg",1,2,"Z.pos"]
-
-for i in list:
-    print(".jpg" in f"{i}")
+shutil.copyfile(r"C:\Users\onoga\Desktop\MyDocker\Git\sqlite\onogam\aaaaaaa.py",r"C:\Users\onoga\Desktop\aaaaaaa.py")
