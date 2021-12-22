@@ -1,5 +1,3 @@
-from tkinter.constants import FALSE
-from PySimpleGUI.PySimpleGUI import FolderBrowse
 import cv2
 import numpy as np
 import os
@@ -14,7 +12,7 @@ sg.set_options(use_ttk_buttons=True,
 #テーマの設定
 sg.theme("DarkGrey2")
 #ユーザーセッティング
-settings = sg.UserSettings(filename="set_path")
+settings = sg.UserSettings(filename="set_path",path=r"C:\Users\60837\Desktop\Mypython\Git\sqlite\onogam")
 settings.load()
 
 #指定したフォルダ内のファイル名を取得
