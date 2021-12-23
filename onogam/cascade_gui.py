@@ -153,9 +153,18 @@ def set():
         [sg.Text("'pos'フォルダを作成しました",visible=False,key="T_pos",text_color="#00bfff")],
         [sg.Text("'vec'フォルダを作成しました",visible=False,key="T_vec",text_color="#00bfff")],
         [sg.Text("➂PATHの設定",text_color="#ff00ff")],
-        [sg.Text("opencv_createsamples.exeのpathを選択"),sg.InputText(default_text=settings["createsamples_path"],key=("createsamples_path"),size=(20,10)),sg.FileBrowse("選択")],
-        [sg.Text("opencv_traincascade.exeのpathを選択"),sg.InputText(default_text=settings["traincascade_path"],key=("traincascade_path"),size=(20,10)),sg.FileBrowse("選択")],
-        [sg.Text("opencv_world3416.dllのpathを選択"),sg.InputText(settings["world3416_path"],key=("world3416_path"),size=(20,10)),sg.FileBrowse("選択")],
+        [sg.Text("使用環境のbit数を選択して下さい")],
+        [sg.Radio("64bit","A",text_color="#00bfff",key="64bit",enable_events=True),sg.Radio("32bit","A",text_color="#00bfff",key="32bit",enable_events=True)],
+        [sg.pin(sg.Frame("64bit",layout=[
+            [sg.Text("opencv_createsamples.exeのpathを選択"),sg.InputText(default_text=settings["createsamples_path"],key=("createsamples_path"),size=(20,10)),sg.FileBrowse("選択")],
+            [sg.Text("opencv_traincascade.exeのpathを選択"),sg.InputText(default_text=settings["traincascade_path"],key=("traincascade_path"),size=(20,10)),sg.FileBrowse("選択")],
+            [sg.Text("opencv_world3416.dllのpathを選択"),sg.InputText(settings["world3416_path"],key=("world3416_path"),size=(20,10)),sg.FileBrowse("選択")],
+        ],title_color="#00bfff",visible=False,key="64bit_frame"))],
+        
+        [sg.pin(sg.Frame("32bit",layout=[
+            [sg.Text("各種ファイルフォルダを選択"),sg.InputText(default_text=settings["32bit_path"],key="32bit_path",size=(20,10)),sg.FolderBrowse("選択")],
+        ],title_color="#00bfff",visible=False,key="32bit_frame"))],
+       
         [sg.Button("設定保存",key="save"),sg.Text("※フォルダ選択後設定保存を押してください",text_color="yellow")],
     ]
     
@@ -163,7 +172,6 @@ def set():
     
     while True:
         event,value = window.read()
-        
         #初期設定フォルダを作成する関数
         def new_folder(path):
             os.chdir(path)
@@ -206,29 +214,79 @@ def set():
                 sg.popup("opencv_world3416.dllのpathを選択してください")
                 continue
             new_folder(value["input_path"])
+            
+        #ラジオボタンでビット数選択した時の処理
+        if event == "64bit":
+            window["32bit_frame"].update(visible=False)
+            window["64bit_frame"].update(visible=True)
+            
+            if event == "save":
+                if value["input_path"] == "":
+                    sg.popup("作業フォルダを選択してください")
+                    continue
+                elif value["createsamples_path"] == "":
+                    sg.popup("opencv_createsamples.exeのpathを選択してください")
+                    continue
+                elif value["traincascade_path"] == "":
+                    sg.popup("opencv_traincascade.exeのpathを選択してください")
+                    continue
+                elif value["world3416_path"] == "":
+                    sg.popup("opencv_world3416.dllのpathを選択してください")
+                    continue
+                
+                #設定の保存
+                settings["file_path"] = value["input_path"]
+                settings["createsamples_path"] = value["createsamples_path"]
+                settings["traincascade_path"] = value["traincascade_path"]
+                settings["world3416_path"] = value["world3416_path"]
+                #作業フォルダにopencv_createsamples.exe, opencv_traincascade.exe, opencv_world3416.dllをコピーする
+                shutil.copyfile(settings["createsamples_path"],os.path.join(settings["file_path"],os.path.split(settings["createsamples_path"])[1]))
+                shutil.copyfile(settings["traincascade_path"],os.path.join(settings["file_path"],os.path.split(settings["traincascade_path"])[1]))
+                shutil.copyfile(settings["world3416_path"],os.path.join(settings["file_path"],os.path.split(settings["world3416_path"])[1]))
+        
+        
+        
+        elif event == "32bit":
+            window["64bit_frame"].update(visible=False)
+            window["32bit_frame"].update(visible=True)
         #設定保存ボタンを押したときの処理
         if event == "save":
             if value["input_path"] == "":
                 sg.popup("作業フォルダを選択してください")
                 continue
-            elif value["createsamples_path"] == "":
-                sg.popup("opencv_createsamples.exeのpathを選択してください")
-                continue
-            elif value["traincascade_path"] == "":
-                sg.popup("opencv_traincascade.exeのpathを選択してください")
-                continue
-            elif value["world3416_path"] == "":
-                sg.popup("opencv_world3416.dllのpathを選択してください")
-                continue
+        #    elif value["createsamples_path"] == "":
+        #        sg.popup("opencv_createsamples.exeのpathを選択してください")
+        #        continue
+        #    elif value["traincascade_path"] == "":
+        #        sg.popup("opencv_traincascade.exeのpathを選択してください")
+        #        continue
+        #   elif value["world3416_path"] == "":
+        #        sg.popup("opencv_world3416.dllのpathを選択してください")
+        #        continue
             
             settings["file_path"] = value["input_path"]
             settings["createsamples_path"] = value["createsamples_path"]
             settings["traincascade_path"] = value["traincascade_path"]
             settings["world3416_path"] = value["world3416_path"]
+            settings["32bit_path"] = value["32bit_path"]
             #作業フォルダにopencv_createsamples.exe, opencv_traincascade.exe, opencv_world3416.dllをコピーする
-            shutil.copyfile(settings["createsamples_path"],os.path.join(settings["file_path"],os.path.split(settings["createsamples_path"])[1]))
-            shutil.copyfile(settings["traincascade_path"],os.path.join(settings["file_path"],os.path.split(settings["traincascade_path"])[1]))
-            shutil.copyfile(settings["world3416_path"],os.path.join(settings["file_path"],os.path.split(settings["world3416_path"])[1]))
+            #shutil.copyfile(settings["createsamples_path"],os.path.join(settings["file_path"],os.path.split(settings["createsamples_path"])[1]))
+            #shutil.copyfile(settings["traincascade_path"],os.path.join(settings["file_path"],os.path.split(settings["traincascade_path"])[1]))
+            #shutil.copyfile(settings["world3416_path"],os.path.join(settings["file_path"],os.path.split(settings["world3416_path"])[1]))
+            
+            def bit32_file_get(f_path):#32bitファイルフォルダの中身を作業フォルダへコピーする
+                file_path = os.listdir(f_path)
+                
+                for i in file_path:
+                    shutil.copyfile(os.path.join(f_path,i),os.path.join(settings["file_path"],i))
+                    
+            #bit32_file_get(settings["32bit_path"])
+        
+            
+                    
+        
+        
+        
         if event == None:
             break
 

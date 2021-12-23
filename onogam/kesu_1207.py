@@ -18,4 +18,6 @@ def rename(path,cas_name):
         os.rename(new_name,os.path.join(path,f"{cas_name}{count}{under_name}"))#リネーム
         count +=1
 
-shutil.copyfile(r"C:\Users\onoga\Desktop\MyDocker\Git\sqlite\onogam\aaaaaaa.py",r"C:\Users\onoga\Desktop\aaaaaaa.py")
+#shutil.copyfile(r"C:\Users\onoga\Desktop\MyDocker\Git\sqlite\onogam\aaaaaaa.py",r"C:\Users\onoga\Desktop\aaaaaaa.py")
+print(os.listdir(r"C:\Users\onoga\Desktop\MyDocker\Git\origin\opencv_win_32bit"))
+print(os.path.split(r"C:\Users\onoga\Desktop\MyDocker\Git\origin\opencv_win_32bit"))
