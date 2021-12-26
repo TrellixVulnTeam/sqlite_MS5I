@@ -1,3 +1,4 @@
+from tkinter.constants import FALSE
 import cv2
 import numpy as np
 import os
@@ -8,7 +9,7 @@ count = 0
 #オプション設定
 sg.set_options(use_ttk_buttons=True,
                dpi_awareness=True, #画面のぼやけを無くす
-               font=("meiryo",10) #フォントを指定
+               font=("Microsoft Sans Serif",10) #フォントを指定
               )
 #テーマの設定
 sg.theme("DarkGrey2")
@@ -41,12 +42,22 @@ def get_path_neg(path):
     return file_list
 
 #ベクトルファイル作成
-def vec_make(path):
+def vec_make(path,pos_path,num):
+    os.chdir(path)#カレントディレクトリを移動する
+    #選択したposlistがテキストファイルか同か判別（別のファイルを選択した時に実行されなくする為）
+    true = ".txt" in pos_path
+    if true == True: #テキストファイルなら実行   
+        sg.execute_command_subprocess("start","opencv_createsamples.exe -info {0} -vec vec/positive.vec -num {1}".format(pos_path,num))
+        return True
+    else:
+        sg.popup("poslist.txtを選択してください")
+        return False
+
+  
+#カスケードファイル作成
+def cascade_make(path,vec,neglist,numPos,numNeg):
     os.chdir(path)
-    sg.execute_command_subprocess("start","opencv_createsamples.exe -info pos/poslist.txt -vec vec/positive.vec -num 1000")
-    
-
-
+    sg.execute_command_subprocess("start","opencv_traincascade.exe -data cascade -vec {0} -bg {1} -numPos {2} -numNeg {3} -numStages 25".format(vec,neglist,numPos,numNeg))
 
 num = 1
 def main(img_path):
@@ -219,8 +230,18 @@ def set():
         if event == "64bit":
             window["32bit_frame"].update(visible=False)
             window["64bit_frame"].update(visible=True)
+        
+        elif event == "32bit":
+            window["64bit_frame"].update(visible=False)
+            window["32bit_frame"].update(visible=True)
+        
+        
+        
+        #設定保存ボタンを押したときの処理    
+        if event == "save":
             
-            if event == "save":
+            #ラジオボタンが64bitを選択している場合の処理
+            if value["64bit"] == True:
                 if value["input_path"] == "":
                     sg.popup("作業フォルダを選択してください")
                     continue
@@ -244,16 +265,27 @@ def set():
                 shutil.copyfile(settings["traincascade_path"],os.path.join(settings["file_path"],os.path.split(settings["traincascade_path"])[1]))
                 shutil.copyfile(settings["world3416_path"],os.path.join(settings["file_path"],os.path.split(settings["world3416_path"])[1]))
         
+            #ラジオボタンが32bitを選択している時の処理
+            if value["32bit"] == True:
+                
+                if value["32bit_path"] == "":
+                    sg.popup("フォルダを選択してください")
+                    continue
+                
+                def bit32_file_get(f_path):#32bitファイルフォルダの中身を作業フォルダへコピーする
+                    file_path = os.listdir(f_path)
+                    
+                    for i in file_path:
+                        shutil.copyfile(os.path.join(f_path,i),os.path.join(settings["file_path"],i))
+                    
+                bit32_file_get(settings["32bit_path"])
         
         
-        elif event == "32bit":
-            window["64bit_frame"].update(visible=False)
-            window["32bit_frame"].update(visible=True)
-        #設定保存ボタンを押したときの処理
-        if event == "save":
-            if value["input_path"] == "":
-                sg.popup("作業フォルダを選択してください")
-                continue
+        
+        #if event == "save":
+        #    if value["input_path"] == "":
+        #        sg.popup("作業フォルダを選択してください")
+        #        continue
         #    elif value["createsamples_path"] == "":
         #        sg.popup("opencv_createsamples.exeのpathを選択してください")
         #        continue
@@ -264,23 +296,17 @@ def set():
         #        sg.popup("opencv_world3416.dllのpathを選択してください")
         #        continue
             
-            settings["file_path"] = value["input_path"]
-            settings["createsamples_path"] = value["createsamples_path"]
-            settings["traincascade_path"] = value["traincascade_path"]
-            settings["world3416_path"] = value["world3416_path"]
-            settings["32bit_path"] = value["32bit_path"]
+        #    settings["file_path"] = value["input_path"]
+        #    settings["createsamples_path"] = value["createsamples_path"]
+        #    settings["traincascade_path"] = value["traincascade_path"]
+        #    settings["world3416_path"] = value["world3416_path"]
+        #    settings["32bit_path"] = value["32bit_path"]
             #作業フォルダにopencv_createsamples.exe, opencv_traincascade.exe, opencv_world3416.dllをコピーする
             #shutil.copyfile(settings["createsamples_path"],os.path.join(settings["file_path"],os.path.split(settings["createsamples_path"])[1]))
             #shutil.copyfile(settings["traincascade_path"],os.path.join(settings["file_path"],os.path.split(settings["traincascade_path"])[1]))
             #shutil.copyfile(settings["world3416_path"],os.path.join(settings["file_path"],os.path.split(settings["world3416_path"])[1]))
             
-            def bit32_file_get(f_path):#32bitファイルフォルダの中身を作業フォルダへコピーする
-                file_path = os.listdir(f_path)
-                
-                for i in file_path:
-                    shutil.copyfile(os.path.join(f_path,i),os.path.join(settings["file_path"],i))
-                    
-            #bit32_file_get(settings["32bit_path"])
+            
         
             
                     
@@ -323,6 +349,7 @@ pos_file = sg.Tab("ステップ➁",[
     [sg.Frame("vecファイル作成",layout=[
         [sg.Text("poslistを選択してください")],
         [sg.InputText(key="poslist_path"),sg.FileBrowse("選択")],
+        [sg.Text("生成する画像数(数字を入力)"),sg.InputText(key="num",size=(10,10))],
         [sg.Button("作成",key="bt_start_vec"),sg.Text("処理が完了しました",key="vec_end",text_color="#00bfff",visible=False)]
     ])]
     
@@ -330,7 +357,19 @@ pos_file = sg.Tab("ステップ➁",[
     
 ])
 
-fin =[[ sg.TabGroup([[rename,pos_file]]),]]
+train_cascade = sg.Tab("ステップ➂",layout=[
+    [sg.Frame("cascadeファイル作成",layout=[
+        [sg.Text("ベクトルファイルを選択してください")],
+        [sg.InputText(key="cascade_vec"),sg.FileBrowse("選択")],
+        [sg.Text("neglistを選択してください")],
+        [sg.InputText(key="cascade_neg"),sg.FileBrowse("選択")],
+        [sg.Text("numPos(正解画像数)"),sg.InputText(key="numPos",size=(8,10))],
+        [sg.Text("numNeg(不正解画像数)"),sg.InputText(key="numNeg",size=(8,10)),sg.Button("作成",key="cascade_start",pad=(80,0))],
+        [sg.Text("")]
+    ])]
+])
+
+fin =[[ sg.TabGroup([[rename,pos_file,train_cascade]]),]]
 
 window = sg.Window("画像　アノテーション　ツール",layout=fin,finalize=True,)
 
@@ -416,5 +455,31 @@ while True:
     
     #ベクトルファイル作成
     if event == "bt_start_vec":
+        if value["poslist_path"] == "":
+            sg.popup("poslistを選択してください")
+            continue
+        if value["num"] == "":
+            sg.popup("生成する画像数を入力してください")
+            continue
+        vec_act = vec_make(path=settings["file_path"],pos_path=value["poslist_path"],num=value["num"])
+        if vec_act == True:#vec_makeが実行された場合Trueの戻り値が返ってくる　Trueの場合以下のプログラムを実行
+            window["vec_end"].update(visible = True)
+            
+            
+    #カスケードファイル作成
+    if event == "cascade_start":
+        if value["cascade_vec"] == "":
+            sg.popup("ベクトルファイルを選択してください")
+            continue
+        if value["cascade_neg"] == "":
+            sg.popup("neglistを選択してください")
+            continue
+        if value["numPos"] == "":
+            sg.popup("正解画像数を入力してください")
+            continue
+        if value["numNeg"] == "":
+            sg.popup("不正解画像数を入力してください")
+            continue
         
-        vec_make(settings["file_path"])
+        cascade_make(path=settings["file_path"],vec=value["cascade_vec"],neglist=value["cascade_neg"],numPos=value["numPos"],numNeg=value["numNeg"])
+        

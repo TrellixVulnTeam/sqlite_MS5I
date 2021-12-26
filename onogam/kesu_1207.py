@@ -19,5 +19,9 @@ def rename(path,cas_name):
         count +=1
 
 #shutil.copyfile(r"C:\Users\onoga\Desktop\MyDocker\Git\sqlite\onogam\aaaaaaa.py",r"C:\Users\onoga\Desktop\aaaaaaa.py")
-print(os.listdir(r"C:\Users\onoga\Desktop\MyDocker\Git\origin\opencv_win_32bit"))
-print(os.path.split(r"C:\Users\onoga\Desktop\MyDocker\Git\origin\opencv_win_32bit"))
+#print(os.listdir(r"C:\Users\onoga\Desktop\MyDocker\Git\origin\opencv_win_32bit"))
+#print(os.path.split(r"C:\Users\onoga\Desktop\MyDocker\Git\origin\opencv_win_32bit"))
+
+file = "onogami.tt"
+
+print(".txt" in file)
