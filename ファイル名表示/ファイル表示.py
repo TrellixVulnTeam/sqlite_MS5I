@@ -1,12 +1,14 @@
 
+from hashlib import new
 import PySimpleGUI as sg
 import os 
 import time
+import subprocess
 
 #テーマ設定
 sg.theme("LightGrey1")
 #オプション設定
-sg.set_options(use_ttk_buttons=True,dpi_awareness=True,font=("meiryo",8))
+sg.set_options(use_ttk_buttons=True,dpi_awareness=True,font=("meiryo",8),)
 
 #ユーザーセッティング
 Setings = sg.UserSettings(filename="setings_file",path=os.path.split(__file__)[0])
@@ -39,13 +41,16 @@ lay = [
     [sg.Listbox(values=lis,enable_events=True,size=(50,20),key="list")],
 ]
 
-window = sg.Window(title="ファイル表示",layout=lay,finalize=True,)
+Window = sg.Window(title="ファイル表示",layout=lay,)
 
 while True:
-    event, value = window.read(timeout=2000)
+    event, value = Window.read(timeout=1000)
     
     if event == None:
         break
+    
+    
+    
     #フォルダが選択されていなかったらホップアップを表示させる
     if value["dir_path"] == "":
         time.sleep(1.5)
@@ -55,11 +60,34 @@ while True:
         Setings["dir_path"] = value["dir_path"]
     #選択フォルダへ移動ボタンを押すとフォルダを表示する
     if event == "send_dir":
-        sg.execute_command_subprocess("start",value["dir_path"])
+        os.chdir(value["dir_path"])#カレントディレクトリを変更
+        sg.execute_command_subprocess("explorer",".")#カレントディレクトリを開く
     #非同期処理の内容記述
+    new = len(Window["list"].get_list_values())
     if event == "__TIMEOUT__":
         file_serrch(Setings["dir_path"])
-        window["list"].update(values = file_serrch(value["dir_path"]))
+        Window["list"].update(values = file_serrch(value["dir_path"]))
+        
+        
+        #ファイル追加の通知
+        old = len(Window["list"].get_list_values())
+        
+        if new < old:
+            
+            #通知
+            notify = sg.popup_notify("{0}フォルダーに\n新しいファイルが追加されました".format(os.path.split(value["dir_path"])[1]))
+            
+            #ポップアップ表示
+            Popup = sg.popup_ok_cancel("{0}フォルダーに\n新しいファイルが追加されました\nフォルダへ移動しますか？".format(os.path.split(value["dir_path"])[1]),
+                            )
+            
+            if Popup == "OK":
+                os.chdir(value["dir_path"])#カレントディレクトリを変更
+                sg.execute_command_subprocess("explorer",".")#カレントディレクトリを開く
+            else:
+                pass
+            
+            
   
     
         
