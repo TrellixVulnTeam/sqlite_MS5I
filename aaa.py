@@ -1,4 +1,4 @@
-
+"""
 import random
 
 
@@ -27,3 +27,12 @@ print("aの確率は",a/total)
 #App = xw.App()
 #wb = App.books.open(file_name)
 
+"""
+import pandas as pd
+import sqlite3
+
+con = sqlite3.connect("katalist.db")
+
+df = pd.read_excel(r"L:\大和共通\業務部（他部署開示フォルダ）\04資材購買課\金型\金型リスト.xlsx",sheet_name="Sheet1")
+
+df.to_sql("katalist.db",con)
