@@ -4,7 +4,7 @@
 block_cipher = None
 
 
-a = Analysis(['C:\\Users\\onoga\\Desktop\\MyDocker\\Git\\sqlite\\ファイル名表示\\ファイル表示.py'],
+a = Analysis(['C:\\Users\\60837\\Desktop\\Mypython\\Git\\sqlite\\ファイル名表示\\ファイル表示.py'],
              pathex=[],
              binaries=[],
              datas=[],
