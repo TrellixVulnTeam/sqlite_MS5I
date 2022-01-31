@@ -1,0 +1,23 @@
+h1 {
+    color: aliceblue;
+    background-color: blue;
+}
+
+body {
+    background-color: mintcream;
+    margin: auto;
+}
+
+h2 {
+    border-left-color: rgb(71, 218, 255);
+    border-left-width: 5px;
+    border-left-style:outset;
+    border-bottom-color: rgb(71, 218, 255);
+    border-bottom-style: inset;
+    border-bottom-width: 5px;
+    margin: auto;
+}
+
+row {
+    margin: auto;
+}
