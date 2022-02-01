@@ -18,6 +18,10 @@ h2 {
     margin: auto;
 }
 
-row {
-    margin: auto;
+table {
+    border:solid 2px red; border-spacing: 0px;    
+}
+
+th,td { 
+    border:solid 2px red; padding: 4px;
 }

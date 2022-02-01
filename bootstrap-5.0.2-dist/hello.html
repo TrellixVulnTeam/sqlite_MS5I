@@ -23,7 +23,7 @@
       <h2>品番情報記載
         <script type="text/javascript">
           let onogami = 227;
-          document.write(onogami);</script>
+          document.write( onogami );</script>
       </h2>
       
     <form >
@@ -91,8 +91,31 @@
     </div>
     
 
+  <script type="text/javascript">
 
+      let prod_name = ["Apple", "Banana", "Stand"]
+      let prod_price = [400, 500, 600]
+  </script>
 
+  <table>
+    <thead>
+      <tr><th>製品名</th><th>価格</th></tr>
+    </thead>
+
+    <tbody>
+      <script type="text/javascript">
+        for (let i=0 ; i<3 ;i++) {
+          document.write("<tr>");
+          document.write("<td>" + prod_name[i] + "</td>")
+          document.write("<td>" + prod_price[i] + "</td>")
+          document.write("</tr>")
+
+        }
+        
+      </script>
+    </tbody>
+  </table>
+  
 
 
    
