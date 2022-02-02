@@ -92,14 +92,21 @@
     
 
   <script type="text/javascript">
+      let prod_data = [
+              {name:"リラックスチェア", price:400, stock:500},
+              {name:"リラックスデスク", price:12000, stock:0},
+              {name:"ブックスタンド", price:800, stock:0}
+              ]
+    
 
       let prod_name = ["Apple", "Banana", "Stand"]
       let prod_price = [400, 500, 600]
+      let prod_stock = [500, 200, 0]
   </script>
 
   <table>
     <thead>
-      <tr><th>製品名</th><th>価格</th></tr>
+      <tr><th>製品名</th><th>価格</th><th>在庫</th></tr>
     </thead>
 
     <tbody>
@@ -108,10 +115,27 @@
           document.write("<tr>");
           document.write("<td>" + prod_name[i] + "</td>")
           document.write("<td>" + prod_price[i] + "</td>")
+          document.write("<td>" + prod_stock[i] + "</td>")
+          
           document.write("</tr>")
 
         }
         
+        for (let ii= 0; ii<3; ii++ ){
+          document.write("<tr>");
+            document.write("<td>" + prod_data[ii].name +"</td>" )
+            document.write("<td>" + prod_data[ii].price +"</td>")
+            if(prod_data[ii].stock ===0){
+              
+              document.write("<td class = 'nostock'>"+"在庫切れ"+"</td>")}
+            else{
+              document.write("<td >" + prod_data[ii].stock)
+            }
+            
+            
+          document.write("</tr>")
+
+        }
       </script>
     </tbody>
   </table>

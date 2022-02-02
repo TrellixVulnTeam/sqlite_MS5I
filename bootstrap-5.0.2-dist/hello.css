@@ -4,18 +4,15 @@ h1 {
 }
 
 body {
-    background-color: mintcream;
+    background-color: rgb(255, 255, 255);
     margin: auto;
 }
 
 h2 {
-    border-left-color: rgb(71, 218, 255);
-    border-left-width: 5px;
-    border-left-style:outset;
-    border-bottom-color: rgb(71, 218, 255);
-    border-bottom-style: inset;
-    border-bottom-width: 5px;
-    margin: auto;
+    padding: 1rem 2rem;
+  border-left: 5px solid rgb(81, 25, 187);
+  border-width: 11px;
+  background: rgb(212, 238, 255);
 }
 
 table {
@@ -24,4 +21,15 @@ table {
 
 th,td { 
     border:solid 2px red; padding: 4px;
+}
+div {
+    width:  80%;
+    margin: auto;
+}
+table {
+    margin-left: 55px;
+}
+
+.nostock{
+    color: red;
 }
