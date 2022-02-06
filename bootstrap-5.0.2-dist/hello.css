@@ -1,6 +1,7 @@
 h1 {
     color: aliceblue;
     background-color: blue;
+    padding: 10px;
 }
 
 body {
@@ -32,4 +33,5 @@ table {
 
 .nostock{
     color: red;
+    background-color: silver;
 }
