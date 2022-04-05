@@ -1,17 +1,35 @@
+import pyminizip
 import os
+import PySimpleGUI as sg
 
-path  = "file:///C:/Users/onoga/Desktop/icon32.ico"
-bas = "C:/Users/onoga/Desktop/icon32.ico"
-
-
-
-file_path =path
-#ドラッグ＆ドロップ時のfile:///を消去
-input_path = file_path.lstrip("file:///")
+#when = "C://Users//onoga//Desktop//MyDocker//venvs//zip//戦国//"
+#zip = pyminizip.compress("python統計まとめ.xlsx".encode("shift-jis"),"",f"{when}python統計まとめ.xlsx.zip".encode("shift-jis"),"daiwakasei",0)
 
 
-file_full_name = os.path.split(input_path)[1]
-file_name =  os.path.splitext(file_full_name)[0]
+#pyminizip zipファイル
+def zip_start(file_name, out_path, password):
+    
+    input_file_name = os.path.split(file_name)[1]
+    #拡張子なし
+    none_file = os.path.splitext(input_file_name)[0]
+    
+    ZIP = pyminizip.compress(f"{file_name}".encode("shift_jis"), "", f"{os.path.join(out_path,none_file)}.zip".encode("shift_jis"), password, 0)
 
-#os.chdir(__path__)
-print(file_full_name)
+lay = [
+    [sg.InputText(key="in"),sg.FileBrowse("選択")],
+    [sg.Text("保存先を選択")],
+    [sg.InputText(key = "save_input"),sg.FolderBrowse("選択")],
+    [sg.Button("開始",key="start")],
+]
+
+window = sg.Window("",lay)
+
+while True:
+    
+    event,values = window.read()
+    if event == None:
+        break
+    
+    if event == "start":
+        
+        zip_start(values["in"], values["save_input"], "daiwakasei")

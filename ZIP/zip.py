@@ -4,6 +4,26 @@ import pyzipper as zip
 import os
 import zipfile
 import sys
+import pyminizip
+
+
+#　★pyminizip zipファイル
+def zip_start(file_name, out_path, password):
+    
+    input_file_name = os.path.split(file_name)[1]
+    #拡張子なし
+    none_file = os.path.splitext(input_file_name)[0]
+    
+    ZIP = pyminizip.compress(f"{file_name}".encode("shift_jis"), "", f"{os.path.join(out_path,none_file)}.zip".encode("shift_jis"), password, 0)
+    
+#　★pyminizip lzhファイル
+def lzh_start(file_name, out_path, password):
+    
+    input_file_name = os.path.split(file_name)[1]
+    #拡張子なし
+    none_file = os.path.splitext(input_file_name)[0]
+    
+    ZIP = pyminizip.compress(f"{file_name}".encode("shift_jis"), "", f"{os.path.join(out_path,none_file)}.lzh".encode("shift_jis"), password, 0)
 
 #lzh形式でファイルを圧縮　　引数（圧縮ファイル名,　パスワード,　圧縮したいファイルpath）
 def lzh_file(new_name,password,file_path):
@@ -51,8 +71,10 @@ lay_1 = qt.Tab("ファイルのみ",[
     [qt.InputText(key="file_input"),qt.FileBrowse(button_text="選択",size=(6,1),)],
     [qt.Text("➁保存形式を選択して下さい",pad=((100,100),(100,100)), text_color="#dc143c",)],
     [qt.Radio(text="lzh形式",group_id="A",key="file_lzh",default=True),qt.Radio(text="zip形式",group_id="A",key="file_zip")],
-    [qt.Text("➂設定するパスワードを記載",text_color="#dc143c")],
-    [qt.InputText(default_text="daiwakasei",password_char="*",key="password")],
+    [qt.Text("➂設定するパスワードを記載",text_color="#dc143c"),qt.Button("リセット",key="file_open",size=(9,1))],
+    [qt.Input(default_text="daiwakasei",password_char="*",key="file_password")],
+    [qt.Text("➂圧縮ファイルの保存先を選択",text_color="#dc143c")],
+    [qt.Input(key="file_out"),qt.FolderBrowse("選択",size=(6,1))],
     [qt.Button("ファイル変換",key="file_go")],
 
     
@@ -63,21 +85,37 @@ lay_2 = qt.Tab("フォルダ全て",[
     [qt.InputText(key="folder_input"),qt.FileBrowse(button_text="選択",size=(6,1),)],
     [qt.Text("➁保存形式を選択して下さい",pad=((100,100),(100,100)), text_color="#dc143c",)],
     [qt.Radio(text="lzh形式",group_id="B",key="folder_lzh",default=True),qt.Radio(text="zip形式",group_id="B",key="folder_zip")],
-    [qt.Text("➂設定するパスワードを記載",text_color="#dc143c")],
-    [qt.InputText(default_text="daiwakasei",password_char="*",key="folder_password")],
+    [qt.Text("➂設定するパスワードを記載",text_color="#dc143c"),qt.Button("リセット",key="folder_open",size=(9,1))],
+    [qt.Input(default_text="daiwakasei",password_char="*",key="folder_password")],
+    
     [qt.Button("フォルダ変換",key="folder_go")],
     
     
 ])
 
 lay = [[qt.TabGroup([[lay_1,lay_2]])]]
-window = qt.Window(title="Password設定",layout = lay,icon="icon32.ico",size=(400,200))
+window = qt.Window(title="Password設定",layout = lay,icon="icon32.ico",size=(400,200), finalize=True)
 
 while True:
     event, values = window.read()
     
     if event == None:
         break
+    
+    #パスワードリセット
+    file_count = 1
+    folder_count = 1
+    
+    if event == "file_open":
+        file_count += 1
+        
+        if file_count %2 == 0:
+            window["file_password"].update(value = "")
+    if event == "folder_open":
+        folder_count += 1
+        
+        if folder_count %2 == 0:
+            window["folder_password"].update(value = "")   
     
     if event == "file_go":
         if values["file_input"] == "":
@@ -98,13 +136,13 @@ while True:
             file_name =  os.path.splitext(file_full_name)[0]
             
             if values["file_lzh"] == True:
-                 
-                lzh_file(f"{file_name}",password=values["file_password"],file_path=input_path)
+                lzh_start(file_name=f"{file_name}", out_path=values["file_out"],password=values["file_password"]) 
+                #lzh_file(f"{file_name}",password=values["file_password"],file_path=input_path)
                 qt.popup("処理が完了しました",custom_text="閉じる")
                 
             elif values["file_zip"] == True:
                 
-                zip_file(f"{file_name}",password=values["password"],file_path=input_path)
+                zip_file(f"{file_name}",password=values["file_password"],file_path=input_path)
                 qt.popup("処理が完了しました",custom_text="閉じる")
         
     
