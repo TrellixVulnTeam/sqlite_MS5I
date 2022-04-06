@@ -17,4 +17,8 @@ def rename(path,cas_name):
         os.rename(new_name,os.path.join(path,f"{cas_name}{count}{under_name}"))#リネーム
         count +=1
 
-print(os.path.split(__file__)[0])
+file_path = r"C:\Users\onoga\Desktop\onotes"
+file = os.listdir(file_path)
+
+ff = [f for f in file if os.path.isfile(os.path.join(file_path,f))]
+print(ff)

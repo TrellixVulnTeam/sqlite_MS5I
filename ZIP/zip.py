@@ -73,21 +73,22 @@ lay_1 = qt.Tab("ファイルのみ",[
     [qt.Radio(text="lzh形式",group_id="A",key="file_lzh",default=True),qt.Radio(text="zip形式",group_id="A",key="file_zip")],
     [qt.Text("➂設定するパスワードを記載",text_color="#dc143c"),qt.Button("リセット",key="file_open",size=(9,1))],
     [qt.Input(default_text="daiwakasei",password_char="*",key="file_password")],
-    [qt.Text("➂圧縮ファイルの保存先を選択",text_color="#dc143c")],
-    [qt.Input(key="file_out"),qt.FolderBrowse("選択",size=(6,1))],
+    [qt.Text("➃圧縮ファイルの保存先を選択",text_color="#dc143c")],
+    [qt.Input(key="file_out",disabled=True),qt.FolderBrowse("選択",size=(6,1))],
     [qt.Button("ファイル変換",key="file_go")],
 
     
 ])
 
 lay_2 = qt.Tab("フォルダ全て",[
-    [qt.Text("➀圧縮したいファイルを選択して下さい",text_color="#dc143c")],
+    [qt.Text("➀圧縮したいフォルダを選択して下さい",text_color="#dc143c")],
     [qt.InputText(key="folder_input"),qt.FileBrowse(button_text="選択",size=(6,1),)],
     [qt.Text("➁保存形式を選択して下さい",pad=((100,100),(100,100)), text_color="#dc143c",)],
     [qt.Radio(text="lzh形式",group_id="B",key="folder_lzh",default=True),qt.Radio(text="zip形式",group_id="B",key="folder_zip")],
     [qt.Text("➂設定するパスワードを記載",text_color="#dc143c"),qt.Button("リセット",key="folder_open",size=(9,1))],
     [qt.Input(default_text="daiwakasei",password_char="*",key="folder_password")],
-    
+    [qt.Text("➃圧縮ファイルの保存先を選択",text_color="#dc143c")],
+    [qt.Input(key="folder_out",disabled=True),qt.FolderBrowse("選択",size=(6,1))],
     [qt.Button("フォルダ変換",key="folder_go")],
     
     
@@ -136,13 +137,13 @@ while True:
             file_name =  os.path.splitext(file_full_name)[0]
             
             if values["file_lzh"] == True:
-                lzh_start(file_name=f"{file_name}", out_path=values["file_out"],password=values["file_password"]) 
+                lzh_start(file_name=f"{input_path}", out_path=values["file_out"],password=values["file_password"]) 
                 #lzh_file(f"{file_name}",password=values["file_password"],file_path=input_path)
                 qt.popup("処理が完了しました",custom_text="閉じる")
                 
             elif values["file_zip"] == True:
-                
-                zip_file(f"{file_name}",password=values["file_password"],file_path=input_path)
+                zip_start(file_name=f"{input_path}", out_path=values["file_out"],password=values["file_password"]) 
+                #zip_file(f"{file_name}",password=values["file_password"],file_path=input_path)
                 qt.popup("処理が完了しました",custom_text="閉じる")
         
     
@@ -157,8 +158,12 @@ while True:
         
         else:
             file_path = values["folder_input"]
-                #ドラッグ＆ドロップ時のfile:///を消去
+            #ドラッグ＆ドロップ時のfile:///を消去
             input_path = file_path.lstrip("file:///")
+            
+            folder_path = values["folder_out"]
+            #ドラッグ＆ドロップ時のfile:///を消去
+            input_folder_path = folder_path.lstrip("file:///")
             #カレントで移動
             os.chdir(input_path)
             #フォルダ内のファイル一覧取得
@@ -169,13 +174,16 @@ while True:
                 file_name =  os.path.splitext(file)[0]
                 #ファイルのフルパス
                 full_path = os.path.abspath(file)
+                
                 #lzhファイルの処理
                 if values["folder_lzh"] == True:
-                    lzh_file(f"{file_name}",password=values["folder_password"],file_path=full_path)
-                    
+                    lzh_start(file_name=f"{full_path}",out_path=input_folder_path,password=values["folder_password"])
+                    #lzh_file(f"{file_name}",password=values["folder_password"],file_path=full_path)
+        
                 
                 elif values["folder_zip"] == True:
-                    zip_file(f"{file_name}",password=values["folder_password"],file_path=full_path)
-                    
+                    zip_start(file_name=f"{full_path}",out_path=input_folder_path,password=values["folder_password"])
+                    #zip_file(f"{file_name}",password=values["folder_password"],file_path=full_path)
+                    pass
                     
             qt.popup("処理が完了しました",custom_text="閉じる")
