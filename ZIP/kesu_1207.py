@@ -20,5 +20,6 @@ def rename(path,cas_name):
 file_path = r"C:\Users\onoga\Desktop\onotes"
 file = os.listdir(file_path)
 
-ff = [f for f in file if os.path.isfile(os.path.join(file_path,f))]
+ff = [f for f in file if os.path.isdir(os.path.join(file_path,f))]
 print(ff)
+print(os.path.isdir(r"C:\Users\onoga\Desktop\囚人"))
