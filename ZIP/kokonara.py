@@ -28,11 +28,11 @@ lay = [
     
 ]
 
-fig = plt.figure(figsize=(5, 4))
+fig = plt.figure(figsize=(2, 2))
 ax = fig.add_subplot(111)
 ax.set_ylim(-10, 10)
 
-
+plt.plot
 
 
 window = sg.Window("サンプル",lay,finalize=True)
@@ -43,8 +43,10 @@ fig_agg.draw()
 while True:
     event,values = window.read()
     
+    
     if event == None:
         break
     
     if event == "change":
-        pass
+        ax.plot([0.1,0.2,0.3],[0.1,0.2,0.3],alpha=0.4)
+        fig_agg.draw()
