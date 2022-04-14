@@ -4,6 +4,7 @@ import re
 import pyminizip
 import shutil
 import zipfile
+import pandas_datareader as pdr
 #subprocess.run(r"C:\Users\onoga\desktop\MyDocker\Git\origin\test\opencv_createsamples.exe -info C:\Users\onoga\desktop\MyDocker\Git\origin\test\pos\poslist.txt -vec C:\Users\onoga\desktop\MyDocker\Git\origin\test\vec\positive.vec -num 1000 -maxidev 40 -maxxangle 0.8 -maxyangle 0.8 -maxzangle 0.5 ")
 #subprocess.run(r"C:\Users\onoga\desktop\MyDocker\Git\origin\test\opencv_traincascade.exe -data C:\Users\onoga\desktop\MyDocker\Git\origin\test\cascade -vec C:\Users\onoga\desktop\MyDocker\Git\origin\test\vec\positive.vec -bg C:\Users\onoga\desktop\MyDocker\Git\origin\test\neg\neglist.txt -numPos 10 -numNeg 20")
 
@@ -32,4 +33,6 @@ def press(dir_path):
 #                                  compresslevel=9) as zf:
 #    zf.write(filename=file_path)
     
-press(file_path)
+data = pdr.DataReader("HDV","yahoo")
+print(data.index)
+print(data["Close"])
