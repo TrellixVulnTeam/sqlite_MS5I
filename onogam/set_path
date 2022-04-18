@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"file_path": "C:/Users/onoga/Desktop/\u90e8\u9577\uff08\u78ba\u8a8d\u524d\uff09", "createsamples_path": "C:/Users/onoga/Desktop/MyDocker/Git/origin/opencv_createsamples.exe", "traincascade_path": "C:/Users/onoga/Desktop/MyDocker/Git/origin/opencv_traincascade.exe", "world3416_path": "C:/Users/onoga/Desktop/MyDocker/Git/origin/opencv_world3416.dll", "32bit_path": "C:/Users/onoga/Desktop/MyDocker/Git/origin/opencv_win_32bit"}
+=======
+{"file_path": "C:/Users/60837/Desktop/daiwa", "createsamples_path": "C:/Users/60837/Desktop/Mypython/Git/origin/origin/opencv_createsamples.exe", "traincascade_path": "C:/Users/60837/Desktop/Mypython/Git/origin/origin/opencv_traincascade.exe", "world3416_path": "C:/Users/60837/Desktop/Mypython/Git/origin/origin/opencv_world3416.dll", "32bit_path": "C:/Users/onoga/Desktop/MyDocker/Git/origin/opencv_win_32bit"}
+>>>>>>> 255d4d343c28a1210ce743e435c974fd402cc3b9
