@@ -28,7 +28,7 @@ ax = fig.add_subplot()
 
 lay = [
     [sg.Input(),sg.Button("選択")],
-    [sg.Listbox(listut,size=(30,6)),sg.Image("soccer.png",),sg.Table(values=str(data["Open"]))],
+    #[sg.Listbox(listut,size=(30,6)),sg.Image("soccer.png",),sg.Table(values=str(data["Open"]))],
     [sg.Radio("リンゴ",group_id="A"),sg.Radio("ゴリラ",group_id="A"),sg.Radio("ラッパ",group_id="A")],
     [sg.Checkbox("A"),sg.Checkbox("B")],
     #[sg.Multiline(size=(40,8))],
