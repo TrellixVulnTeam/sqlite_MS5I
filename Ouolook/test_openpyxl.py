@@ -1,10 +1,13 @@
 
 # ワークブックの読み込み
+from operator import sub
+from PySimpleGUI.PySimpleGUI import popup, popup_error
 from openpyxl import load_workbook
 import PySimpleGUI as sg
 import win32com.client
 import os 
-import glob
+import subprocess
+import pyexcel as p
 
 #ユーザーセッティング
 settings = sg.UserSettings(filename="email_list",path=r"C:\Users\60837\Desktop\outlook")
@@ -82,19 +85,20 @@ def main_prosess(file_path):
 sg.theme("Default")
 
 #オプション設定
-sg.set_options(use_ttk_buttons=True)
+sg.set_options(use_ttk_buttons=True, dpi_awareness=True)
 
 #フレームレイアウト
 layoo = sg.Frame("その他",[
     [sg.Text("フォルダ内ファイル数"),sg.InputText(size=(10,1),key="file_count_out")],
-    [],
+    [sg.Text("拡張子'.xls'ファイル数"),sg.InputText(size=(10,1),key="xls_count_out",text_color="red")],
+    [sg.Button("xlsxファイルに変換する",key="conversion_xlsx")],
     [sg.Button("メール作成",key="execution",pad=(50,20))],
 ],visible=False,key="soo")
 
 #レイアウト
 lay =[
     [sg.Text("指示書送付フォルダを選択"),sg.InputText(key="input_folder",),sg.FolderBrowse(button_text="フォルダを選択")],
-    [sg.Button("検索",key="search")],
+    [sg.Button("検索",key="search"),sg.Button("ファイルを開く",key="file_open",visible=False,pad=(50,0),button_color="green"),sg.Button("フォルダを開く",key="folder_open",visible=False,pad=(50,0),button_color="green")],
     [sg.Listbox("",key="listbox",size=(50,10),visible=False),layoo],
       
 ]        
@@ -103,22 +107,67 @@ window = sg.Window("不具合指示書送付",lay)
 
 while True:
     event,value = window.read()
+    
     if event == None:
         break
     
-    if event == "search":
+    if event == "search": #検索ボタンを押したときの処理
         if value["input_folder"] == "":
             sg.popup("フォルダを選択してください")
             pass
         else:
+            xls_list= []
             dir = os.listdir(value["input_folder"])
+            for ii in dir:
+                if ii.endswith(".xls") == True: #拡張子が.xlsのファイルはxls_listに移す
+                    xls_list.append(ii)
+            window["xls_count_out"].update(len(xls_list))
             window["file_count_out"].update(len(dir))
             window["listbox"].update(dir)
             window["listbox"].update(visible=True)
+            window["file_open"].update(visible=True)
+            window["folder_open"].update(visible=True)
             window["soo"].update(visible=True)
-    
-    if event == "execution":
+            
+            
+    if event == "folder_open": #フォルダを開くボタンを押したときの処理
         os.chdir(value["input_folder"])
-        for i in dir:
-            main_prosess(i)
+        subprocess.Popen(["explorer", "."], shell=True)
+        
+        
+    if event == "file_open": #ファイルを開くボタンを押したときの処理
+        if window["listbox"].get() == []:
+            
+            sg.popup_error("選択してください")
+            
+        else:
+            os.chdir(value["input_folder"])
+            open_file_name = window["listbox"].get()
+            
+            subprocess.Popen(["C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Microsoft Office 2013\Excel 2013.lnk",open_file_name[0]],shell=True)
+    
+    
+    if event == "conversion_xlsx": #xlsxファイルに変換するボタンを押したときの処理
+        if window["listbox"].get() == []:
+            
+            sg.popup_error("選択してください")
+            
+        else:
+            os.chdir(value["input_folder"])
+            open_file_name = window["listbox"].get()[0]
+            sprit_text_file = os.path.splitext(open_file_name)[0]
+            
+            p.save_book_as(file_name="{}".format(open_file_name),
+            dest_file_name=f"{sprit_text_file}.xlsx")
+        
+    
+    
+    if event == "execution": #メール作成ボタンを押したときの処理
+        if int(value["xls_count_out"]) >0: # .xlsファイルが含まれている場合はメール作成を中止する
+            popup_error("拡張子が'.xls'のファイルが含まれています")
+            pass
+        else:   
+            os.chdir(value["input_folder"]) #カレントディレクトリを作業フォルダに変更
+            for i in dir:
+                main_prosess(i)
             
