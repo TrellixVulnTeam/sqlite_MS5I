@@ -8,7 +8,7 @@ import win32com.client
 import os 
 import subprocess
 import pyexcel as p
-
+import pandas as pd
 #ユーザーセッティング
 settings = sg.UserSettings(filename="email_list",path=r"C:\Users\60837\Desktop\outlook")
 settings.load()
@@ -36,7 +36,7 @@ def selection_window():
         [sg.Radio(text="内製",key="内製",group_id="A")],
         [sg.Radio(text="金型保全課",key="金型保全課",group_id="A")],
         [sg.Radio(text="矢野",key="矢野",group_id="A")],
-        [sg.Button("OK",button_color=("white","blue"),key="OK"),sg.Button("キャンセル",button_color=("white","blue"),key="キャンセル")],
+        [sg.Button("OK",button_color=("white","blue"),key="OK")],
     ]
     window= sg.Window(title="送り先を選択",layout=lay_selection,size=(250,150))
     while True:
@@ -50,7 +50,7 @@ def selection_window():
             for select in values:
                 if values[select] == True:
                     list_up = select
-            
+            window.close()
             return  list_up
             
                     
@@ -91,8 +91,9 @@ sg.set_options(use_ttk_buttons=True, dpi_awareness=True)
 layoo = sg.Frame("その他",[
     [sg.Text("フォルダ内ファイル数"),sg.InputText(size=(10,1),key="file_count_out")],
     [sg.Text("拡張子'.xls'ファイル数"),sg.InputText(size=(10,1),key="xls_count_out",text_color="red")],
-    [sg.Button("xlsxファイルに変換する",key="conversion_xlsx")],
-    [sg.Button("メール作成",key="execution",pad=(50,20))],
+    [sg.Button("xlsファイルのみ表示", key= "display_xlsx")],
+    [sg.Button("選択したファイルを削除",key="delete", button_color="red")],
+    [sg.Button("メール作成",key="execution",pad=(80,20))],
 ],visible=False,key="soo")
 
 #レイアウト
@@ -147,7 +148,16 @@ while True:
             subprocess.Popen(["C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Microsoft Office 2013\Excel 2013.lnk",open_file_name[0]],shell=True)
     
     
-    if event == "conversion_xlsx": #xlsxファイルに変換するボタンを押したときの処理
+    if event == "display_xlsx": #xlsファイルのみ表示ボタンを押したときの処理
+        xls_list= []
+        dir = os.listdir(value["input_folder"])
+        for ii in dir:
+            if ii.endswith(".xls") == True: #拡張子が.xlsのファイルはxls_listに移す
+                xls_list.append(ii)
+        window["listbox"].update(xls_list)
+        
+        
+    if event == "delete": #選択したファイルを削除するボタンを押したときの処理
         if window["listbox"].get() == []:
             
             sg.popup_error("選択してください")
@@ -156,9 +166,27 @@ while True:
             os.chdir(value["input_folder"])
             open_file_name = window["listbox"].get()[0]
             sprit_text_file = os.path.splitext(open_file_name)[0]
+            os.chdir(value["input_folder"])
+            send = sg.popup_ok_cancel("ファイルを削除しますか？")
+            if send == "OK":
+                os.remove(open_file_name)
+                dir = os.listdir(value["input_folder"])
+                window["listbox"].update(dir)
+                window["file_count_out"].update(len(dir))
+                xls_list= []
+                dir = os.listdir(value["input_folder"])
+                for ii in dir:
+                    if ii.endswith(".xls") == True: #拡張子が.xlsのファイルはxls_listに移す
+                        xls_list.append(ii)
+                window["xls_count_out"].update(len(xls_list))
+            elif send == "Cancel":
+                pass
             
-            p.save_book_as(file_name="{}".format(open_file_name),
-            dest_file_name=f"{sprit_text_file}.xlsx")
+            #df = pd.read_excel(r"{}".format(open_file_name))
+            #df.to_excel(f"{sprit_text_file}.xlsx",encoding="shift-jis")
+            
+            #p.save_book_as(file_name="{}".format(open_file_name),
+            #dest_file_name=f"{sprit_text_file}.xlsx")
         
     
     
