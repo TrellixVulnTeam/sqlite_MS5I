@@ -34,7 +34,7 @@ def main_start(cascade_file, img_path):
     
 
 sg.theme("Default")
-
+sg.set_options(use_ttk_buttons=True, dpi_awareness=True,font=('Meiryo UI',9))
    
    
 lay = [
@@ -59,4 +59,4 @@ while True:
     
     if event == "start":
         img = main_start(cascade_file=value["input_cascade"],img_path=value["img_path"])
-        window["image"].update(img)
+       # window["image"].update(img)

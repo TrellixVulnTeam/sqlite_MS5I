@@ -1,14 +1,4 @@
+import tempfile
 
-import win32com.client
-import os
-import sys
-
-
-
-outlook = win32com.client.Dispatch("Outlook.Application").GetNamespace("MAPI")
-
-accounts = outlook.Folders
-print(outlook.Folders)
-#for account in accounts:
- #   print(account)
-    
+with tempfile.NamedTemporaryFile(delete=False) as tf:
+    print(tf.name)
