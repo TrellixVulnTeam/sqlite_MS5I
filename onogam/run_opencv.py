@@ -1,6 +1,8 @@
+
 import cv2
 import PySimpleGUI as sg
 import tempfile
+import os
 
 #画像分類実行
 def main_start(cascade_file, img_path):
@@ -13,15 +15,23 @@ def main_start(cascade_file, img_path):
 
     # "▲"を物体検出する
     triangle = cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=3, minSize=(30, 30))
-
+    
     # 検出した領域を赤色の矩形で囲む
     for (x, y, w, h) in triangle:
         cv2.rectangle(img, (x, y), (x + w, y+h), (0,0,200), 3)
 
     # 結果画像を保存
     #cv2.imwrite("result_triangle.jpg",img)
-    
+    #img = cv2.resize(img, dsize=(200,200)) #リサイズ
+    #with tempfile.NamedTemporaryFile(delete=True) as tf:
+    #    cv2.imwrite(f"{tf.name}.jpg", img)
+        
+    #    tf.seek(0)
+    #    os.chdir(os.path.split(tf.name)[0])
+    #    iii = cv2.imread(f"{tf.name}.jpg")
 
+        
+    
     
     #結果画像を表示
     cv2.imshow('image', img)
@@ -29,8 +39,10 @@ def main_start(cascade_file, img_path):
     # 何かのキーを押したら処理を終了させる
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-    
-    return img
+        
+        #out = os.path.join(os.path.split(tf.name)[0],f"{tf.name}.jpg")
+        
+        #return out
     
 
 sg.theme("Default")
@@ -43,7 +55,7 @@ lay = [
     [sg.Text("2.画像を選択")],
     [sg.InputText(tooltip="画像認識する画像を選択",key="img_path"),sg.FileBrowse("選択")],
     [sg.Button("START", key="start")],
-    [sg.Image("",key="image",)],
+    [sg.Image(r"",key="image",size=(300,300))],
 ]
 
 
@@ -59,4 +71,5 @@ while True:
     
     if event == "start":
         img = main_start(cascade_file=value["input_cascade"],img_path=value["img_path"])
-       # window["image"].update(img)
+        
+        #window["image"].update(img)
