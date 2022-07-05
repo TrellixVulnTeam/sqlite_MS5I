@@ -146,7 +146,67 @@ def file_rename(path,cas_name):
         os.rename(new_name,os.path.join(path,f"{cas_name}{count}{under_name}"))#リネーム
         count +=1
 
+#画像リサイズウィンドウ
+def re_size():
+    #第1引数:ディレクトリpath 第2引数:アスペクト比指定(長辺)
+    def resize_img(dir_path,size):
+        os.chdir(dir_path)
+        file_list = os.listdir()
+        act_list = []
+        for file_name in file_list:
+            name = os.path.abspath(file_name)
+            act_list.append(name)
+            
+        for i in act_list:
+            
+            #numpyで開く事で日本語を含むpathを通す(opencvは日本語pathに対応していない)
+            buf = np.fromfile(i, np.uint8)
+            img = cv2.imdecode(buf, cv2.IMREAD_UNCHANGED) 
+            
+            
+            # リサイズしたい長い辺のサイズ
+            re_length = size
 
+            #縦横サイズを取得(px) h= 縦幅　w=横幅
+            h, w = img.shape[:2]
+
+            # 変換する倍率を計算
+            re_h = re_w = re_length/max(h,w)
+            #リサイズする
+            img2 = cv2.resize(img, dsize=None, fx=re_h, fy=re_w)
+            #画像を保存
+            cv2.imwrite(i,img2)
+            
+    layout = [
+        [sg.Text("リサイズしたいフォルダを指定")],
+        [sg.InputText(key="folder_path"),sg.FolderBrowse(button_text="フォルダ選択")],
+        [sg.Text("【画像比率を維持してリサイズ】")],
+        [sg.Text("長辺のサイズを指定"),sg.InputText(key="size",size=(10,1)),sg.Text("(px)")],
+        [sg.Button("実行",key="act")],
+             ]
+    
+    window = sg.Window("画像リサイズ",layout)
+    while True:
+        event,value = window.read()
+        if event == None:
+            break
+        
+        
+        
+        if event == "act":
+            
+            if value["folder_path"] == "":
+                sg.popup("フォルダを選択して下さい")
+                continue
+            
+            if value["size"] == "":
+                sg.popup("指定サイズを入力して下さい")
+                continue
+            
+            else:
+            
+                resize_img(value["folder_path"],int(value["size"]))
+                sg.popup("処理が完了しました")
 
 
 
@@ -345,7 +405,7 @@ pos_file = sg.Tab("ステップ➁",[
         [sg.InputText(key="output_pos"), sg.FolderBrowse(button_text="選択")],
         [sg.Text("出力ファイル名"),sg.InputText(default_text="poslist.txt",size=(20,10),key=("pos_name"))],
         [sg.Button("作成",key="bt_start_pos"),sg.Text("処理が完了しました",key="pos_end",text_color="#00bfff",visible=False)],
-        [sg.Menu(menu_definition=[["設定","環境設定"]],background_color="white")]],)],
+        [sg.Menu(menu_definition=[["設定",["環境設定","画像リサイズ"]]],background_color="white")]],)],
     [sg.Frame("vecファイル作成",layout=[
         [sg.Text("poslistを選択してください")],
         [sg.InputText(key="poslist_path"),sg.FileBrowse("選択")],
@@ -482,4 +542,7 @@ while True:
             continue
         
         cascade_make(path=settings["file_path"],vec=value["cascade_vec"],neglist=value["cascade_neg"],numPos=value["numPos"],numNeg=value["numNeg"])
-        
+    
+    #画像リサイズ
+    if event =="画像リサイズ":
+        re_size()
