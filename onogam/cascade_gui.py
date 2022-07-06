@@ -178,10 +178,17 @@ def re_size():
             cv2.imwrite(i,img2)
             
     layout = [
-        [sg.Text("リサイズしたいフォルダを指定")],
-        [sg.InputText(key="folder_path"),sg.FolderBrowse(button_text="フォルダ選択")],
-        [sg.Text("【画像比率を維持してリサイズ】")],
-        [sg.Text("長辺のサイズを指定"),sg.InputText(key="size",size=(10,1)),sg.Text("(px)")],
+        [sg.Frame(
+            "リサイズしたいフォルダを指定",layout=[
+                [sg.InputText(key="folder_path"),sg.FolderBrowse(button_text="フォルダ選択")],
+            ],title_color="yellow"
+            )],
+        [sg.Frame(
+            "画像比率を維持してリサイズ",layout=[
+               [sg.Text("長辺のサイズを指定"),sg.InputText(key="size",size=(10,1)),sg.Text("(px)")], 
+            ],title_color="yellow"
+        )],
+        
         [sg.Button("実行",key="act")],
              ]
     
