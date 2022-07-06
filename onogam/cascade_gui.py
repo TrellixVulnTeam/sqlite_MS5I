@@ -148,6 +148,24 @@ def file_rename(path,cas_name):
 
 #画像リサイズウィンドウ
 def re_size():
+    
+    #日本語pathに対応した書き出し処理
+    def imwrite(filename, img, params=None):
+        try:
+            ext = os.path.splitext(filename)[1]
+            result, n = cv2.imencode(ext, img, params)
+
+            if result:
+                with open(filename, mode='w+b') as f:
+                    n.tofile(f)
+                return True
+            else:
+                return False
+        except Exception as e:
+            print(e)
+            return False
+    
+    
     #第1引数:ディレクトリpath 第2引数:アスペクト比指定(長辺)
     def resize_img(dir_path,size):
         os.chdir(dir_path)
@@ -175,7 +193,10 @@ def re_size():
             #リサイズする
             img2 = cv2.resize(img, dsize=None, fx=re_h, fy=re_w)
             #画像を保存
-            cv2.imwrite(i,img2)
+            imwrite(i,img2)
+            
+            
+    
             
     layout = [
         [sg.Frame(

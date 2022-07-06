@@ -28,12 +28,28 @@ def resize_img(dir_path,size):
         #画像を保存
         cv2.imwrite(i,img2)
         
-buf = np.fromfile(r"C:\Users\60837\Desktop\画像\pos\post_4.jpg", np.uint8)
+        
+def imwrite(filename, img, params=None):
+    try:
+        ext = os.path.splitext(filename)[1]
+        result, n = cv2.imencode(ext, img, params)
+
+        if result:
+            with open(filename, mode='w+b') as f:
+                n.tofile(f)
+            return True
+        else:
+            return False
+    except Exception as e:
+        print(e)
+        return False
+        
+buf = np.fromfile(r"C:\Users\onoga\Desktop\test_img\rens\紙\pos_1.jpg", np.uint8)
 img = cv2.imdecode(buf, cv2.IMREAD_UNCHANGED)        
 
-iii = cv2.imread(r"C:\Users\60837\Desktop\画像\pos\post_4.jpg")
-cv2.imshow("",img)
-cv2.waitKey(0)
-
-
+#iii = cv2.imread(r"C:\Users\onoga\Desktop\test_img\rens\紙\pos_1.jpg")
+#cv2.imshow("",img)
+#cv2.waitKey(0)
+os.chdir(r"C:\Users\onoga\Desktop\test_img\rens\紙")
+imwrite(filename="dsa.jpg",img=img)
 #resize_img(r"C:\Users\60837\Desktop\fu",500)
