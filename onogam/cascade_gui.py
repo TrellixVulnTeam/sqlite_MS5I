@@ -42,12 +42,12 @@ def get_path_neg(path):
     return file_list
 
 #ベクトルファイル作成
-def vec_make(path,pos_path,num):
+def vec_make(path,pos_path,num, w, h):
     os.chdir(path)#カレントディレクトリを移動する
     #選択したposlistがテキストファイルか同か判別（別のファイルを選択した時に実行されなくする為）
     true = ".txt" in pos_path
     if true == True: #テキストファイルなら実行   
-        sg.execute_command_subprocess("start","opencv_createsamples.exe -info {0} -vec vec/positive.vec -num {1}".format(pos_path,num))
+        sg.execute_command_subprocess("start","opencv_createsamples.exe -info {0} -vec vec/positive.vec -num {1} -w {2} -h {3}".format(pos_path,num, w, h))
         return True
     else:
         sg.popup("poslist.txtを選択してください")
@@ -58,6 +58,9 @@ def vec_make(path,pos_path,num):
 def cascade_make(path,vec,neglist,numPos,numNeg):
     os.chdir(path)
     sg.execute_command_subprocess("start","opencv_traincascade.exe -data cascade -vec {0} -bg {1} -numPos {2} -numNeg {3} -numStages 25".format(vec,neglist,numPos,numNeg))
+    #-data: カスケードファイルの格納場所を指定 -vec: ベクトルファイルの場所を指定 -bg: neglistの場所を指定 -numPos: positiveの枚数を指定 -numNeg: negativeの枚数を指定 -featureType: HOGならHOG特徴量をLBPならLBP特徴量を、指定なしならHaar-Like特徴量を利用
+    #-maxFalseAlarmRate: 各学習ステージでの許容する誤検出率 -w: 横幅 -h: 高さ -minHitRate: 各学習ステージでの許容する最小検出率 -numStages: 作成するステージ数
+
 
 num = 1
 def main(img_path):
@@ -328,6 +331,8 @@ def set():
         #設定保存ボタンを押したときの処理    
         if event == "save":
             
+            settings["file_path"] = value["input_path"]
+            
             #ラジオボタンが64bitを選択している場合の処理
             if value["64bit"] == True:
                 if value["input_path"] == "":
@@ -454,8 +459,14 @@ train_cascade = sg.Tab("ステップ➂",layout=[
         [sg.Text("neglistを選択してください")],
         [sg.InputText(key="cascade_neg"),sg.FileBrowse("選択")],
         [sg.Text("numPos(正解画像数)"),sg.InputText(key="numPos",size=(8,10))],
-        [sg.Text("numNeg(不正解画像数)"),sg.InputText(key="numNeg",size=(8,10)),sg.Button("作成",key="cascade_start",pad=(80,0))],
-        [sg.Text("")]
+        [sg.Text("numNeg(不正解画像数)"),sg.InputText(key="numNeg",size=(8,10)),],
+        [sg.Text("学習ステージ数"),sg.InputText(key="numStages",size=(8,10),default_text="20")],
+        [sg.Text("トレーニングタイプ"),sg.Combo(values=["HAAR","LBP","HOG"],default_value="HAAR",size=(8,12),key="featureType")],
+        [sg.Text("boost分類器タイプ"),sg.Combo(values=["GAB","DAB","RAB","LB"],default_value="GAB",size=(8,12),key="bt")],
+        [sg.Text("許容する最小検出率"),sg.InputText(key="minHitRate",size=(8,10),default_text="0.97")],
+        
+        
+        [sg.Button("作成",key="cascade_start",)]
     ])]
 ])
 
@@ -551,7 +562,13 @@ while True:
         if value["num"] == "":
             sg.popup("生成する画像数を入力してください")
             continue
-        vec_act = vec_make(path=settings["file_path"],pos_path=value["poslist_path"],num=value["num"])
+        if value["w"] == "":
+            sg.popup("学習画像の横幅を入力してください")
+            continue
+        if value["h"] == "":
+            sg.popup("学習画像の縦幅を入力してください")
+            continue
+        vec_act = vec_make(path=settings["file_path"],pos_path=value["poslist_path"],num=value["num"],w=value["w"],h=value["h"])
         if vec_act == True:#vec_makeが実行された場合Trueの戻り値が返ってくる　Trueの場合以下のプログラムを実行
             window["vec_end"].update(visible = True)
             
