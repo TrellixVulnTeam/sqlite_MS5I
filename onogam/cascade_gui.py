@@ -438,6 +438,8 @@ pos_file = sg.Tab("ステップ➁",[
         [sg.Text("poslistを選択してください")],
         [sg.InputText(key="poslist_path"),sg.FileBrowse("選択")],
         [sg.Text("生成する画像数(数字を入力)"),sg.InputText(key="num",size=(10,10))],
+        [sg.Text("学習画像の横幅(w)"),sg.InputText(key="w",size=(10,10))],
+        [sg.Text("学習画像の縦幅(h)"),sg.InputText(key="h",size=(10,10))],
         [sg.Button("作成",key="bt_start_vec"),sg.Text("処理が完了しました",key="vec_end",text_color="#00bfff",visible=False)]
     ])]
     
