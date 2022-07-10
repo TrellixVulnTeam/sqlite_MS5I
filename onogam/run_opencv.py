@@ -3,23 +3,33 @@ import cv2
 import PySimpleGUI as sg
 import tempfile
 import os
+import numpy as np
 
 #画像分類実行
 def main_start(cascade_file, img_path):
     # カスケード分類器を読み込む
-    cascade = cv2.CascadeClassifier(r"{}".format(cascade_file))
-
-    # 入力画像の読み込み&グレースケール変換
-    img = cv2.imread(r"{}".format(img_path))
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-    # "▲"を物体検出する
-    triangle = cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=3, minSize=(30, 30))
     
-    # 検出した領域を赤色の矩形で囲む
-    for (x, y, w, h) in triangle:
-        cv2.rectangle(img, (x, y), (x + w, y+h), (0,0,200), 3)
-
+    cascade = cv2.CascadeClassifier(r"{}".format(cascade_file))
+    
+    # 入力画像の読み込み&グレースケール変換
+    #img = cv2.imread(r"{}".format(img_path))
+    #numpyで開く事で日本語を含むpathを通す(opencvは日本語pathに対応していない)
+    buf = np.fromfile(r"{}".format(img_path), np.uint8)
+    img = cv2.imdecode(buf, cv2.IMREAD_UNCHANGED) 
+    
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    try:
+        # "▲"を物体検出する
+        triangle = cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=3, minSize=(30, 30))
+        
+        # 検出した領域を赤色の矩形で囲む
+        for (x, y, w, h) in triangle:
+            rec = cv2.rectangle(img, (x, y), (x + w, y+h), (0,0,200), 3)
+        print(True)
+    
+    except:
+        print(False)
+    
     # 結果画像を保存
     #cv2.imwrite("result_triangle.jpg",img)
     #img = cv2.resize(img, dsize=(200,200)) #リサイズ

@@ -58,9 +58,9 @@ def vec_make(path,pos_path,num, w, h):
 
   
 #カスケードファイル作成
-def cascade_make(path,vec,neglist,numPos,numNeg,numStages,featureType,bt,minHitRate,maxFalseAlarmRate):
+def cascade_make(path,vec,neglist,numPos,numNeg,numStages,featureType,bt,minHitRate,maxFalseAlarmRate,cascade_w,cascade_h):
     os.chdir(path)
-    sg.execute_command_subprocess("start","opencv_traincascade.exe -data cascade -vec {0} -bg {1} -numPos {2} -numNeg {3} -numStages {4} -featureType {5} -bt {6} -minHitRate {7} -maxFalseAlarmRate {8}".format(vec,neglist,numPos,numNeg,numStages,featureType,bt,minHitRate,maxFalseAlarmRate))
+    sg.execute_command_subprocess("start","opencv_traincascade.exe -data cascade -vec {0} -bg {1} -numPos {2} -numNeg {3} -numStages {4} -featureType {5} -bt {6} -minHitRate {7} -maxFalseAlarmRate {8} -w {9} -h {10}".format(vec,neglist,numPos,numNeg,numStages,featureType,bt,minHitRate,maxFalseAlarmRate,cascade_w,cascade_h))
     #-data: カスケードファイルの格納場所を指定 -vec: ベクトルファイルの場所を指定 -bg: neglistの場所を指定 -numPos: positiveの枚数を指定 -numNeg: negativeの枚数を指定 -featureType: HOGならHOG特徴量をLBPならLBP特徴量を、指定なしならHaar-Like特徴量を利用
     #-maxFalseAlarmRate: 各学習ステージでの許容する誤検出率 -w: 横幅 -h: 高さ -minHitRate: 各学習ステージでの許容する最小検出率 -numStages: 作成するステージ数
 
@@ -446,11 +446,11 @@ pos_file = sg.Tab("ステップ➁",[
         [sg.Text("poslistを選択してください")],
         [sg.InputText(key="poslist_path"),sg.FileBrowse("選択")],
         [sg.Text("生成する画像数(数字を入力)"),sg.InputText(key="num",size=(10,10))],
-        [sg.Text("学習画像の横幅(w)"),sg.InputText(key="w",size=(10,10))],
-        [sg.Text("学習画像の縦幅(h)"),sg.InputText(key="h",size=(10,10))],
+        [sg.Text("学習画像の横幅(w)"),sg.InputText(key="vec_w",size=(10,10))],
+        [sg.Text("学習画像の縦幅(h)"),sg.InputText(key="vec_h",size=(10,10))],
         [sg.Checkbox(text="画像ビューを表示",key="show")],
         [sg.Button("作成",key="bt_start_vec"),sg.Text("処理が完了しました",key="vec_end",text_color="#00bfff",visible=False)],
-        [sg.Button("II",key="II")],
+        
     ])]
     
     
@@ -470,6 +470,8 @@ train_cascade = sg.Tab("ステップ➂",layout=[
         [sg.Text("boost分類器タイプ"),sg.Combo(values=["GAB","DAB","RAB","LB"],default_value="GAB",size=(8,12),key="bt")],
         [sg.Text("許容する最小検出率"),sg.InputText(key="minHitRate",size=(8,10),default_text="0.97")],
         [sg.Text("許容する誤検出率"),sg.InputText(key="maxFalseAlarmRate",size=(8,10),default_text="0.8")],
+        [sg.Text("学習画像の横幅(w)"),sg.InputText(key="cascade_w",size=(10,10))],
+        [sg.Text("学習画像の縦幅(h)"),sg.InputText(key="cascade_h",size=(10,10))],
         
         
         
@@ -569,13 +571,13 @@ while True:
         if value["num"] == "":
             sg.popup("生成する画像数を入力してください")
             continue
-        if value["w"] == "":
+        if value["vec_w"] == "":
             sg.popup("学習画像の横幅を入力してください")
             continue
-        if value["h"] == "":
+        if value["vec_h"] == "":
             sg.popup("学習画像の縦幅を入力してください")
             continue
-        vec_act = vec_make(path=settings["file_path"],pos_path=value["poslist_path"],num=value["num"],w=value["w"],h=value["h"])
+        vec_act = vec_make(path=settings["file_path"],pos_path=value["poslist_path"],num=value["num"],w=value["vec_w"],h=value["vec_h"])
         if vec_act == True:#vec_makeが実行された場合Trueの戻り値が返ってくる　Trueの場合以下のプログラムを実行
             window["vec_end"].update(visible = True)
             
@@ -609,9 +611,16 @@ while True:
         if value["maxFalseAlarmRate"] == "":
             sg.popup("許容する誤検出率を入力してください")
             continue
+        if value["cascade_w"] == "":
+            sg.popup("学習画像の横幅を入力してください")
+            continue
+        if value["cascade_h"] == "":
+            sg.popup("学習画像の縦幅を入力してください")
+            continue
         
         cascade_make(path=settings["file_path"],vec=value["cascade_vec"],neglist=value["cascade_neg"],numPos=value["numPos"],numNeg=value["numNeg"],
-                     numStages=value["numStages"],featureType=value["featureType"],bt=value["bt"],minHitRate=value["minHitRate"],maxFalseAlarmRate=value["maxFalseAlarmRate"])
+                     numStages=value["numStages"],featureType=value["featureType"],bt=value["bt"],minHitRate=value["minHitRate"],maxFalseAlarmRate=value["maxFalseAlarmRate"],
+                     cascade_w=value["cascade_w"],cascade_h=value["cascade_h"])
     
     #画像リサイズ
     if event =="画像リサイズ":
