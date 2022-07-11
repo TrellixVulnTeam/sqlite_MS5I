@@ -1,7 +1,7 @@
 
 import cv2
 import PySimpleGUI as sg
-import tempfile
+
 import os
 import numpy as np
 
@@ -18,17 +18,18 @@ def main_start(cascade_file, img_path):
     img = cv2.imdecode(buf, cv2.IMREAD_UNCHANGED) 
     
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    try:
-        # "▲"を物体検出する
-        triangle = cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=3, minSize=(30, 30))
-        
-        # 検出した領域を赤色の矩形で囲む
-        for (x, y, w, h) in triangle:
-            rec = cv2.rectangle(img, (x, y), (x + w, y+h), (0,0,200), 3)
-        print(True)
+   
+    # "▲"を物体検出する
+    triangle = cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=3, minSize=(30, 30))
+    uui = np.array(triangle).any()
+
+    print(bool(uui))
+    # 検出した領域を赤色の矩形で囲む
+    for (x, y, w, h) in triangle:
+        cv2.rectangle(img, (x, y), (x + w, y+h), (0,0,200), 3)
     
-    except:
-        print(False)
+
+ 
     
     # 結果画像を保存
     #cv2.imwrite("result_triangle.jpg",img)
