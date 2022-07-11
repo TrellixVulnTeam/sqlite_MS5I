@@ -56,6 +56,48 @@ def main_start(cascade_file, img_path):
         #return out
     
 
+
+#画像分類実行
+def folder_start(cascade_file, folder_path):
+    # カスケード分類器を読み込む
+    
+    cascade = cv2.CascadeClassifier(r"{}".format(cascade_file))
+    
+    #カレントディレクトリを移動する
+    os.chdir(folder_path)
+    
+    file_list = os.listdir(folder_path)
+    lsiin = [s for s in file_list if ".txt" not in s]
+    for file in lsiin:
+        
+    
+        # 入力画像の読み込み&グレースケール変換
+        #img = cv2.imread(r"{}".format(folder_path))
+        #numpyで開く事で日本語を含むpathを通す(opencvは日本語pathに対応していない)
+        buf = np.fromfile(r"{}".format(file), np.uint8)
+        img = cv2.imdecode(buf, cv2.IMREAD_UNCHANGED) 
+        
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    
+        # "▲"を物体検出する
+        triangle = cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=3, minSize=(30, 30))
+        uui = np.array(triangle).any()
+
+        print(bool(uui))
+        # 検出した領域を赤色の矩形で囲む
+        for (x, y, w, h) in triangle:
+            cv2.rectangle(img, (x, y), (x + w, y+h), (0,0,200), 3)
+        
+        #結果画像を表示
+        cv2.imshow('image', img)
+
+        # 何かのキーを押したら処理を終了させる
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+
+
+
 sg.theme("Default")
 sg.set_options(use_ttk_buttons=True, dpi_awareness=True,font=('Meiryo UI',9))
    
@@ -65,8 +107,12 @@ lay = [
     [sg.InputText(tooltip="カスケードファイルを選択",key="input_cascade"),sg.FileBrowse("選択")],
     [sg.Text("2.画像を選択")],
     [sg.InputText(tooltip="画像認識する画像を選択",key="img_path"),sg.FileBrowse("選択")],
+    [sg.Text("3.フォルダを選択")],
+    [sg.InputText(key="folder_path"),sg.FolderBrowse("選択")],
     [sg.Button("START", key="start")],
-    [sg.Image(r"",key="image",size=(300,300))],
+    [sg.Table(values=[[]],headings=["ファイル名","結果"],auto_size_columns=False,key="table",
+              def_col_width=20,)],
+    [sg.Button("OK",key="OK")],
 ]
 
 
@@ -84,3 +130,11 @@ while True:
         img = main_start(cascade_file=value["input_cascade"],img_path=value["img_path"])
         
         #window["image"].update(img)
+        
+    if event == "OK":
+        result_list = [[]]
+        
+        folder_start(cascade_file=value["input_cascade"],folder_path=value["folder_path"])
+        
+        #テーブルに反映させる様にする
+        window["table"].update(list)
