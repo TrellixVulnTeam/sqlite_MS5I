@@ -66,8 +66,11 @@ def folder_start(cascade_file, folder_path):
     #カレントディレクトリを移動する
     os.chdir(folder_path)
     
+    #結果を格納する二次元配列
+    act_list = [[]]
+    
     file_list = os.listdir(folder_path)
-    lsiin = [s for s in file_list if ".txt" not in s]
+    lsiin = [s for s in file_list if ".txt" not in s] #poslist.txt以外をリストに格納
     for file in lsiin:
         
     
@@ -81,19 +84,30 @@ def folder_start(cascade_file, folder_path):
     
         # "▲"を物体検出する
         triangle = cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=3, minSize=(30, 30))
-        uui = np.array(triangle).any()
+        
+        #cascade分類機にて検知したか判定
+        uui = np.array(triangle).any() #二次元配列はbool関数で処理出来ない為arrayに一度変換
+        result_file = bool(uui)
 
-        print(bool(uui))
+        #tableに表示する二次元配列を作成
+        act_list.append(["{}".format(file),"{}".format(result_file)])
+        
+        
         # 検出した領域を赤色の矩形で囲む
         for (x, y, w, h) in triangle:
             cv2.rectangle(img, (x, y), (x + w, y+h), (0,0,200), 3)
         
         #結果画像を表示
-        cv2.imshow('image', img)
+       # cv2.imshow('image', img)
 
         # 何かのキーを押したら処理を終了させる
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        #cv2.waitKey(0)
+        #cv2.destroyAllWindows()
+    
+    #初期値の空欄を削除する
+    act_list.pop(0)
+    
+    return act_list
 
 
 
@@ -110,9 +124,9 @@ lay = [
     [sg.Text("3.フォルダを選択")],
     [sg.InputText(key="folder_path"),sg.FolderBrowse("選択")],
     [sg.Button("START", key="start")],
-    [sg.Table(values=[[]],headings=["ファイル名","結果"],auto_size_columns=False,key="table",
+    [sg.Table(values=[],headings=["ファイル名","結果"],auto_size_columns=False,key="table",
               def_col_width=20,)],
-    [sg.Button("OK",key="OK")],
+    [sg.Button("OK",key="OK"),sg.Button("SPYD",key="SPYD")],
 ]
 
 
@@ -134,7 +148,20 @@ while True:
     if event == "OK":
         result_list = [[]]
         
-        folder_start(cascade_file=value["input_cascade"],folder_path=value["folder_path"])
+        Folder_start = folder_start(cascade_file=value["input_cascade"],folder_path=value["folder_path"])
         
         #テーブルに反映させる様にする
-        window["table"].update(list)
+        window["table"].update(Folder_start)
+        
+    if event == "SPYD":
+        if value["table"] == []:
+            sg.popup("選択してください")
+            continue
+        
+        #tableの全データを二次元配列で取得
+        out_table = window["table"].get()
+        
+        #tableからファイル名を取得
+        table_file_name = out_table[value["table"][0]][0]
+        
+        sg.execute_command_subprocess("start",table_file_name)
