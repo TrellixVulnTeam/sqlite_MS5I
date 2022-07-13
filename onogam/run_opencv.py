@@ -23,7 +23,7 @@ def main_start(cascade_file, img_path):
     triangle = cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=3, minSize=(30, 30))
     uui = np.array(triangle).any()
 
-    print(bool(uui))
+    
     # 検出した領域を赤色の矩形で囲む
     for (x, y, w, h) in triangle:
         cv2.rectangle(img, (x, y), (x + w, y+h), (0,0,200), 3)
@@ -119,14 +119,13 @@ sg.set_options(use_ttk_buttons=True, dpi_awareness=True,font=('Meiryo UI',9))
 lay = [
     [sg.Text("1.カスケードファイルを選択")],
     [sg.InputText(tooltip="カスケードファイルを選択",key="input_cascade"),sg.FileBrowse("選択")],
-    [sg.Text("2.画像を選択")],
-    [sg.InputText(tooltip="画像認識する画像を選択",key="img_path"),sg.FileBrowse("選択")],
-    [sg.Text("3.フォルダを選択")],
+    [sg.Text("2.処理画像フォルダを選択")],
     [sg.InputText(key="folder_path"),sg.FolderBrowse("選択")],
     [sg.Button("START", key="start")],
     [sg.Table(values=[],headings=["ファイル名","結果"],auto_size_columns=False,key="table",
               def_col_width=20,)],
-    [sg.Button("OK",key="OK"),sg.Button("SPYD",key="SPYD")],
+    [sg.Text("検知画像数"),sg.InputText(key="true",size=(5,1)),sg.Text("未検知画像数"),sg.InputText(key="false",size=(5,1))],
+    [sg.Button("選択画像を表示",key="OPEN")],
 ]
 
 
@@ -141,19 +140,39 @@ while True:
         break
     
     if event == "start":
-        img = main_start(cascade_file=value["input_cascade"],img_path=value["img_path"])
         
-        #window["image"].update(img)
+        if value["input_cascade"] == "":
+            sg.popup("カスケードファイルを選択して下さい")
+            continue
+        if value["folder_path"] == "":
+            sg.popup("フォルダを選択して下さい")
+            continue
         
-    if event == "OK":
         result_list = [[]]
         
         Folder_start = folder_start(cascade_file=value["input_cascade"],folder_path=value["folder_path"])
         
+        
+        #検知数と未検知数を検出する
+        Detection = []
+        for i in Folder_start:
+            Detection.append(i[1])
+        #検知画像数   
+        True_count = Detection.count("True")
+        #未検知画像数
+        False_count = len(Detection) - int(True_count)
+        
+        window["true"].update(True_count)
+        window["false"].update(False_count)
+
+        
         #テーブルに反映させる様にする
         window["table"].update(Folder_start)
         
-    if event == "SPYD":
+        
+   
+        
+    if event == "OPEN":
         if value["table"] == []:
             sg.popup("選択してください")
             continue
@@ -164,4 +183,5 @@ while True:
         #tableからファイル名を取得
         table_file_name = out_table[value["table"][0]][0]
         
-        sg.execute_command_subprocess("start",table_file_name)
+        main_start(cascade_file=value["input_cascade"],img_path=table_file_name)
+        #sg.execute_command_subprocess("start",table_file_name)
