@@ -113,14 +113,13 @@ def folder_start(cascade_file, folder_path):
 
 
 
-sg.set_options(use_ttk_buttons=True, dpi_awareness=True,font=('Meiryo UI',9))
-sg.theme("SystemDefault")
+sg.set_options( dpi_awareness=True,font=('Meiryo UI',9),use_ttk_buttons=True)
+sg.theme("LightGrey1")
 theme_list = ['Black', 'BlueMono', 'BluePurple', 'BrightColors', 'BrownBlue', 'Dark', 'Dark2', 'DarkAmber', 'DarkBlack', 'DarkBlack1', 'DarkBlue', 'DarkBlue1', 'DarkBlue10', 'DarkBlue11', 'DarkBlue12', 'DarkBlue13', 'DarkBlue14', 'DarkBlue15', 'DarkBlue16', 'DarkBlue17', 'DarkBlue2', 'DarkBlue3', 'DarkBlue4', 'DarkBlue5', 'DarkBlue6', 'DarkBlue7', 'DarkBlue8', 'DarkBlue9', 'DarkBrown', 'DarkBrown1', 'DarkBrown2', 'DarkBrown3', 'DarkBrown4', 'DarkBrown5', 'DarkBrown6', 'DarkBrown7', 'DarkGreen', 'DarkGreen1', 'DarkGreen2', 'DarkGreen3', 'DarkGreen4', 'DarkGreen5', 'DarkGreen6', 'DarkGreen7', 'DarkGrey', 'DarkGrey1', 'DarkGrey10', 'DarkGrey11', 'DarkGrey12', 'DarkGrey13', 'DarkGrey14', 'DarkGrey15', 'DarkGrey2', 'DarkGrey3', 'DarkGrey4', 'DarkGrey5', 'DarkGrey6', 'DarkGrey7', 'DarkGrey8', 'DarkGrey9', 'DarkPurple', 'DarkPurple1', 'DarkPurple2', 'DarkPurple3', 'DarkPurple4', 'DarkPurple5', 'DarkPurple6', 'DarkPurple7', 'DarkRed', 'DarkRed1', 'DarkRed2', 'DarkTanBlue', 'DarkTeal', 'DarkTeal1', 'DarkTeal10', 'DarkTeal11', 'DarkTeal12', 'DarkTeal2', 'DarkTeal3', 'DarkTeal4', 'DarkTeal5', 'DarkTeal6', 'DarkTeal7', 'DarkTeal8', 'DarkTeal9', 'Default', 'Default1', 'DefaultNoMoreNagging', 'GrayGrayGray', 'Green', 'GreenMono', 'GreenTan', 'HotDogStand', 'Kayak', 'LightBlue', 'LightBlue1', 'LightBlue2', 'LightBlue3', 'LightBlue4', 'LightBlue5', 'LightBlue6', 'LightBlue7', 'LightBrown', 'LightBrown1', 'LightBrown10', 'LightBrown11', 'LightBrown12', 'LightBrown13', 'LightBrown2', 'LightBrown3', 'LightBrown4', 'LightBrown5', 'LightBrown6', 'LightBrown7', 'LightBrown8', 'LightBrown9', 'LightGray1', 'LightGreen', 'LightGreen1', 'LightGreen10', 'LightGreen2', 'LightGreen3', 'LightGreen4', 'LightGreen5', 'LightGreen6', 'LightGreen7', 'LightGreen8', 'LightGreen9', 'LightGrey', 'LightGrey1', 'LightGrey2', 'LightGrey3', 'LightGrey4', 'LightGrey5', 'LightGrey6', 'LightPurple', 'LightTeal', 'LightYellow', 'Material1', 'Material2', 'NeutralBlue', 'Purple', 'Python', 'PythonPlus', 'Reddit', 'Reds', 'SandyBeach', 'SystemDefault', 'SystemDefault1', 'SystemDefaultForReal', 'Tan', 'TanBlue', 'TealMono', 'Topanga']
   
 lay_1 = [
-    [sg.Combo(theme_list,key="theme_list"), sg.Button("テーマ変更",key="chenge")],
     [sg.Text("1.カスケードファイルを選択")],
-    [sg.InputText(tooltip="カスケードファイルを選択",key="input_cascade"),sg.FileBrowse("選択")],
+    [sg.InputText(tooltip="カスケードファイルを選択",key="input_cascade"),sg.FileBrowse("選択",)],
     [sg.Text("2.処理画像フォルダを選択")],
     [sg.InputText(key="folder_path"),sg.FolderBrowse("選択")],
     [sg.Button("START", key="start")],
@@ -150,7 +149,7 @@ layout = [
     ]
 
 
-window = sg.Window("画像検知",layout,ttk_theme="vista")
+window = sg.Window("画像検知",layout,ttk_theme="clam",)
 
 while True:
     
@@ -162,10 +161,10 @@ while True:
     if event == "start":
         
         if value["input_cascade"] == "":
-            sg.popup("カスケードファイルを選択して下さい")
+            #sg.popup("カスケードファイルを選択して下さい")
             continue
         if value["folder_path"] == "":
-            sg.popup("フォルダを選択して下さい")
+            #sg.popup("フォルダを選択して下さい")
             continue
         
         result_list = [[]]
@@ -194,7 +193,7 @@ while True:
         
     if event == "OPEN":
         if value["table"] == []:
-            sg.popup("選択してください")
+            #sg.popup("選択してください")
             continue
         
         #tableの全データを二次元配列で取得
@@ -208,17 +207,14 @@ while True:
         
     if event == "start_file":
         if value["input_cascade_file"] == "":
-            sg.popup("カスケードファイルを選択してください")
+            #sg.popup("カスケードファイルを選択してください")
             continue
         if value["file_path"] == "":
-            sg.popup("画像を選択してください",)
+            #sg.popup("画像を選択してください",)
             continue
         else:
             main_start(cascade_file=value["input_cascade_file"],img_path=value["file_path"])
             
             
-    if event == "change":
-        sg.theme(value["theme_list"])
-        window = sg.Window("画像検知",layout,)
     
         
