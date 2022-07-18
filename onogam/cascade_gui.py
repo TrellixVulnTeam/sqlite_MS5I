@@ -62,8 +62,26 @@ def cascade_make(path,vec,neglist,numPos,numNeg,numStages,featureType,bt,minHitR
     os.chdir(path)
     sg.execute_command_subprocess("start","opencv_traincascade.exe -data cascade -vec {0} -bg {1} -numPos {2} -numNeg {3} -numStages {4} -featureType {5} -bt {6} -minHitRate {7} -maxFalseAlarmRate {8} -w {9} -h {10}".format(vec,neglist,numPos,numNeg,numStages,featureType,bt,minHitRate,maxFalseAlarmRate,cascade_w,cascade_h))
     #-data: カスケードファイルの格納場所を指定 -vec: ベクトルファイルの場所を指定 -bg: neglistの場所を指定 -numPos: positiveの枚数を指定 -numNeg: negativeの枚数を指定 -featureType: HOGならHOG特徴量をLBPならLBP特徴量を、指定なしならHaar-Like特徴量を利用
-    #-maxFalseAlarmRate: 各学習ステージでの許容する誤検出率 -w: 横幅 -h: 高さ -minHitRate: 各学習ステージでの許容する最小検出率 -numStages: 作成するステージ数
-
+    #-maxFalseAlarmRate: 各学習ステージでの許容する誤検出率 -w: 横幅 -h: 高さ -minHitRate: 各学習ステージでの許容する最小検出率 -numStages: 作成するステージ数 -bt:boost分類器のタイプ(DAB - Discrete AdaBoost,RAB - Real AdaBoost,LB - LogitBoost,GAB - Gentle AdaBoost.)
+    os.chdir(os.path.join(path,"cascade"))
+    
+    Act = f"""
+numPos: {numPos}
+numNeg: {numNeg}
+学習ステージ数: {numStages}
+トレーニングタイプ: {featureType}
+boost分類機: {bt}
+許容する最小検出率: {minHitRate}
+許容する誤検出率: {maxFalseAlarmRate}
+横幅： {cascade_w}
+縦幅： {cascade_h}
+        """
+    
+    f = open("cascade_act.txt", "w")
+    f.write(Act)
+    f.close()
+    
+    
 
 num = 1
 def main(img_path):
