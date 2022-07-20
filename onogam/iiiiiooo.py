@@ -50,9 +50,9 @@ while True:
         cv2.destroyAllWindows()
 
     if recording:
-        ret, frame = img.read()
+        ret, frame = cap.read()
         if ret is True:
             imgbytes = cv2.imencode('.png', frame)[1].tobytes() 
-            window['image'].update(data=img)
+            window['image'].update(data=imgbytes)
 
 window.close()

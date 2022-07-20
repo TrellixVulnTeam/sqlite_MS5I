@@ -5,6 +5,7 @@ import PySimpleGUI as sg
 import os
 import numpy as np
 
+
 #画像分類実行
 def main_start(cascade_file, img_path):
     # カスケード分類器を読み込む
@@ -54,6 +55,57 @@ def main_start(cascade_file, img_path):
         #out = os.path.join(os.path.split(tf.name)[0],f"{tf.name}.jpg")
         
         #return out
+    return img
+#画像分類実行
+def main_start_img(cascade_file, img_path):
+    # カスケード分類器を読み込む
+    
+    cascade = cv2.CascadeClassifier(r"{}".format(cascade_file))
+    
+    # 入力画像の読み込み&グレースケール変換
+    #img = cv2.imread(r"{}".format(img_path))
+    #numpyで開く事で日本語を含むpathを通す(opencvは日本語pathに対応していない)
+    buf = np.fromfile(r"{}".format(img_path), np.uint8)
+    img = cv2.imdecode(buf, cv2.IMREAD_UNCHANGED) 
+    
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+   
+    # "▲"を物体検出する
+    triangle = cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=3, minSize=(30, 30))
+    uui = np.array(triangle).any()
+
+    
+    # 検出した領域を赤色の矩形で囲む
+    for (x, y, w, h) in triangle:
+        cv2.rectangle(img, (x, y), (x + w, y+h), (0,0,200), 3)
+    
+
+ 
+    
+    # 結果画像を保存
+    #cv2.imwrite("result_triangle.jpg",img)
+    #img = cv2.resize(img, dsize=(200,200)) #リサイズ
+    #with tempfile.NamedTemporaryFile(delete=True) as tf:
+    #    cv2.imwrite(f"{tf.name}.jpg", img)
+        
+    #    tf.seek(0)
+    #    os.chdir(os.path.split(tf.name)[0])
+    #    iii = cv2.imread(f"{tf.name}.jpg")
+
+        
+    
+    
+    #結果画像を表示
+    #cv2.imshow('image', img)
+
+    # 何かのキーを押したら処理を終了させる
+    #cv2.waitKey(0)
+    #cv2.destroyAllWindows()
+        
+        #out = os.path.join(os.path.split(tf.name)[0],f"{tf.name}.jpg")
+        
+        #return out
+    return img
     
 
 
@@ -125,7 +177,7 @@ lay_1 = [
     [sg.Button("START", key="start")],
     [sg.Table(values=[],headings=["ファイル名","結果"],auto_size_columns=False,key="table",
               def_col_width=20,)],
-    [sg.Text("検知画像数"),sg.InputText(key="true",size=(5,1)),sg.Text("未検知画像数"),sg.InputText(key="false",size=(5,1))],
+    [sg.Text("検知画像数"),sg.InputText(key="true",size=(5,1)),sg.Text("未検知画像数"),sg.InputText(key="false",size=(5,1)),sg.Text("正解比率"),sg.InputText(key="probability",size=(5,1))],
     [sg.Button("選択画像を表示",key="OPEN")],
 ]
 
@@ -135,6 +187,7 @@ lay_2 = [
     [sg.Text("2.処理画像を選択")],
     [sg.InputText(key="file_path"),sg.FileBrowse("選択")],
     [sg.Button("START", key="start_file")],
+    [sg.Image(key="image",size=(350,250))],
 ]
 
 layout = [
@@ -143,6 +196,7 @@ layout = [
         [[
             sg.Tab("フォルダ内全て",lay_1),
             sg.Tab("ファイル単体",lay_2),
+
             ]],
     
         )]
@@ -180,9 +234,13 @@ while True:
         True_count = Detection.count("True")
         #未検知画像数
         False_count = len(Detection) - int(True_count)
+        #正解比率計算
+        probability_value = True_count / len(Detection)
         
         window["true"].update(True_count)
         window["false"].update(False_count)
+        #"{:.2f}".format(対象の値)fの前の数字を指定する事で表示する小数点以下の桁数を指定できる
+        window["probability"].update("{:.2f}".format(probability_value))
 
         
         #テーブルに反映させる様にする
@@ -213,8 +271,9 @@ while True:
             #sg.popup("画像を選択してください",)
             continue
         else:
-            main_start(cascade_file=value["input_cascade_file"],img_path=value["file_path"])
-            
+            IMG =main_start_img(cascade_file=value["input_cascade_file"],img_path=value["file_path"])
+            imgbytes = cv2.imencode('.png', IMG)[1].tobytes() 
+            window["image"].update(source = imgbytes,size=(350,250),subsample=2)
             
     
         
