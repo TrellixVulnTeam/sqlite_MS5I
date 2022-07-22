@@ -84,9 +84,16 @@ boost分類機: {bt}
     
 
 num = 1
-def main(img_path):
+def main(img_path,Count,Total):
     #写真データ読み込み
     img = cv2.imread(img_path)
+    
+    #画像のサイズを取得
+    height, width, channels = img.shape[:3]
+    
+    #画像に進捗画像枚数を描画
+    cv2.putText(img=img,text="{0}/{1}".format(Count,Total),org=(width-120,50),fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                fontScale=1,color=(0,255,255),thickness=2)
     
     pt_1 = []
     pt_2 = [] 
@@ -563,9 +570,12 @@ while True:
             continue
         file_path = get_path_pos(value["input_pos"])
         lec = ""
+        Count = 0
+        Total = len(file_path)
         #メイン
         for i in file_path:
-            mes = main(i)
+            Count += 1
+            mes = main(i,Count=Count, Total=Total)
             total = mes["total"]
             num = mes["num"]
             for ff in total:
