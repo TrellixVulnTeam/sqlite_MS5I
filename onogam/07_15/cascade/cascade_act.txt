@@ -1,5 +1,5 @@
 
-numPos: 260
+numPos: 200
 numNeg: 140
 学習ステージ数: 50
 トレーニングタイプ: HAAR
