@@ -494,7 +494,9 @@ train_cascade = sg.Tab("ステップ➂",layout=[
         [sg.Text("トレーニングタイプ"),sg.Combo(values=["HAAR","LBP","HOG"],default_value="HAAR",size=(8,12),key="featureType")],
         [sg.Text("boost分類器タイプ"),sg.Combo(values=["GAB","DAB","RAB","LB"],default_value="GAB",size=(8,12),key="bt")],
         [sg.Text("許容する最小検出率"),sg.InputText(key="minHitRate",size=(8,10),default_text="0.97")],
+        [sg.Text("(値を高くするとステージ数が増加(誤検出率低下))")],
         [sg.Text("許容する誤検出率"),sg.InputText(key="maxFalseAlarmRate",size=(8,10),default_text="0.8")],
+        [sg.Text("(値を高くすると早く処理が終わる,ステージ数減少 ※精度低下)")],
         [sg.Text("学習画像の横幅(w)"),sg.InputText(key="cascade_w",size=(10,10))],
         [sg.Text("学習画像の縦幅(h)"),sg.InputText(key="cascade_h",size=(10,10))],
         
@@ -551,7 +553,7 @@ while True:
                 
                 #テキストファイルに書き込み
                 file_name = os.path.join(value["output_neg"],value["neg_name"])
-                f = open(file_name, "a")
+                f = open(file_name, "a+")
                 f.write(f"{i}\n")
                 f.close()
                 window["neg_end"].update(visible = True)

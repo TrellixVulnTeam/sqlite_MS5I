@@ -1,0 +1,16 @@
+STEP①(仮想環境アクティベート)
+
+cd C:\Users\60837\Desktop\YoLo\Scripts
+activate
+
+
+STEP②(labelimgフォルダに移動)
+
+cd C:\Users\60837\Desktop\YoLo\labelImg
+pyrcc5 -o libs/resources.py resources.qrc
+
+
+
+STEP③(labelimg起動)
+
+python labelimg.py
