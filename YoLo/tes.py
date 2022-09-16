@@ -1,7 +1,6 @@
 
 import cv2
 import torch
-import sys
 
 
 #model = torch.hub.load("yolov5", "custom",path=r"C:\Users\60837\Desktop\YoLo\periperi.pt",source="local")
@@ -26,17 +25,24 @@ import sys
 #ii = result.display(pprint=True)
 
 
-def main():
-    model = torch.hub.load("yolov5", "custom",path=r"C:\Users\onoga\Desktop\MyDocker\Git\sqlite\YoLo\baribari.pt",source="local")#--- localのyolov5sを使用
-
+def main(pt_path, conf):
+    model = torch.hub.load("yolov5", "custom",path=pt_path ,source="local")
+    #model = torch.hub.load("WongKinYiu/yolov7", r"yolov7")
+    
+    
     #--- 検出の設定 ---
-    model.conf = 0.5 #--- 検出の下限値（<1）。設定しなければすべて検出
+    model.conf = conf #--- 検出の下限値（<1）。設定しなければすべて検出
     model.classes = [0] #--- 0:person クラスだけ検出する。設定しなければすべて検出
     #print(model.names) #--- （参考）クラスの一覧をコンソールに表示
 
     #--- 映像の読込元指定 ---
     #camera = cv2.VideoCapture("../pytorch_yolov3/data/sample.avi")#--- localの動画ファイルを指定
-    camera = cv2.VideoCapture(0)                #--- カメラ：Ch.(ここでは0)を指定
+    camera = cv2.VideoCapture(0,cv2.CAP_DSHOW)                #--- カメラ：Ch.(ここでは0)を指定
+    
+    #解像度の設定
+    camera.set(cv2.CAP_PROP_FPS, 30) 
+    camera.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
+    camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 180) 
 
 
     #--- 画像のこの位置より左で検出したら、ヒットとするヒットエリアのためのパラメータ ---
@@ -52,6 +58,10 @@ def main():
         #--- 推定の検出結果を取得 ---
         #  results = model(imgs) #--- サイズを指定しない場合は640ピクセルの画像にして処理
         results = model(imgs, size=160) #--- 160ピクセルの画像にして処理
+        
+        #物体が検出されたらコンソールに文字を表示
+        if len(results.xyxy[0]) > 0:
+            print(True) 
 
         #--- 出力 ---
         #--- 検出結果を画像に描画して表示 ---
@@ -59,7 +69,7 @@ def main():
         for *box, conf, cls in results.xyxy[0]:  # xyxy, confidence, class
 
             #--- クラス名と信頼度を文字列変数に代入
-            s = model.names[int(cls)]+":"+'{:.1f}'.format(float(conf)*100)
+            s = model.names[int(cls)]+":"+'{:.1f}'.format(float(conf))
 
             #--- ヒットしたかどうかで枠色（cc）と文字色（cc2）の指定
             if int(box[0])>pos_x :
@@ -82,7 +92,7 @@ def main():
             cv2.putText(imgs, s, (int(box[0]), int(box[1])-5), cv2.FONT_HERSHEY_PLAIN, 1, cc2, 1, cv2.LINE_AA)
 
         #--- ヒットエリアのラインを描画
-        cv2.line(imgs, (pos_x, 0), (pos_x, 640), (128,128,128), 3)
+       #cv2.line(imgs, (pos_x, 0), (pos_x, 640), (128,128,128), 3)
 
         #--- 描画した画像を表示
         cv2.imshow('color',imgs)
@@ -100,5 +110,4 @@ def main():
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
         
-
-main()
+main(pt_path=r"C:\Users\60837\Desktop\YoLo\periperi.pt", conf=0.7)
