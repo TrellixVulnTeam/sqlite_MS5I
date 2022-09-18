@@ -41,8 +41,8 @@ def main(pt_path, conf):
     
     #解像度の設定
     camera.set(cv2.CAP_PROP_FPS, 30) 
-    camera.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
-    camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 180) 
+    camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+    camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 300) 
 
 
     #--- 画像のこの位置より左で検出したら、ヒットとするヒットエリアのためのパラメータ ---
@@ -57,7 +57,7 @@ def main(pt_path, conf):
 
         #--- 推定の検出結果を取得 ---
         #  results = model(imgs) #--- サイズを指定しない場合は640ピクセルの画像にして処理
-        results = model(imgs, size=160) #--- 160ピクセルの画像にして処理
+        results = model(imgs,size=800) #--- 160ピクセルの画像にして処理
         
         #物体が検出されたらコンソールに文字を表示
         if len(results.xyxy[0]) > 0:
@@ -110,4 +110,4 @@ def main(pt_path, conf):
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
         
-main(pt_path=r"C:\Users\60837\Desktop\YoLo\periperi.pt", conf=0.7)
+main(pt_path=r"C:\Users\onoga\Desktop\MyDocker\Git\sqlite\YoLo\periperi.pt", conf=0.7)
