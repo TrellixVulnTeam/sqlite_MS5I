@@ -5,14 +5,16 @@ import cv2
 #参考サイト   https://teratail.com/questions/225414
 #            https://pystyle.info/opencv-videoio/
 cap = cv2.VideoCapture(0)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 400)
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 100)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 500)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 300)
 
-fps = int(cap.get(cv2.CAP_PROP_FPS))                    # カメラのFPSを取得
+fps = cap.get(cv2.CAP_PROP_FPS)                    # カメラのFPSを取得
 w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))              # カメラの横幅を取得
 h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)) 
-fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v') # 動画保存時のfourcc設定（mp4用）
-video = cv2.VideoWriter('video_{0}.mp4'.format(1), fourcc, fps, (w, h))
+fourcc = cv2.VideoWriter_fourcc('M', 'P', '4', 'V') # 動画保存時のfourcc設定（mp4用）
+video = cv2.VideoWriter('output.mp4', fourcc, fps, (w, h))
+
+
 
 lay = [
     [sg.Image("",key="IMAGE")],
@@ -26,7 +28,7 @@ def main(name,frame):
     fps = int(cap.get(cv2.CAP_PROP_FPS))                    # カメラのFPSを取得
     w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))              # カメラの横幅を取得
     h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))             # カメラの縦幅を取得
-    fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')        # 動画保存時のfourcc設定（mp4用）
+    fourcc = cv2.VideoWriter_fourcc('M', 'P', '4', 'S')        # 動画保存時のfourcc設定（mp4用）
     video = cv2.VideoWriter(r'C:\Users\60837\Desktop\syasin\video_{0}.mp4'.format(name), fourcc, fps, (w, h))  # 動画の仕様（ファイル名、fourcc, FPS, サイズ）
     now = datetime.datetime.now()
     TEN=datetime.timedelta(minutes=1)
@@ -42,6 +44,7 @@ count=0
 while True:
     event,value = window.read(timeout=0)
     if event == None:
+        
         break
     
     ret, frame = cap.read()
@@ -65,4 +68,5 @@ while True:
     
 # 撮影用オブジェクトとウィンドウの解放
 cap.release()
+video.release() #この記述が無いと保存した動画が再生エラーになる
 cv2.destroyAllWindows()
