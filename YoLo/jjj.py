@@ -7,7 +7,13 @@ count = 1
 
 
 # VideoCapture を作成する。
-cap = cv2.VideoCapture(cv2.CAP_MSMF)
+cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
+
+#解像度変更  
+cap.set(cv2.CAP_PROP_FPS, 30) 
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 300)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 100) 
+
 width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 fps = cap.get(cv2.CAP_PROP_FPS)
