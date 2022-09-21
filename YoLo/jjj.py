@@ -36,7 +36,7 @@ window = sg.Window("",layout=layout)
 cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
 
 #解像度変更  
-cap.set(cv2.CAP_PROP_FPS, 50) 
+cap.set(cv2.CAP_PROP_FPS, 20) 
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 300)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 100) 
 
@@ -79,7 +79,7 @@ while True:
     if value["START"] == True:
         if ret == True:     
             writer.write(frame)  
-            if (datetime.datetime.now() -d).seconds >= 60:
+            if (datetime.datetime.now() -d).seconds >= 30:
                 writer.release()
                 cv2.destroyAllWindows()
                 ret, frame = cap.read()
@@ -88,7 +88,7 @@ while True:
                 
                 d = datetime.datetime.now()
                 #writer.write(frame)
-                #cv2.waitKey(1)
+                cv2.waitKey(1)
                 
                 if event == "FPS_change":
                     
