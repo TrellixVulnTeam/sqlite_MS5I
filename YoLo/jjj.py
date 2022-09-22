@@ -4,7 +4,7 @@ import datetime
 import PySimpleGUI as sg
 import os
 
-count = 1
+count = 0
 
 sg.theme("SystemDefaultForReal")
 sg.set_options(dpi_awareness=True,use_ttk_buttons=True)
@@ -25,7 +25,7 @@ def date_name():
 
 layout = [
     [sg.Text("動画保存先フォルダ"),sg.InputText(key="IN_DIR",size=(20,1)),sg.FolderBrowse("選択")],
-    [sg.Text("カメラ設定"),sg.Button("設定変更",key="camera_setting"),sg.Text("FPS変更"),sg.InputText(key="FPS",size=(10,1)),sg.Button("FPS設定変更",key="FPS_change")],
+    [sg.Text("カメラ設定"),sg.Button("設定変更",key="camera_setting"),sg.Button("異常信号",key="Emergency",button_color=("white","red"))],
     [sg.Radio("START",group_id="A",default=False,key="START",text_color="blue"),sg.Radio("STOP",group_id="A",default=True,key="STOP",text_color="red")],
     [sg.Image("",key="IMAGE")],
 ]
@@ -36,20 +36,35 @@ window = sg.Window("",layout=layout)
 cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
 
 #解像度変更  
-cap.set(cv2.CAP_PROP_FPS, 20) 
+cap.set(cv2.CAP_PROP_FPS, 15) 
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 300)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 100) 
 
-width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-fps = cap.get(cv2.CAP_PROP_FPS)
+def Write_cap ():
+    global width,height,fps,fourcc,initial,dir_path
+    
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fps = cap.get(cv2.CAP_PROP_FPS)
 
-# VideoWriter を作成する。
-#fourcc = cv2.VideoWriter_fourcc(*"XVID")
-fourcc = cv2.VideoWriter_fourcc('M', 'P', '4', 'V')
-writer = cv2.VideoWriter(f"{count}__{date_name()}.mp4", fourcc, fps, (width, height))
+    # VideoWriter を作成する。
+    #fourcc = cv2.VideoWriter_fourcc(*"XVID")
+    
+    fourcc = cv2.VideoWriter_fourcc('M', 'P', '4', 'V')
+    writer = cv2.VideoWriter(f"{count}__{date_name()}.mp4", fourcc, fps, (width, height))
+    if count == 0:
+        dir_path = os.getcwd()
+        initial = f"{count}__{date_name()}.mp4"
+    
+    return writer
+
+writer = Write_cap()
 
 d = datetime.datetime.now()
+
+file_name = os.listdir()
+
+time_count = 1
 while True:
     event,value = window.read(timeout=0)
     if event == None:
@@ -69,57 +84,73 @@ while True:
     imgbytes = cv2.imencode('.png', frame)[1].tobytes()
     window["IMAGE"].update(imgbytes)
     
-    writer.write(frame)
     
+  
     
     
     if not ret:
         break  # 取得に失敗した場合
     
     if value["START"] == True:
-        if ret == True:     
+        
+        
+        
+        if value["IN_DIR"] == "":
+            sg.popup("保存フォルダを選択してください")
+            window["STOP"].update(True)
+            continue
+     
+        if count == 1:
+            #初回ループのみ実施
+            if time_count == 1:
+                dir_first = date_name()
+                os.chdir(value["IN_DIR"])
+                os.mkdir(dir_first)
+                out_dir = os.path.join(os.getcwd(),dir_first)
+                os.chdir(out_dir)
+                time_count += 1
+        
+    
+        
+        if ret == True: 
+             
             writer.write(frame)  
-            if (datetime.datetime.now() -d).seconds >= 30:
+            if (datetime.datetime.now() -d).seconds >= 6:
                 writer.release()
                 cv2.destroyAllWindows()
                 ret, frame = cap.read()
                 count+=1
-                writer = cv2.VideoWriter(os.path.join(value["IN_DIR"],f"{count}__{date_name()}.mp4"), fourcc, fps, (width, height))
+                
+                writer = Write_cap()
+                #writer = cv2.VideoWriter(f"{count}__{date_name()}.mp4", fourcc, fps, (width, height))
                 
                 d = datetime.datetime.now()
-                #writer.write(frame)
+                writer.write(frame)
                 cv2.waitKey(1)
                 
-                if event == "FPS_change":
-                    
-                    writer.release()
-                    cap.release()
-                    cap.set(cv2.CAP_PROP_FPS, int(value["FPS"])) 
-                    writer = cv2.VideoWriter(os.path.join(value["IN_DIR"],f"{count}__{date_name()}.mp4"), fourcc, int(value["FPS"]), (width, height))
-                    ret, frame = cap.read()
-                    writer.wite(frame)
+            
+            #異常信号発生時
+            if event == "Emergency":
+                os.chdir(value["IN_DIR"])
+                path = os.listdir()
+                #フォルダ内に'Error'フォルダが存在しない場合ディレクトリを作成
+                if "Error" not in path:
+                    os.makedirs("Error")
+                
+                
                 
                 continue
-    
-    
-        
-        
-    
-    
-    
-     
-        
             
-    
-        
-            
-            
-    
-    
-    
-    
-    
+        writer.write(frame)
+                
     
 
 writer.release()
 cap.release()
+
+
+#最初に作成される動画ファイルを削除する
+if (initial in file_name):
+    os.chdir(dir_path)
+    os.remove(initial)
+    
