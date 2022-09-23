@@ -147,7 +147,8 @@ while True:
                         if "Error" not in path:
                             os.makedirs("Error")
                         
-                        
+                        plus_count = count + 1
+                        minus_count = count - 1
                         
                         continue
             
