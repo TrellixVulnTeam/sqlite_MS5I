@@ -110,4 +110,4 @@ def main(pt_path, conf):
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
         
-main(pt_path=r"C:\Users\onoga\Desktop\MyDocker\Git\sqlite\YoLo\periperi.pt", conf=0.7)
+main(pt_path=r"C:\Users\60837\Desktop\Mypython\Git\sqlite\YoLo\periperi.pt", conf=0.7)
