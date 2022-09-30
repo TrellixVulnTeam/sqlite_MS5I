@@ -5,10 +5,7 @@ import subprocess
 
 sg.theme("SystemDefaultForReal")
 
-def GO (file_path):
-    out = subprocess.run("whisper {0} --language ja --task transcribe --model tiny --output_dir {1}".format(file_path,r"C:\Users\onoga\Desktop\favicons"),shell=True,  stdout=subprocess.PIPE)#check=True
-    out_put = str(out.stdout,"shift_jis")
-    return out_put
+
 
 
 sg.set_options(dpi_awareness=True,use_ttk_buttons=True,font=("デジタル",10))
@@ -41,8 +38,10 @@ lay = [
 
 lay2 = [
     [sg.Frame("",[
-    [sg.Multiline(size=(52,10),key="out")],])],
-    [sg.Button("保存先のフォルダを開く")],
+    [sg.Multiline(size=(52,10),key="out")],
+    [sg.Button("保存先のフォルダを開く",key="open_dir",visible=False)],
+    ])],
+    
     [sg.Button("START",key="START")],
     ]
 
@@ -55,6 +54,11 @@ while True:
     event, value = window.read()
     if event == None:
         break
+    
+    def GO (file_path):
+        out = subprocess.run("whisper  {0} --language ja --task transcribe --model tiny --output_dir {1}".format(file_path,r"{}".format(value["output_dir"])),shell=True,  stdout=subprocess.PIPE)#check=True
+        out_put = str(out.stdout,"shift_jis")
+        return out_put
     
     def main (model,file):
         model = whisper.load_model(model)
@@ -69,3 +73,4 @@ while True:
         #OUT = main(value["model"],value["in_file"])
         #window["out"].update(OUT)
         window["out"].update(GO(value["in_file"]))
+        window["open_dir"].update(visible=False)
