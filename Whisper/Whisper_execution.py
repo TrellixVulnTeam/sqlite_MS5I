@@ -32,7 +32,7 @@ lay = [
     [sg.Frame("",[
     [sg.Text("task選択"),sg.Combo(values=["transcribe","translate"],default_value="transcribe",key="task",readonly=True)],
     [sg.Text("翻訳するファイルを選択"),sg.InputText(key="in_file",size=(20,1)),sg.FileBrowse("ファイル選択")],
-    [sg.Text("学習モデルを選択"),sg.Combo(values=Model_list,auto_size_text=True,key="model",readonly=True,default_value="tiny")],
+    [sg.Text("学習モデルを選択"),sg.Combo(values=Model_list,auto_size_text=True,key="model",readonly=True,default_value="base")],
     [sg.Text("翻訳言語を選択"),sg.Combo(values=Language_list,size=(15,1),key="language",readonly=True,default_value="Japanese")],
     [sg.Text("保存先のフォルダを選択"),sg.InputText(key="output_dir",size=(20,1)),sg.FolderBrowse("選択")],]),],
 ]
@@ -54,7 +54,7 @@ layout = [lay,lay2]
 window = sg.Window("Whisper",layout,finalize=True)
 
 while True:
-    event, value = window.read(timeout=100)
+    event, value = window.read()
     if event == None:
         break
     
@@ -94,4 +94,3 @@ while True:
         subprocess.Popen(["explorer","."],shell=True)
         continue
     
-   
