@@ -7,7 +7,20 @@ import os
 
 sg.theme("Black")
 
-
+def Whisper_start(model,file_name,language_name,output_dir):
+    Model = whisper.load_model(model)
+    result = Model.transcribe(file_name,verbose=True,language="{}".format(language_name))
+    file_first_name = os.path.split(file_name)[1]
+    File_First_Name = os.path.splitext(file_first_name)[0]
+ 
+    Name_File = "{}.txt".format(File_First_Name)
+    HH = os.path.join(output_dir,Name_File)
+    print(HH)
+    with open(HH,"w") as f:
+        f.write(result["text"])
+        f.close()
+        
+    
 
 
 sg.set_options(dpi_awareness=True,use_ttk_buttons=True,font=("デジタル",10))
@@ -40,7 +53,7 @@ lay = [
 
 lay2 = [
     [sg.Frame("",[
-    [sg.Multiline(size=(52,10),key="out")],
+    [sg.Output(size=(52,10))],
     [sg.Button("保存先のフォルダを開く",key="open_dir",visible=False,button_color=("white","blue")),],
     
     ])],
@@ -73,15 +86,19 @@ while True:
     #翻訳処理実行
     if event == "START":
         
+       
+        
         if value["in_file"] == "":
             sg.popup("翻訳するファイルを選択して下さい")
             continue
         if value["output_dir"] == "":
             sg.popup("保存先のフォルダを選択して下さい")
             continue
-        
-        go = GO(value["in_file"])
-        window["out"].update(go)
+        window["open_dir"].update(visible=False)
+        window.refresh()
+        #go = GO(value["in_file"])
+        #window["out"].update(go)
+        Whisper_start(model=value["model"],file_name=value["in_file"],language_name=value["language"],output_dir=value["output_dir"])
         
         window["open_dir"].update(visible=True)
        
