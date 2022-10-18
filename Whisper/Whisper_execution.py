@@ -3,7 +3,15 @@ import whisper
 import PySimpleGUI as sg
 import subprocess
 import os
+import six
+import torch
 
+cuda = str(torch.cuda.is_available())
+
+#def resource_path(relative):
+#  if hasattr(sys, "_MEIPASS"):
+#      return os.path.join(sys._MEIPASS, relative)
+#  return os.path.join(relative)
 
 sg.theme("Black")
 
@@ -40,20 +48,23 @@ Language_list =["af","am","ar","as","az","ba","be","bg","bn","bo","br","bs","ca"
                 "Russian","Sanskrit","Serbian","Shona","Sindhi","Sinhala","Sinhalese","Slovak","Slovenian","Somali","Spanish","Sundanese",
                 "Swahili","Swedish","Tagalog","Tajik","Tamil","Tatar","Telugu","Thai","Tibetan","Turkish","Turkmen","Ukrainian","Urdu",
                 "Uzbek","Valencian","Vietnamese","Welsh","Yiddish","Yoruba"]
+device_list=["cpu", "cuda", "ipu", "xpu", "mkldnn", "opengl", "opencl", "ideep", "hip", "ve", "ort", "mps", "xla", "lazy", "vulkan", "meta", "hpu"]
 
 lay = [
+    [sg.Text("CUDA認識"),sg.InputText(default_text= cuda , size=(6,1),)],
     [sg.Frame("",[
     [sg.Text("task選択"),sg.Combo(values=["transcribe","translate"],default_value="transcribe",key="task",readonly=True)],
     [sg.Text("翻訳するファイルを選択"),sg.InputText(key="in_file",size=(20,1)),sg.FileBrowse("ファイル選択")],
     [sg.Text("学習モデルを選択"),sg.Combo(values=Model_list,auto_size_text=True,key="model",readonly=True,default_value="base")],
     [sg.Text("翻訳言語を選択"),sg.Combo(values=Language_list,size=(15,1),key="language",readonly=True,default_value="Japanese")],
+    [sg.Text("デバイスを選択 --device"),sg.Combo(values=device_list,size=(15,1),key="device",readonly=True,default_value="cpu")],
     [sg.Text("保存先のフォルダを選択"),sg.InputText(key="output_dir",size=(20,1)),sg.FolderBrowse("選択")],]),],
 ]
 
 
 lay2 = [
     [sg.Frame("",[
-    [sg.Output(size=(52,10))],
+    [sg.Output(size=(52,10),key="out")],
     [sg.Button("保存先のフォルダを開く",key="open_dir",visible=False,button_color=("white","blue")),],
     
     ])],
@@ -64,7 +75,7 @@ lay2 = [
 
 layout = [lay,lay2]
 
-window = sg.Window("Whisper",layout,finalize=True)
+window = sg.Window("Whisper",layout,)
 
 while True:
     event, value = window.read()
@@ -75,7 +86,7 @@ while True:
     #翻訳処理関数
     def GO (file_path):
         
-        out = subprocess.run("whisper  {0} --language {1} --task {2} --model {3} --output_dir {4}".format(file_path,value["language"],value["task"],value["model"],r"{}".format(value["output_dir"])),shell=True,  stdout=subprocess.PIPE)#check=True
+        out = subprocess.run("whisper  {0} --language {1} --task {2} --model {3} --output_dir {4} --device {5}".format(file_path,value["language"],value["task"],value["model"],r"{}".format(value["output_dir"]),value["device"]),shell=True,  stdout=subprocess.PIPE)#check=True
         out_put = str(out.stdout,"shift_jis")
         
         return out_put
@@ -94,11 +105,12 @@ while True:
         if value["output_dir"] == "":
             sg.popup("保存先のフォルダを選択して下さい")
             continue
+        
         window["open_dir"].update(visible=False)
         window.refresh()
-        #go = GO(value["in_file"])
-        #window["out"].update(go)
-        Whisper_start(model=value["model"],file_name=value["in_file"],language_name=value["language"],output_dir=value["output_dir"])
+        go = GO(value["in_file"])
+        window["out"].update(go)
+        #Whisper_start(model=value["model"],file_name=value["in_file"],language_name=value["language"],output_dir=value["output_dir"])
         
         window["open_dir"].update(visible=True)
        
