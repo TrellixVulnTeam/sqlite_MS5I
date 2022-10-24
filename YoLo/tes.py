@@ -40,8 +40,8 @@ def main(pt_path, conf):
     camera = cv2.VideoCapture(0,cv2.CAP_DSHOW)                #--- カメラ：Ch.(ここでは0)を指定
     
     #解像度の設定
-    camera.set(cv2.CAP_PROP_FPS, 30) 
-    camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+    camera.set(cv2.CAP_PROP_FPS, 60) 
+    camera.set(cv2.CAP_PROP_FRAME_WIDTH, 800)
     camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 300) 
 
 
@@ -110,4 +110,4 @@ def main(pt_path, conf):
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
         
-main(pt_path=r"C:\Users\60837\Desktop\Mypython\Git\sqlite\YoLo\periperi.pt", conf=0.7)
+main(pt_path=r"C:\Users\60837\Desktop\YoLo\2022_10_17.pt", conf=0.6)
