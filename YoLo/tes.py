@@ -110,4 +110,4 @@ def main(pt_path, conf):
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
         
-main(pt_path=r"C:\Users\60837\Desktop\YoLo\2022_10_17.pt", conf=0.6)
+main(pt_path=r"C:\Users\60837\Desktop\YoLo\periperi.pt", conf=0.6)
