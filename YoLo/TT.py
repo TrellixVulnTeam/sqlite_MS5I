@@ -18,7 +18,7 @@ lay_1 = [
 
 lay_2 = [
     [sg.Frame("画像",layout=[
-        [sg.Image("",key="IMG",size=(300,200),right_click_menu=["",["画像を保存"]])],
+        [sg.Image("",key="IMG",size=(300,200),right_click_menu=["",["画像を保存","画像を表示"]])],
     ])]
 ]
 
@@ -38,20 +38,20 @@ layout = [lay,lay_1,[sg.Column(lay_2,vertical_alignment="t"),sg.Column(lay_3,ver
 cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
 
  #解像度の設定
-cap.set(cv2.CAP_PROP_FPS, 60) 
+cap.set(cv2.CAP_PROP_FPS, 100) 
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 750)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 500) 
 
 
 window =  sg.Window("",layout)
 
-model = torch.hub.load("yolov5", "custom",path="periperi.pt" ,source="local")
+model = torch.hub.load("yolov5", "custom",path=r"C:\Users\60837\Desktop\Mypython\Git\sqlite\YoLo\2022_10_17.pt" ,source="local")
 
 #画像データを一時的に格納する
 img_data = None
 
 #conf 信頼度を設定
-model.conf = 0.7
+model.conf = 0.5
 
 while True:
     event,value = window.read(timeout=0)
@@ -184,17 +184,22 @@ while True:
         
         
         
-        if save_dir or file_name == None:
+        if (save_dir or file_name) == None:
+            
             sg.popup_quick_message("画像の保存を中止しました")
             continue
         
-        elif save_dir or file_name == "":
+        elif (save_dir or file_name) == "":
             sg.popup_quick_message("入力がありません　保存を中止しました")
             continue
             
         else:
             cv2.imwrite(f"{os.path.join(save_dir, file_name)}.jpg",img_data)
             sg.popup_quick_message("画像を保存しました")
+     
+    #右クリックメニュー　画像を表示        
+    if event == "画像を表示":
+        cv2.imshow("cap", img_data)
     
     
     

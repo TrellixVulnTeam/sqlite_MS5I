@@ -10,11 +10,14 @@ cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
 default_FRAME_HEIGHT = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 default_FRAME_WIDTH = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 
+cap.set(cv2.CAP_PROP_FPS, 20) 
+cap.set(cv2.CAP_PROP_ISO_SPEED, 10)
+
 
 lay = [
     [sg.Text("保存するフォルダを指定"),sg.InputText(key="in",default_text=cd),sg.FolderBrowse("選択")],
     [sg.Text("保存するファイル名を指定"),sg.InputText(key="file_name",default_text="img_",size=(40,1))],
-    [sg.Text("カメラ設定変更"),sg.Button("設定変更",key="change")],
+    [sg.Text("カメラ設定変更"),sg.Button("設定変更",key="change"),sg.Text("フレームレート"),sg.InputText(size=(5,1),key="FPS"),sg.Text("シャッタースピード"),sg.InputText(size=(5,1),key="ISO_SPEED")],
     [sg.Text("解像度変更"),sg.Text("【高さ】"),sg.InputText(default_text=f"{int(default_FRAME_HEIGHT)}",size=(8,1),key="HEIGHT"),sg.Text("×"),sg.Text("【幅】"),sg.InputText(default_text=f"{int(default_FRAME_WIDTH)}",size=(8,1),key="WIDTH"),sg.Button("解像度変更",key="resize")],
     [sg.Image("",key="IMG")],
     [sg.Button(button_text="画像撮影",key="shot",font=("UD デジタル 教科書体 NK-B",30),button_color="red")],
@@ -34,7 +37,16 @@ while True:
     imgbytes = cv2.imencode('.png', frame)[1].tobytes()
     window["IMG"].update(imgbytes)
     #cv2.imshow("cap",frame)
+    
+    #フレームレートを取得してGUIに表示
+    window["FPS"].update(cap.get(cv2.CAP_PROP_FPS))
+    
+    window["ISO_SPEED"].update(cap.get(cv2.CAP_PROP_ISO_SPEED))
+    
     key = cv2.waitKey(1) & 0xFF
+    
+    print(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    
     #写真撮影
     if event == "shot":
         cv2.imwrite(f"{os.path.join(value['in'],value['file_name'])}{count}.jpg",frame)
