@@ -45,7 +45,7 @@ while True:
     
     key = cv2.waitKey(1) & 0xFF
     
-    print(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    
     
     #写真撮影
     if event == "shot":
