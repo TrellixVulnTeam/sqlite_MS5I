@@ -14,6 +14,7 @@ cap.set(cv2.CAP_PROP_FPS, 20)
 cap.set(cv2.CAP_PROP_ISO_SPEED, 10)
 
 
+
 lay = [
     [sg.Text("保存するフォルダを指定"),sg.InputText(key="in",default_text=cd),sg.FolderBrowse("選択")],
     [sg.Text("保存するファイル名を指定"),sg.InputText(key="file_name",default_text="img_",size=(40,1))],

@@ -4,17 +4,26 @@ import PySimpleGUI as sg
 import cv2
 import os
 import sys
+import time
 
+os.environ['BLINKA_FT232H'] = '1'#環境変数設定
+
+from board import *
+import digitalio
 
 sg.theme("SystemDefault1")
 
 sg.set_options(use_ttk_buttons=True,dpi_awareness=True)
 
+#IOピンの設定
+SW = digitalio.DigitalInOut(D6)
+SW.switch_to_input()
+
 
 def main_act(FPS, width, height, pt_path, conf):
 
     lay = [
-            [sg.Button("GO",key="GO")],
+            [sg.Button("実行",key="GO",button_color=("white","red"))],
         ]
 
     lay_1 = [
@@ -32,6 +41,7 @@ def main_act(FPS, width, height, pt_path, conf):
     lay_3 = [
         [sg.Frame("情報",layout=[
         [sg.Text("検出数"),sg.InputText(size=(10,1), key="hit")],
+        [sg.Text("型開き信号"),sg.InputText(size=(10,1), key="kata")]
         
         
         ])]
@@ -59,6 +69,9 @@ def main_act(FPS, width, height, pt_path, conf):
     
     #conf 信頼度を設定
     model.conf = conf
+    
+    
+    out_res = None
 
     while True:
         event,value = window_main.read(timeout=0)
@@ -66,17 +79,26 @@ def main_act(FPS, width, height, pt_path, conf):
         if event == (None) or (sg.WIN_CLOSED):
             break
         
+        #型開き限の信号状態
+        out_res = SW.value
+        window_main["kata"].update(out_res)
         
         # ret = カメラ映像の取得有無 , frame = 取得した画像データ
         ret,frame = cap.read()
+        
+        
         
         
         #画像処理を実行する
         def main(Frame):
             results = model(Frame)
             
+            
+            
             #検出個数を検出
             hit_count= len(results.xyxy[0])
+            label = results.names[0]
+            print(label)
             #print(hit_count)  #or .show() .print() .save() .crop() .pandas()
             
             # results.xyxy[0]で検出結果を取得
@@ -90,8 +112,10 @@ def main_act(FPS, width, height, pt_path, conf):
                     thickness=2
                 )
                 
+                val = "{:.2f}".format(float(conf))
+                
                 #信頼度を小数点第二位に変換
-                lav = "{:.2f}".format(float(conf))
+                lav = f"{label}:{val}"#:.2f
                 
                 #信頼度を描画する文字枠を作成
                 cv2.rectangle(frame, (int(i[0]), int(i[1])-20), (int(i[0])+len(lav)*10, int(i[1])), (0,0,255), -1)
@@ -130,7 +154,12 @@ def main_act(FPS, width, height, pt_path, conf):
         #frameをエンコードしないとpysimpleguiに埋め込めない
         imgbytes = cv2.imencode('.png', dst_cap)[1].tobytes()
         window_main["CAP"].update(imgbytes)
-    
+        
+        #型開き限信号　処理
+        if SW.value == False:
+            main(Frame=frame)
+            
+        
         
         
         if event == "GO":
@@ -245,6 +274,7 @@ def start_set():
     ]
     
     lay_3 = [
+        
         [sg.Button("START",key="START",font=("meiryo",20),button_color=("white","blue"),pad=(300,0))],
         
     ],
@@ -305,7 +335,9 @@ def start_set():
                 test_cap.release() #カメラオブジェクトを閉じる
                 
                 return out_list
-                
+            
+            
+        
                 
         
     
