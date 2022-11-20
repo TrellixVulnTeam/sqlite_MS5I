@@ -6,11 +6,11 @@ sg.theme("SystemDefault")
 cd = os.getcwd()
 sg.set_options(dpi_awareness=True,use_ttk_buttons=True,font="NSimSun")
 
-cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
+cap = cv2.VideoCapture(0,)
 default_FRAME_HEIGHT = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 default_FRAME_WIDTH = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 
-cap.set(cv2.CAP_PROP_FPS, 20) 
+cap.set(cv2.CAP_PROP_FPS, 60) 
 cap.set(cv2.CAP_PROP_ISO_SPEED, 10)
 
 
